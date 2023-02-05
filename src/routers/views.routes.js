@@ -62,15 +62,16 @@ router.post(
 
 //CART
 
-router.get("/cart", async (req, res) => {
-  const allCart = await ecommerceCarts.getCarts();
+router.get("/cart/:cid", async (req, res) => {
+  const cartId = +req.params.cid;
+  const cartById = await ecommerceCarts.getCartById(cartId);
 
-  if (allCart && (allCart != false)) {
+  if (cartById && (cartById != false)) {
     const data = {
       status: true,
       title: "Cart",
       style: "index.css",
-      list: allCart,
+      list: cartById,
     };
 
     res.render("cart", data);
@@ -82,7 +83,6 @@ router.get("/cart", async (req, res) => {
     });
   }
 });
-
 
 
 // CHAT
