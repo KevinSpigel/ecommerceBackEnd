@@ -28,6 +28,11 @@ body {
     margin-left: 20px;
 }
 
+ .imgCart{
+  width: 25px !important;
+    height: 25px !important;
+ }
+
 .p-footer {
     font-size: small;
 };

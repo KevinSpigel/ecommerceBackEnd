@@ -8,30 +8,15 @@ const router = Router();
 //MONGODB
 
 const ProductMongoManager = require("../dao/mongoManager/productManager.mongoose");
+const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
 
 const ecommerce= new ProductMongoManager();
+const ecommerceCarts= new CartMongoManager();
+
+
+//PRODUCTS
 
 router.get("/", async (req, res) => {
-  const product = await ecommerce.getProducts();
-  if (product && (product != false)) {
-    const data = {
-      status: true,
-      title: "Home",
-      style: "index.css",
-      list: product,
-    };
-
-    res.render("home", data);
-  } else {
-    return res.status(404).render("home", {
-      status: false,
-      style: "index.css",
-      data: "Empty list",
-    });
-  }
-});
-
-router.get("/realtimeproducts", async (req, res) => {
   const product = await ecommerce.getProducts();
 
   if (product && (product != false)) {
@@ -53,7 +38,7 @@ router.get("/realtimeproducts", async (req, res) => {
 });
 
 router.post(
-  "/realtimeproducts",
+  "/",
   uploader.single("thumbnail"),
   async (req, res) => {
     const addNewProduct = req.body;
@@ -75,9 +60,32 @@ router.post(
   }
 );
 
+//CART
+
+router.get("/cart", async (req, res) => {
+  const allCart = await ecommerceCarts.getCarts();
+
+  if (allCart && (allCart != false)) {
+    const data = {
+      status: true,
+      title: "Cart",
+      style: "index.css",
+      list: allCart,
+    };
+
+    res.render("cart", data);
+  } else {
+    return res.status(404).render("cart", {
+      status: false,
+      style: "index.css",
+      data: "The cart is empty",
+    });
+  }
+});
 
 
-// Chat
+
+// CHAT
 router.get('/chat', (req, res) => {
 
   const data = {

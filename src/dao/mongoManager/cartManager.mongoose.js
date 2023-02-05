@@ -1,4 +1,5 @@
 const { cartsModel } = require("../../models/carts.model.js");
+const { productsModel } = require("../../models/products.model.js");
 
 class CartMongoManager {
   async getCarts() {
@@ -19,89 +20,87 @@ class CartMongoManager {
     }
   }
 
-  async getCartById(id) {
+  async getCartById(cid) {
     try {
-      const cartById = await cartsModel.findById(id);
+      const cartById = await cartsModel.findById(cid).lean();
       return cartById;
     } catch (error) {
       throw new Error(`Cart with id: ${id} was not found: ${error}`);
     }
   }
 
-  async deleteCart(id) {
+  async updateProducts(cid, newProducts) {
     try {
-      const response = await cartsModel.findByIdAndDelete(id);
-      return `Cart with id: ${response.id} was deleted successfully`;
+      const cart = await this.getCartById(cid);
+      cart.products = newProducts;
+      await cartsModel.updateOne(cid, cart);
+      return newProducts;
     } catch (error) {
-      throw new Error(`Error deleting: ${error}`);
+      throw new Error(`Error updating: ${error}`);
+    }
+  }
+
+  async addProductToCart(cid, pid, quantity) {
+    try {
+      // const allCarts = await this.getCarts();
+      // const cartById = await this.getCartById(cid);
+      // const targetProduct = await cartById.products.find(
+      //   (product) => product.product == pid
+      // );
+      // const updatedProduct = targetProduct
+      //   ? {
+      //       product: targetProduct.product,
+      //       quantity: targetProduct.quantity + +quantity,
+      //     }
+      //   : { product: pid, quantity: +quantity };
+      // const targetCartFiltered = await cartById.products.filter(
+      //   (id) => id.product !== pid
+      // );
+      // const updatedCart = {
+      //   ...cartById,
+      //   products: [...targetCartFiltered, updatedProduct],
+      // };
+      // const updatedList = allCarts.map((cart) => {
+      //   if (cart.id === cid) {
+      //     return updatedCart;
+      //   } else {
+      //     return cart;
+      //   }
+      // });
+    } catch (error) {
+      throw new Error(`Couldn't add the product: ${error}`);
+    }
+  }
+
+  async deleteProductFromCart(cid, pid) {
+    try {
+      const cartById = await this.getCartById(cid);
+
+      const targetProduct = cartById.products.find(
+        (product) => product.product.id == pid
+      );
+
+      if (!targetProduct) {
+        throw new Error("Product not found");
+      } else {
+        const result = cartsModel.deleteOne(cid, targetProduct);
+        return result;
+      }
+    } catch (error) {
+      throw new Error(`Error deleting: ${error.message}`);
+    }
+  }
+
+  async deleteCart(cid) {
+    try {
+      const cartToClean = await this.getCartById(cid);
+      cartToClean.products = [];
+      const result = cartsModel.updateOne(cid, cartToClean);
+      return result;
+    } catch (error) {
+      throw new Error(`Error deleting: ${error.message}`);
     }
   }
 }
 
 module.exports = CartMongoManager;
-
-
-//Need to refactor using Mongoose
-
-// async addProductToCart(cid, pid, quantity) {
-//   const allCarts = await this.getCarts();
-//   const cartById = await this.getCartById(cid);
-
-//   const targetProduct = await cartById.products.find(
-//     (product) => product.product == pid
-//   );
-
-//   const updatedProduct = targetProduct
-//     ? {
-//         product: targetProduct.product,
-//         quantity: targetProduct.quantity + +quantity,
-//       }
-//     : { product: pid, quantity: +quantity };
-
-//   const targetCartFiltered = await cartById.products.filter(
-//     (id) => id.product !== pid
-//   );
-//   const updatedCart = {
-//     ...cartById,
-//     products: [...targetCartFiltered, updatedProduct],
-//   };
-//   const updatedList = allCarts.map((cart) => {
-//     if (cart.id === cid) {
-//       return updatedCart;
-//     } else {
-//       return cart;
-//     }
-//   });
-
-//   await this.saveCarts(updatedList);
-//   return `product id ${pid} update from id cart ${cartById.id} `;
-// }
-
-// async deleteProductFromCart(cid, pid) {
-//   const allCarts = await this.getCarts();
-//   const cartById = await this.getCartById(cid);
-
-//   const targetProduct = await cartById.products.find(
-//     (product) => product.product == pid
-//   );
-
-//   if (!targetProduct) {
-//     throw new Error("Product not found");
-//   } else {
-//     const filteredCart = await cartById.products.filter(
-//       (id) => id.product !== pid
-//     );
-//     const updatedCart = { ...cartById, products: [...filteredCart] };
-
-//     const updatedList = allCarts.map((cart) => {
-//       if (cart.id === cid) {
-//         return updatedCart;
-//       } else {
-//         return cart;
-//       }
-//     });
-
-//     await this.saveCarts(updatedList);
-//     return `product id ${pid} delete from id cart ${cartById.id} `;
-//   }
-// }

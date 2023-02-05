@@ -17,6 +17,11 @@
               <h3 class="card-title">{{this.title}}</h3>
               <h5 class="card-title">${{this.price}}</h5>
               <p class="card-text">{{this.description}}</p>
+              <button id="addToCartBtn" onclick={addToCart(event)}
+                class="btn btn-success"
+                type="submit"
+                value="Submit"
+              >Add to Cart</button>
             </div>
           </div>
         {{/each}}
@@ -111,4 +116,4 @@
 
 {{! script which stores all FrontEnd logic }}
 <script src="/socket.io/socket.io.js"></script>
-<script src="/static/script.js"></script>
+<script src="/static/js/script.js"></script>
