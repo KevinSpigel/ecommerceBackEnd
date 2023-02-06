@@ -18,7 +18,7 @@ form.addEventListener("submit", (event) => {
     redirect: "manual",
   };
 
-  fetch("http://localhost:8080/realtimeproducts", requestOptions)  //Send formData object within the body request, to be received in req.body from newProduct function
+  fetch("http://localhost:8080/", requestOptions)  //Send formData object within the body request, to be received in req.body from newProduct function
   
   form.reset();
 });
@@ -38,6 +38,7 @@ socket.on("newProduct", (data) => {
               <h3 class="card-title">${data.title}</h3>
               <h5 class="card-title">$${data.price}</h5>
               <p class="card-text">${data.description}</p>
+              <h5 class="card-text">Stock: ${data.stock}</h5>
             </div>
           </div>`;
 

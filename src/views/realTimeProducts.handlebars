@@ -17,11 +17,18 @@
               <h3 class="card-title">{{this.title}}</h3>
               <h5 class="card-title">${{this.price}}</h5>
               <p class="card-text">{{this.description}}</p>
-              <button id="addToCartBtn" onclick={addToCart(event)}
-                class="btn btn-success"
-                type="submit"
-                value="Submit"
-              >Add to Cart</button>
+              <h5 class="card-text">Stock: {{this.stock}}</h5>
+              {{#if stock}}
+                <button
+                  id="addToCartBtn"
+                  onclick="{addToCart(event)}"
+                  class="btn btn-success"
+                  type="submit"
+                  value="Submit"
+                >Add to Cart</button>
+              {{else}}
+                <button class="btn btn-secondary" disabled>Out of stock</button>
+              {{/if}}
             </div>
           </div>
         {{/each}}
@@ -38,7 +45,7 @@
       <h6>On real time</h6>
       <div class="d-flex justify-content-center column">
         <form
-          action="/realtimeproducts"
+          action="/"
           method="post"
           id="newProductForm"
           enctype="multipart/form-data"
