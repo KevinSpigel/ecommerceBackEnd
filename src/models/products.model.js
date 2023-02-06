@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 
 const productsCollection = "products";
 
@@ -21,7 +22,8 @@ const productsSchema = new mongoose.Schema({
     required: true,
   },
   thumbnail: {
-    type: [String],
+    type: String,
+    //in case the multer function change to many files the type should be type: [String]
     required: true,
   },
   stock: {
@@ -30,6 +32,8 @@ const productsSchema = new mongoose.Schema({
   },
   category: {
     type: String,
+    //enum: ["category1","category2","category3"] 
+    //The value of category can be only one of these options
     required: true,
   },
   status: {
@@ -37,6 +41,9 @@ const productsSchema = new mongoose.Schema({
     required: true,
   },
 });
+
+
+productsSchema.plugin(mongoosePaginate);
 
 module.exports = {
   productsModel: mongoose.model(productsCollection, productsSchema),

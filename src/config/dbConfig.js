@@ -6,6 +6,6 @@ const { options } = require("../config/options");
 mongoose.set("strictQuery", false);
 
 mongoose.connect(options.mongoDb.url, (err) => {
-  if (err) return console.log(`Error establishing a database connection ${err}`);
-  console.log("Connection successful");
+  if (err) return console.log(`Database connection error: ${err}`);
+  console.log("Database connection successful");
 });

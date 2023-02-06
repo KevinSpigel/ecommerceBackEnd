@@ -74,18 +74,18 @@ class CartMongoManager {
 
   async deleteProductFromCart(cid, pid) {
     try {
-      const cartById = await this.getCartById(cid);
+      // const cartById = await this.getCartById(cid);
 
-      const targetProduct = cartById.products.find(
-        (product) => product.product.id == pid
-      );
+      // const targetProduct = cartById.products.find(
+      //   (product) => product.product.id == pid
+      // );
 
-      if (!targetProduct) {
-        throw new Error("Product not found");
-      } else {
-        const result = cartsModel.deleteOne(cid, targetProduct);
-        return result;
-      }
+      // if (!targetProduct) {
+      //   throw new Error("Product not found");
+      // } else {
+      //   const result = cartsModel.deleteOne(cid, targetProduct);
+      //   return result;
+      // }
     } catch (error) {
       throw new Error(`Error deleting: ${error.message}`);
     }

@@ -17,7 +17,7 @@ const ecommerceCarts= new CartMongoManager();
 //PRODUCTS
 
 router.get("/", async (req, res) => {
-  const product = await ecommerce.getProducts();
+  const product = await ecommerce.getProducts(); //req.query?
 
   if (product && (product != false)) {
     const data = {

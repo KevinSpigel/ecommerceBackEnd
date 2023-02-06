@@ -47,3 +47,8 @@ socket.on("newProduct", (data) => {
   window.location.reload()
 });
 
+
+
+//button add product to cart
+//Adding a product to the cart should decrease the stock available
+

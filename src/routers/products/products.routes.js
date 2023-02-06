@@ -69,6 +69,24 @@ router.get("", async (req, res) => {
   res.send({ status: "success", payload: products });
 });
 
+
+// res.send({
+//   status: 'success',
+//   payload: products.docs,
+//   totalPages: products.totalPages,
+//   prevPage: products.prevPage,
+//   nextPage: products.nextPage,
+//   page: products.page,
+//   hasPrevPage: products.hasPrevPage,
+//   hasNextPage: products.hasNextPage,
+//   prevLink: null,
+//   nexLink: null})
+
+
+
+
+
+
 //GET product by id
 
 router.get("/:pid", async (req, res) => {
