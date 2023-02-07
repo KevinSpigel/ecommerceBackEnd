@@ -1,37 +1,15 @@
 const { productsModel } = require("../../models/products.model.js");
 
 class ProductMongoManager {
-  async getProducts() { // getProducts(limit, page, sort, req.query)
+  async getProducts(limit, page, sort, query) {
     try {
-      const allProducts = await productsModel.find().lean();
+      const options = { limit, page, sort };
+      const allProducts = await productsModel.paginate(query, options);
       return allProducts;
-
-
-      //paginate with mongoose
-
-      // const allProducts= await productsModel.paginate({}, {limit:limit, page:page})
-
-
-      //aggregation with mongoose
-
-      // const allProducts= await productsModel.aggregate([
-      //   {
-      //     $limit:{limit}
-      //   },
-      //   {
-      //     $group:{_id:"$category"} 
-      //   },
-      //   {
-      //     $sort: {price:1}
-      //   }
-      // ])
-      // return allProducts
-
     } catch (error) {
       throw new Error(`Couldn't read file ${error}`);
     }
   }
-
 
   async addProduct(
     title,
@@ -41,17 +19,19 @@ class ProductMongoManager {
     thumbnail,
     stock,
     category,
-    status,
+    status
   ) {
     try {
-      const obj = {  title,
+      const obj = {
+        title,
         description,
         code,
         price,
         thumbnail,
         stock,
         category,
-        status}  
+        status,
+      };
       const newProduct = await productsModel.create(obj);
       return newProduct;
     } catch (error) {

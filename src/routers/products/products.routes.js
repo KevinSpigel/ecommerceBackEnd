@@ -41,51 +41,31 @@ router.post("", uploader.single("thumbnail"), async (req, res) => {
   }
 });
 
-//GET all products + query limit param
+//GET all products + query param + paginate
 
 router.get("", async (req, res) => {
-  let products = await ecommerce.getProducts();
-  const productsLimit = req.query.limit;
+  const limit = Number(req.query.limit);
+  const page = Number(req.query.page);
+  const sort = req.query.sort;
+  const query = req.query.query;
 
-  let integerProductsLimit;
+  const products = await ecommerce.getProducts(limit, page, sort, query);
+  
+  const response = {
+    status: "success",
+    payload: products.docs,
+    totalPages: products.totalPages,
+    prevPage: products.prevPage,
+    nextPage: products.nextPage,
+    page: products.page,
+    hasPrevPage: products.hasPrevPage,
+    hasNextPage: products.hasNextPage,
+    prevLink: null,
+    nexLink: null,
+  };
 
-  if (productsLimit) {
-    integerProductsLimit = parseInt(productsLimit);
-    if (isNaN(integerProductsLimit)) {
-      return res.status(400).send({
-        status: "error",
-        error: "productsLimit must be a valid number",
-      });
-    }
-    if (integerProductsLimit <= 0 || integerProductsLimit > products.length) {
-      return res
-        .status(404)
-        .send({ status: "error", error: "Products not found" });
-    }
-  }
-
-  if (integerProductsLimit) products = products.slice(0, integerProductsLimit);
-
-  res.send({ status: "success", payload: products });
+  res.send({ response });
 });
-
-
-// res.send({
-//   status: 'success',
-//   payload: products.docs,
-//   totalPages: products.totalPages,
-//   prevPage: products.prevPage,
-//   nextPage: products.nextPage,
-//   page: products.page,
-//   hasPrevPage: products.hasPrevPage,
-//   hasNextPage: products.hasNextPage,
-//   prevLink: null,
-//   nexLink: null})
-
-
-
-
-
 
 //GET product by id
 

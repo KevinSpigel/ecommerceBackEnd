@@ -106,7 +106,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
       defaultQuantity = quantity;
     }
 
-    let addProduct = await ecommerceCarts.addProductToCart(
+    let addProduct = await ecommerceCarts.updateCartProduct(
       cid,
       pid,
       defaultQuantity
@@ -127,7 +127,10 @@ router.put("/:cid", async (req, res) => {
     const cid = +req.params.cid;
     const newProducts = req.body;
 
-    const updatedCart = await ecommerceCarts.updateProducts(cid, newProducts);
+    const updatedCart = await ecommerceCarts.updatePropertiesProducts(
+      cid,
+      newProducts
+    );
     res.send({
       status: "success",
       payload: updatedCart,
@@ -145,7 +148,7 @@ router.put("/:cid", async (req, res) => {
 router.put("/:cid/products/:pid", async (req, res) => {
   const cid = +req.params.cid;
   const pid = +req.params.pid;
-  const quantity = req.body.quantity;
+  const quantity = +req.body.quantity;
   try {
     if (!quantity) {
       throw new Error("an amount of product must be provided");

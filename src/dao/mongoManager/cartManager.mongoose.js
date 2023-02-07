@@ -1,5 +1,4 @@
 const { cartsModel } = require("../../models/carts.model.js");
-const { productsModel } = require("../../models/products.model.js");
 
 class CartMongoManager {
   async getCarts() {
@@ -29,7 +28,28 @@ class CartMongoManager {
     }
   }
 
-  async updateProducts(cid, newProducts) {
+  async updateCartProduct(cid, pid, quantity) {
+    try {
+      const cartById = await this.getCartById(cid);
+      const targetProduct = cartById.products.find(
+        (product) => product.product.id == pid
+      );
+      if (!targetProduct) {
+        cartById.products.push({
+          id: pid,
+          products: quantity,
+        });
+      } else {
+        targetProduct.products = quantity;
+      }
+      const result = cartsModel.updateOne(cid, cartById);
+      return result;
+    } catch (error) {
+      throw new Error(`Couldn't add the product: ${error}`);
+    }
+  }
+
+  async updatePropertiesProducts(cid, newProducts) {
     try {
       const cart = await this.getCartById(cid);
       cart.products = newProducts;
@@ -40,52 +60,21 @@ class CartMongoManager {
     }
   }
 
-  async addProductToCart(cid, pid, quantity) {
-    try {
-      // const allCarts = await this.getCarts();
-      // const cartById = await this.getCartById(cid);
-      // const targetProduct = await cartById.products.find(
-      //   (product) => product.product == pid
-      // );
-      // const updatedProduct = targetProduct
-      //   ? {
-      //       product: targetProduct.product,
-      //       quantity: targetProduct.quantity + +quantity,
-      //     }
-      //   : { product: pid, quantity: +quantity };
-      // const targetCartFiltered = await cartById.products.filter(
-      //   (id) => id.product !== pid
-      // );
-      // const updatedCart = {
-      //   ...cartById,
-      //   products: [...targetCartFiltered, updatedProduct],
-      // };
-      // const updatedList = allCarts.map((cart) => {
-      //   if (cart.id === cid) {
-      //     return updatedCart;
-      //   } else {
-      //     return cart;
-      //   }
-      // });
-    } catch (error) {
-      throw new Error(`Couldn't add the product: ${error}`);
-    }
-  }
-
   async deleteProductFromCart(cid, pid) {
     try {
-      // const cartById = await this.getCartById(cid);
+      const cartById = await this.getCartById(cid);
 
-      // const targetProduct = cartById.products.find(
-      //   (product) => product.product.id == pid
-      // );
+      const targetProduct = cartById.products.find(
+        (product) => product.product.id == pid
+      );
 
-      // if (!targetProduct) {
-      //   throw new Error("Product not found");
-      // } else {
-      //   const result = cartsModel.deleteOne(cid, targetProduct);
-      //   return result;
-      // }
+      if (!targetProduct) {
+        throw new Error("Product not found");
+      } else {
+        cartById.products = cartById.products.filter((p) => p.id === pid);
+        const result = cartsModel.updateOne(cid, cartById);
+        return result;
+      }
     } catch (error) {
       throw new Error(`Error deleting: ${error.message}`);
     }
