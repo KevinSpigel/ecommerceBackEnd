@@ -2,7 +2,6 @@
 // Socket server connection --> connection event
 const socket = io();
 
-
 //DOM elements
 const form = document.getElementById("newProductForm");
 const productListContainer = document.getElementById("product-list-container");
@@ -18,8 +17,8 @@ form.addEventListener("submit", (event) => {
     redirect: "manual",
   };
 
-  fetch("http://localhost:8080/", requestOptions)  //Send formData object within the body request, to be received in req.body from newProduct function
-  
+  fetch("http://localhost:8080/", requestOptions); //Send formData object within the body request, to be received in req.body from newProduct function
+
   form.reset();
 });
 
@@ -27,8 +26,7 @@ form.addEventListener("submit", (event) => {
 
 socket.on("newProduct", (data) => {
   const newProductDiv = document.createElement("div");
-  newProductDiv.innerHTML = 
-      `<div class="card card-product" style="width: 18rem;">
+  newProductDiv.innerHTML = `<div id="pid" value="${data._id}" class="card card-product" style="width: 18rem;">
             <img
               class="card-img-top"
               src="/static/img/${data.thumbnail}"
@@ -43,12 +41,30 @@ socket.on("newProduct", (data) => {
           </div>`;
 
   productListContainer.append(newProductDiv);
-  
-  window.location.reload()
+
+  window.location.reload();
 });
 
 
 
-//button add product to cart
-//Adding a product to the cart should decrease the stock available
+//add product to cart button
 
+// const addToCartBtn = document.getElementById("addToCartBtn");
+
+// let currentCart;
+
+// addToCartBtn.addEventListener("click", async (event) => {
+//   event.preventDefault();
+//   const pid = document.getElementById("pid").value;
+
+//   if (!currentCart) {
+//     await fetch("/api/carts/", { method: "POST" })
+//       .then((response) => response.json())
+//       .then((data) => (currentCart = data._id));
+//   }
+
+//    fetch(`/api/carts/${currentCart}/products/${pid}`, {method: "POST"})
+//   .then(alert("Product added to cart"));
+
+//   window.location.reload();
+// });

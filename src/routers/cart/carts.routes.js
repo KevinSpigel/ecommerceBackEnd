@@ -63,19 +63,9 @@ router.get("", async (req, res) => {
 
 router.get("/:cid", async (req, res) => {
   try {
-    const cartId = req.params.cid;
+    const cid = req.params.cid;
 
-    if (isNaN(cartId)) {
-      return res.status(400).send({ status: "error", error: error.message });
-    }
-
-    const integerCartId = parseInt(cartId);
-
-    if (integerCartId <= 0) {
-      res.status(404).send({ status: "error", error: error.message });
-    }
-
-    const cartById = await ecommerceCarts.getCartById(integerCartId);
+    const cartById = await ecommerceCarts.getCartById(cid);
 
     if (!cartById) {
       return res.status(404).send({ status: "error", error: error.message });
@@ -93,11 +83,11 @@ router.get("/:cid", async (req, res) => {
 //POST new product to cart
 
 router.post("/:cid/products/:pid", async (req, res) => {
-  try {
-    const cid = +req.params.cid;
-    const pid = +req.params.pid;
-    const quantity = +req.query.q;
+  const cid = req.params.cid;
+  const pid = req.params.pid;
+  const quantity = +req.query.quantity;
 
+  try {
     let defaultQuantity;
 
     if (!quantity) {
@@ -106,7 +96,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
       defaultQuantity = quantity;
     }
 
-    let addProduct = await ecommerceCarts.updateCartProduct(
+    const addProduct = await ecommerceCarts.updateCartProduct(
       cid,
       pid,
       defaultQuantity
@@ -124,7 +114,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
 
 router.put("/:cid", async (req, res) => {
   try {
-    const cid = +req.params.cid;
+    const cid = req.params.cid;
     const newProducts = req.body;
 
     const updatedCart = await ecommerceCarts.updatePropertiesProducts(
@@ -146,14 +136,14 @@ router.put("/:cid", async (req, res) => {
 //PUT update only the quantity of a product
 
 router.put("/:cid/products/:pid", async (req, res) => {
-  const cid = +req.params.cid;
-  const pid = +req.params.pid;
+  const cid = req.params.cid;
+  const pid = req.params.pid;
   const quantity = +req.body.quantity;
   try {
     if (!quantity) {
       throw new Error("an amount of product must be provided");
     }
-    const updateProduct = await ecommerceCarts.addProductToCart(
+    const updateProduct = await ecommerceCarts.updateCartProduct(
       cid,
       pid,
       quantity
@@ -174,8 +164,8 @@ router.put("/:cid/products/:pid", async (req, res) => {
 
 router.delete("/:cid/products/:pid", async (req, res) => {
   try {
-    const cid = +req.params.cid;
-    const pid = +req.params.pid;
+    const cid = req.params.cid;
+    const pid = req.params.pid;
     const deleteProduct = await ecommerceCarts.deleteProductFromCart(cid, pid);
     res.send({ status: "success", message: deleteProduct });
   } catch (error) {
@@ -189,7 +179,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
 //DELETE cart by id
 router.delete("/:pid", async (req, res) => {
   try {
-    const pid = +req.params.pid;
+    const pid = req.params.pid;
     const cartDelete = await ecommerceCarts.deleteCart(pid);
     res.send({ status: "success", message: cartDelete });
   } catch (error) {

@@ -2,7 +2,7 @@ const { Router } = require("express");
 
 const uploader = require("../../utils");
 
-// const {options} = require("../../config/options");
+const { options } = require("../../config/options");
 
 const router = Router();
 
@@ -10,7 +10,7 @@ const router = Router();
 
 const ProductMongoManager = require("../../dao/mongoManager/productManager.mongoose");
 
-const ecommerce = new ProductMongoManager();
+const ecommerce = new ProductMongoManager(options.mongoDb.url);
 
 // Routes
 
@@ -44,48 +44,39 @@ router.post("", uploader.single("thumbnail"), async (req, res) => {
 //GET all products + query param + paginate
 
 router.get("", async (req, res) => {
-  const limit = Number(req.query.limit);
-  const page = Number(req.query.page);
-  const sort = req.query.sort;
-  const query = req.query.query;
-
-  const products = await ecommerce.getProducts(limit, page, sort, query);
-  
-  const response = {
-    status: "success",
-    payload: products.docs,
-    totalPages: products.totalPages,
-    prevPage: products.prevPage,
-    nextPage: products.nextPage,
-    page: products.page,
-    hasPrevPage: products.hasPrevPage,
-    hasNextPage: products.hasNextPage,
-    prevLink: null,
-    nexLink: null,
-  };
-
-  res.send({ response });
+  try {
+    const products = await ecommerce.getProducts(req.query);
+    return res.json({
+      status: "success",
+      payload: products.doc,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      nextLink: products.hasNextPage
+        ? `http://localhost:8080${req.baseUrl}/?limit=${limit}&page=${payload.nextPage}`
+        : null,
+      prevLink: products.hasPrevPage
+        ? `http://localhost:8080${req.baseUrl}/?page=/${payload.prevPage}`
+        : null,
+    });
+  } catch (error) {
+    res.status(500).send({
+      status: "error",
+      error: error.message,
+    });
+  }
 });
 
 //GET product by id
 
 router.get("/:pid", async (req, res) => {
   try {
-    const productId = req.params.pid;
+    const pid = req.params.pid;
 
-    if (isNaN(productId)) {
-      return res
-        .status(400)
-        .send({ status: "error", error: "productId must be a valid number" });
-    }
-
-    const integerProductId = parseInt(productId);
-
-    if (integerProductId <= 0) {
-      res.status(404).send({ status: "error", error: "Product not found" });
-    }
-
-    const productById = await ecommerce.getProductById(integerProductId);
+    const productById = await ecommerce.getProductById(pid);
 
     if (!productById) {
       return res
@@ -104,12 +95,13 @@ router.get("/:pid", async (req, res) => {
 
 //UPDATE product by id
 router.put("/:pid", async (req, res) => {
+  const pid = req.params.pid;
+  const product = req.body;
   try {
-    const pid = +req.params.pid;
-    const product = req.body;
+    
     const productById = await ecommerce.getProductById(pid);
-    const price = product.price ? +product.price : productById.price;
-    const stock = product.stock ? +product.stock : productById.stock;
+    const price = product.price ? Number(product.price) : productById.price;
+    const stock = product.stock ? Number(product.stock) : productById.stock;
     const thumbnail = product.thumbnail
       ? +product.thumbnail
       : productById.thumbnail;
@@ -138,21 +130,9 @@ router.put("/:pid", async (req, res) => {
 
 router.delete("/:pid", async (req, res) => {
   try {
-    const productId = req.params.pid;
+    const pid = req.params.pid;
 
-    if (isNaN(productId)) {
-      return res
-        .status(400)
-        .send({ status: "error", error: "productId must be a valid number" });
-    }
-
-    const integerProductId = parseInt(productId);
-
-    if (integerProductId <= 0) {
-      res.status(404).send({ status: "error", error: "Product not found" });
-    }
-
-    const deleteProduct = await ecommerce.deleteProduct(integerProductId);
+    const deleteProduct = await ecommerce.deleteProduct(pid);
 
     if (!deleteProduct) {
       return res

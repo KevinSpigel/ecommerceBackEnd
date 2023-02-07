@@ -7,7 +7,7 @@
     >
       {{#if status}}
         {{#each list}}
-          <div class="card card-product" style="width: 18rem;">
+          <div id="pid" value="{{this._id}}" class="card card-product" style="width: 18rem;">
             <img
               class="card-img-top"
               src="/static/img/{{this.thumbnail}}"
@@ -21,10 +21,7 @@
               {{#if stock}}
                 <button
                   id="addToCartBtn"
-                  onclick="{addToCart(event)}"
                   class="btn btn-success"
-                  type="submit"
-                  value="Submit"
                 >Add to Cart</button>
               {{else}}
                 <button class="btn btn-secondary" disabled>Out of stock</button>

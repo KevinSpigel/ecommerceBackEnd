@@ -1,11 +1,20 @@
 const { productsModel } = require("../../models/products.model.js");
 
 class ProductMongoManager {
-  async getProducts(limit, page, sort, query) {
+  async getProducts({limit, page, query, sort}) {
     try {
-      const options = { limit, page, sort };
-      const allProducts = await productsModel.paginate(query, options);
+      const filter = (query? {category:query} : {});
+
+      const options = {
+        sort: (sort ? { price: sort } : {}),
+        limit: limit || 10 ,
+        page: page || 1,
+        lean: true
+      }
+
+      const allProducts = await productsModel.paginate(filter, options);
       return allProducts;
+
     } catch (error) {
       throw new Error(`Couldn't read file ${error}`);
     }
