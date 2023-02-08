@@ -5,7 +5,8 @@ require("./config/dbConfig");
 
 const viewsRoutes = require("./routers/views.routes");
 const apiRoutes = require("./routers/app.routers");
-const cookieRoutes= require("./routers/cookie.routes");
+const cookieRoutes = require("./routers/cookie.routes");
+const sessionRoutes = require ("./routers/session.routes")
 
 const ChatMongoManager = require("./dao/mongoManager/chatManager.mongoose");
 const messages = new ChatMongoManager();
@@ -59,6 +60,7 @@ app.use("/static", express.static(__dirname + "/../public"));
 app.use(viewsRoutes);
 app.use("/api", apiRoutes);
 app.use("/cookie", cookieRoutes);
+app.use("/session", sessionRoutes);
 
 
 app.use((error, req, res, next) => {
