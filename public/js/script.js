@@ -45,26 +45,20 @@ socket.on("newProduct", (data) => {
   window.location.reload();
 });
 
-
-
 //add product to cart button
 
-// const addToCartBtn = document.getElementById("addToCartBtn");
+function addToCart(pid) {
+  console.log("been here", pid);
 
-// let currentCart;
+  let currentCart = "63e281e5d43e02a3f30af2da";
 
-// addToCartBtn.addEventListener("click", async (event) => {
-//   event.preventDefault();
-//   const pid = document.getElementById("pid").value;
+  if (!currentCart) {
+    fetch("http://localhost:8080/api/carts/", { method: "POST" })
+      .then((response) => response.json())
+      .then((data) => (currentCart = data._id));
+  }
 
-//   if (!currentCart) {
-//     await fetch("/api/carts/", { method: "POST" })
-//       .then((response) => response.json())
-//       .then((data) => (currentCart = data._id));
-//   }
-
-//    fetch(`/api/carts/${currentCart}/products/${pid}`, {method: "POST"})
-//   .then(alert("Product added to cart"));
-
-//   window.location.reload();
-// });
+  fetch(`http://localhost:8080/api/carts/${currentCart}/products/${pid}`, { method: "POST" })
+    .then(alert("Product added to cart"))
+    // .then(window.location.reload());
+}
