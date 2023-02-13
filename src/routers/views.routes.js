@@ -2,6 +2,9 @@ const { Router } = require("express");
 const uploader = require("../utils");
 // const {options} = require("../config/options");
 
+const { auth } = require("../middlewares/auth.middleware");
+const { sessionMiddleware } = require("../middlewares/session.middleware");
+
 const router = Router();
 
 //MONGODB
@@ -12,9 +15,42 @@ const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
 const ecommerce = new ProductMongoManager();
 const ecommerceCarts = new CartMongoManager();
 
+
+
+//LOGIN
+
+router.get("/", sessionMiddleware, (req, res) => {
+  const data = {
+    status: true,
+    title: "Register",
+    style: "index.css"}
+
+  res.render("login", data);
+});
+
+
+//REGISTER
+
+router.get("/register", sessionMiddleware, (req, res) => {
+  const data = {
+    status: true,
+    title: "Register",
+    style: "index.css"}
+
+  res.render("register", data);
+});
+
+//PROFILE
+
+router.get("/profile", auth, async (req, res) => {
+  const user = await req.session.user;
+  res.render("profile", { user });
+});
+
+
 //PRODUCTS
 
-router.get("/", async (req, res) => {
+router.get("/products", async (req, res) => {
 
   const product = await ecommerce.getProducts(req.query);
 
@@ -36,7 +72,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", uploader.single("thumbnail"), async (req, res) => {
+router.post("/products", uploader.single("thumbnail"), async (req, res) => {
   const addNewProduct = req.body;
   const socket = req.app.get("socket");
   const filename = req.file.filename;
@@ -91,6 +127,12 @@ router.get("/chat", (req, res) => {
 });
 
 module.exports = router;
+
+
+
+
+
+
 
 //FILESYSTEM
 

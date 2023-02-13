@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="alert alert-info" role="alert">
+    <dl class="row ps-5">
+        <dt class="col-sm-4">Name</dt>
+        <dd class="col-sm-8 text-center">{{user.first_name}} {{user.last_name}}</dd>
+
+        <dt class="col-sm-4">Age</dt>
+        <dd class="col-sm-8 text-center">{{user.age}}</dd>
+
+        <dt class="col-sm-4">Email</dt>
+        <dd class="col-sm-8 text-center">{{user.email}}</dd>
+
+        <dt class="col-sm-4">Credentials</dt>
+        <dd class="col-sm-8 text-center">{{user.role}}</dd>
+    </dl>
+  </div>
+  
+  <button type="button" class="btn btn-danger" onclick="return logout()">Logout</button>
+  <a class="btn btn-success" role="button" href="/products">Go shopping</a>
+
+</div>

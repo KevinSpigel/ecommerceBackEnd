@@ -13,7 +13,7 @@ body {
     height: 100vh;
 };
 
-
+/*header*/
   .logo img {
     transition: 0.4s;
   }
@@ -47,6 +47,42 @@ body {
 
 .card-product{
     background-color: rgba(243, 188, 168, 0.397);
+};
+
+
+/*login & register*/
+.login-body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+};
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+};
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+};
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+};
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+};
+
+.card-box {
+  box-shadow: 1px 1px 4px 4px rgb(241, 240, 240);
+  border-color: 5px solid rgb(0, 0, 0);
+  border-radius: 10px;
 };
 
 /* chat */
