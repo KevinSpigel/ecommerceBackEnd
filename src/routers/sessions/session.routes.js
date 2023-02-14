@@ -1,6 +1,11 @@
 const { Router } = require("express");
-const session = require("express-session");
-const { loginController, registerController, logoutController } = require("../../config/sessions.controller");
+const { roleMiddleware } = require("../../middlewares/role.middleware")
+
+const {
+  loginController,
+  registerController,
+  logoutController,
+} = require("../../config/sessions.controller");
 const passport = require("../../middlewares/passport.middleware");
 
 const router = Router();
@@ -8,19 +13,20 @@ const router = Router();
 // SESSION
 
 router.post(
-  "/login",
-  passport.authenticate("login", { failureRedirect: "/loginerror" }),
+  "/login", roleMiddleware,
+  passport.authenticate("login", { failureRedirect: "/failrequest" }),
   (req, res) => {
     if (!req.user) {
       return res
         .status(400)
-        .json({ status: "error", error: "Wrtong user or password" });
+        .json({ status: "error", error: "Wrong user or password" });
     }
     const sessionUser = {
       first_name: req.user.first_name,
       last_name: req.user.last_name,
       age: req.user.age,
       email: req.user.email,
+      role: "user"
     };
     req.session.user = sessionUser;
     res.json({ status: "success", payload: sessionUser });
@@ -29,7 +35,7 @@ router.post(
 
 router.post(
   "/register",
-  passport.authenticate("register", { failureRedirect: "/registererror" }),
+  passport.authenticate("register", { failureRedirect: "/failrequest" }),
   (req, res) => {
     const sessionUser = {
       first_name: req.user.first_name,
@@ -42,11 +48,13 @@ router.post(
   }
 );
 
+router.get("/failrequest", (req, res) => {
+  res.send({ error: "Failed request. Try again later" });
+});
+
 router.get("/logout", logoutController);
 
 module.exports = router;
-
-
 
 // //How to login with a session
 
