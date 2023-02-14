@@ -2,8 +2,8 @@ const { Router } = require("express");
 const { roleMiddleware } = require("../../middlewares/role.middleware")
 
 const {
-  loginController,
-  registerController,
+  // loginController,
+  // registerController,
   logoutController,
 } = require("../../config/sessions.controller");
 const passport = require("../../middlewares/passport.middleware");
