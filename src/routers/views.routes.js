@@ -15,19 +15,21 @@ const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
 const ecommerce = new ProductMongoManager();
 const ecommerceCarts = new CartMongoManager();
 
-
-
 //LOGIN
 
 router.get("/", sessionMiddleware, (req, res) => {
+  res.redirect("/login");
+});
+
+router.get("/login", sessionMiddleware, (req, res) => {
   const data = {
     status: true,
-    title: "Register",
-    style: "index.css"}
+    title: "Login",
+    style: "index.css",
+  };
 
   res.render("login", data);
 });
-
 
 //REGISTER
 
@@ -35,24 +37,18 @@ router.get("/register", sessionMiddleware, (req, res) => {
   const data = {
     status: true,
     title: "Register",
-    style: "index.css"}
+    style: "index.css",
+  };
 
   res.render("register", data);
-});
-
-//PROFILE
-
-router.get("/profile", auth, async (req, res) => {
-  const user = await req.session.user;
-  res.render("profile", { user });
 });
 
 
 //PRODUCTS
 
-router.get("/products", async (req, res) => {
-
+router.get("/products", auth, async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
+  const user = await req.session.user;
 
   if (product.docs && product.docs != false) {
     const data = {
@@ -60,6 +56,7 @@ router.get("/products", async (req, res) => {
       title: "Real Time Products",
       style: "index.css",
       list: product.docs,
+      user: user,
     };
 
     res.render("realTimeProducts", data);
@@ -97,7 +94,7 @@ router.get("/cart/:cid", async (req, res) => {
   const cid = req.params.cid;
   const cartById = await ecommerceCarts.getCartById(cid);
 
-  console.log("test", cartById)
+  console.log("test", cartById);
 
   if (cartById) {
     const data = {
@@ -129,12 +126,6 @@ router.get("/chat", (req, res) => {
 });
 
 module.exports = router;
-
-
-
-
-
-
 
 //FILESYSTEM
 

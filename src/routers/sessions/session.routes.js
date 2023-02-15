@@ -70,7 +70,7 @@ router.get(
       email: req.user.email,
     };
     req.session.user = sessionUser;
-    res.redirect("/profile");
+    res.redirect("/");
   }
 );
 

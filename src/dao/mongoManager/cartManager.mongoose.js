@@ -22,7 +22,7 @@ class CartMongoManager {
 
   async getCartById(cid) {
     try {
-      const cartById = await cartsModel.findById(cid).lean();
+      const cartById = await cartsModel.findById({ _id: cid }).lean();
       return cartById;
     } catch (error) {
       throw new Error(`Cart with id: ${id} was not found: ${error}`);

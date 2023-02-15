@@ -1,10 +1,22 @@
 <div class="d-flex row justify-content-center">
+  
+  <div class="btn-group dropright">
+  <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Profile
+  </button>
+  <div class="dropdown-menu">
+    <p>Name: {{user.first_name}} {{user.last_name}} </p>
+    <p>Age: {{user.age}}</p>
+    <p>Email: {{user.email}} </p>
+    <p>Credentials: {{user.role}}</p>
+    <button class="btn btn-alert" onclick="return logout()">Log out</button>
+  </div>
+</div>
+
   <div class="mt-3">
     <h1>Products List</h1>
     <div
-      class="d-flex flex-wrap justify-content-around mt-4"
-      id="product-list-container"
-    >
+      class="d-flex flex-wrap justify-content-around mt-4" id="product-list-container">
       {{#if status}}
         {{#each list}}
           <div id="pid" value="{{this._id}}" class="card card-product" style="width: 18rem;">
@@ -122,3 +134,4 @@
 {{! script which stores all FrontEnd logic }}
 <script src="/socket.io/socket.io.js"></script>
 <script src="/static/js/script.js"></script>
+<script src="/static/js/logs.js"></script>

@@ -13,7 +13,7 @@ loginForm?.addEventListener("submit", (event) => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then(() => (window.location.href = "/profile"));
+  }).then(() => (window.location.href = "api/products"));
   loginForm.reset();
 });
 
@@ -28,7 +28,7 @@ registerForm?.addEventListener("submit", (event) => {
     headers: {
       "Content-Type": "application/json",
     },
-  }).then(() => (window.location.href = "/profile"));
+  }).then(() => (window.location.href = "api/products"));
   registerForm.reset();
 });
 

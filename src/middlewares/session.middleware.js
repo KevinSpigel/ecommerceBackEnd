@@ -1,7 +1,7 @@
 const sessionMiddleware = async (req, res, next) => {
     const user = await req.session.user;
     if (user) {
-      res.redirect('/profile');
+      res.redirect('/products');
     } else {
       next();
     }
