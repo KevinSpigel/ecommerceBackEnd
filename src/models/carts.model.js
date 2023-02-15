@@ -23,13 +23,6 @@ const cartsSchema = new mongoose.Schema({
 
 
 
-cartsSchema.pre("findById", function (next) {
-  this.populate("product");
-next()
-});
-
-
-
 module.exports = {
   cartsModel: mongoose.model(cartsCollection, cartsSchema),
   cartsCollection,

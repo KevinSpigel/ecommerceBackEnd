@@ -2,8 +2,6 @@ const { Router } = require("express");
 const uploader = require("../utils");
 // const {options} = require("../config/options");
 
-const { auth } = require("../middlewares/auth.middleware");
-const { sessionMiddleware } = require("../middlewares/session.middleware");
 
 const router = Router();
 
@@ -15,48 +13,20 @@ const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
 const ecommerce = new ProductMongoManager();
 const ecommerceCarts = new CartMongoManager();
 
-//LOGIN
-
-router.get("/", sessionMiddleware, (req, res) => {
-  res.redirect("/login");
-});
-
-router.get("/login", sessionMiddleware, (req, res) => {
-  const data = {
-    status: true,
-    title: "Login",
-    style: "index.css",
-  };
-
-  res.render("login", data);
-});
-
-//REGISTER
-
-router.get("/register", sessionMiddleware, (req, res) => {
-  const data = {
-    status: true,
-    title: "Register",
-    style: "index.css",
-  };
-
-  res.render("register", data);
-});
 
 
 //PRODUCTS
 
-router.get("/products", auth, async (req, res) => {
+router.get("/products", async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
-  const user = await req.session.user;
-
+ 
   if (product.docs && product.docs != false) {
     const data = {
       status: true,
       title: "Real Time Products",
       style: "index.css",
       list: product.docs,
-      user: user,
+      
     };
 
     res.render("realTimeProducts", data);
@@ -94,14 +64,31 @@ router.get("/cart/:cid", async (req, res) => {
   const cid = req.params.cid;
   const cartById = await ecommerceCarts.getCartById(cid);
 
-  console.log("test", cartById);
-
   if (cartById) {
+
+    const populateProductsPromisesArr = [];
+    cartById.products.forEach(p => {
+      const promise = ecommerce.getProductById(p.id.toString());
+      populateProductsPromisesArr.push(promise);
+    });
+    cartById.products = await Promise.all(populateProductsPromisesArr);
+
+    cartById.products = cartById.products.map(p => ({
+      title: p.title,
+      description: p.description,
+      code: p.code,
+      price: p.price,
+      thumbnail: p.thumbnail,
+      stock: p.stock,
+      category: p.category,
+      status: p.status,
+    }));
+
     const data = {
       status: true,
       title: "Cart",
       style: "index.css",
-      list: cartById,
+      list: cartById.products,
     };
 
     res.render("cart", data);
