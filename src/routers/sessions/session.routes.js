@@ -1,11 +1,6 @@
 const { Router } = require("express");
 const { roleMiddleware } = require("../../middlewares/role.middleware");
 
-const {
-  // loginController,
-  // registerController,
-  logoutController,
-} = require("../../config/sessions.controller");
 const passport = require("../../middlewares/passport.middleware");
 
 const router = Router();
@@ -74,7 +69,16 @@ router.get(
   }
 );
 
-router.get("/logout", logoutController);
+router.get("/logout", async (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.clearCookie("my-session");
+      res.redirect("/");
+    }
+  });
+});
 
 module.exports = router;
 

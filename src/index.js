@@ -5,8 +5,7 @@ require("./config/dbConfig");
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
-const passport = require('passport');
-
+const passport = require("passport");
 
 const viewsRoutes = require("./routers/views.routes");
 const apiRoutes = require("./routers/app.routers");
@@ -48,7 +47,6 @@ io.on("connection", (socket) => {
   });
 });
 
-
 // Template Engine
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
@@ -65,8 +63,9 @@ app.use(
     resave: false, //depends on the store method. If value is "true" the session would be active and not expire
     saveUninitialized: false, //store session before it is initialize
     store: MongoStore.create({
-      mongoUrl: "mongodb+srv://admin:Data1471@ecommercebackend0.voob3od.mongodb.net/ecommerceBackend0?retryWrites=true&w=majority",
-      ttl: 3600
+      mongoUrl:
+        "mongodb+srv://admin:Data1471@ecommercebackend0.voob3od.mongodb.net/ecommerceBackend0?retryWrites=true&w=majority",
+      ttl: 3600,
     }), // once the ttl is complete the session will automatically erased from the mongo atlas
   })
 );
@@ -76,7 +75,6 @@ app.use(passport.session());
 // Routes
 app.use(viewsRoutes);
 app.use("/api", apiRoutes);
-
 
 app.use((error, req, res, next) => {
   res.status(500).json({
