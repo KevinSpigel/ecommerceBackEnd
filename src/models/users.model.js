@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  githubLogin: {
+    type: String,
+    unique: true,
+  },
 });
 
 module.exports = {

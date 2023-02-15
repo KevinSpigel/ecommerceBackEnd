@@ -1,4 +1,5 @@
 const { cartsModel } = require("../../models/carts.model.js");
+const { productsModel } = require("../../models/products.model.js");
 
 class CartMongoManager {
   async getCarts() {
@@ -32,17 +33,20 @@ class CartMongoManager {
     try {
       const cartById = await this.getCartById(cid);
       const targetProduct = cartById.products.find(
-        (product) => product.product.id == pid
+        (product) => product.product == pid
       );
+
+      const productData = await productsModel.findById(pid);
+
       if (!targetProduct) {
         cartById.products.push({
-          id: pid,
-          products: quantity,
+          product: productData._id,
+          amount: quantity,
         });
       } else {
-        targetProduct.products = quantity;
+        targetProduct.amount = quantity;
       }
-      const result = cartsModel.updateOne(cid, cartById);
+      const result = await cartsModel.updateOne({ _id: cid }, cartById);
       return result;
     } catch (error) {
       throw new Error(`Couldn't add the product: ${error}`);
@@ -72,7 +76,7 @@ class CartMongoManager {
         throw new Error("Product not found");
       } else {
         cartById.products = cartById.products.filter((p) => p.id === pid);
-        const result = cartsModel.updateOne(cid, cartById);
+        const result = await cartsModel.updateOne(cid, cartById);
         return result;
       }
     } catch (error) {
@@ -84,7 +88,7 @@ class CartMongoManager {
     try {
       const cartToClean = await this.getCartById(cid);
       cartToClean.products = [];
-      const result = cartsModel.updateOne(cid, cartToClean);
+      const result = await cartsModel.updateOne({ _id: cid }, cartToClean);
       return result;
     } catch (error) {
       throw new Error(`Error deleting: ${error.message}`);

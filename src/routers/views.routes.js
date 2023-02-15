@@ -97,7 +97,9 @@ router.get("/cart/:cid", async (req, res) => {
   const cid = req.params.cid;
   const cartById = await ecommerceCarts.getCartById(cid);
 
-  if (cartById && cartById != false) {
+  console.log("test", cartById)
+
+  if (cartById) {
     const data = {
       status: true,
       title: "Cart",

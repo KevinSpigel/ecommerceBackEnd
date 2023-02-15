@@ -117,7 +117,7 @@ router.put("/:pid", async (req, res) => {
       pid,
       newProductProperties
     );
-    res.send({ status: "success", message: productUpdated });
+    res.send({ status: "success", message: productUpdated._id });
   } catch (error) {
     res.status(500).send({
       status: "error",

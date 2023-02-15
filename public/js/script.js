@@ -48,7 +48,6 @@ socket.on("newProduct", (data) => {
 //add product to cart button
 
 function addToCart(pid) {
-  console.log("been here", pid);
 
   let currentCart = "63e281e5d43e02a3f30af2da";
 
@@ -60,5 +59,5 @@ function addToCart(pid) {
 
   fetch(`http://localhost:8080/api/carts/${currentCart}/products/${pid}`, { method: "POST" })
     .then(alert("Product added to cart"))
-    // .then(window.location.reload());
+    
 }

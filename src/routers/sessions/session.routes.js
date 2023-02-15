@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { roleMiddleware } = require("../../middlewares/role.middleware")
+const { roleMiddleware } = require("../../middlewares/role.middleware");
 
 const {
   // loginController,
@@ -13,7 +13,8 @@ const router = Router();
 // SESSION
 
 router.post(
-  "/login", roleMiddleware,
+  "/login",
+  roleMiddleware,
   passport.authenticate("login", { failureRedirect: "/failrequest" }),
   (req, res) => {
     if (!req.user) {
@@ -26,7 +27,7 @@ router.post(
       last_name: req.user.last_name,
       age: req.user.age,
       email: req.user.email,
-      role: "user"
+      role: "user",
     };
     req.session.user = sessionUser;
     res.json({ status: "success", payload: sessionUser });
@@ -51,6 +52,27 @@ router.post(
 router.get("/failrequest", (req, res) => {
   res.send({ error: "Failed request. Try again later" });
 });
+
+// Github
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/github/callback",
+  passport.authenticate("github", { failureRedirect: "/failrequest" }),
+  async (res, req) => {
+    const sessionUser = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+    };
+    req.session.user = sessionUser;
+    res.redirect("/profile");
+  }
+);
 
 router.get("/logout", logoutController);
 

@@ -1,13 +1,10 @@
 // delete product from cart button
 
-// const removeProduct = async (event) =>{
-//     const pid = event.target.parentNode.getAttribute('id')
-//     const cid = event.target.parentNode.parentNode.getAttribute('id')
-//     console.log(cid)
-//     console.log(productId)
-//     await fetch(`/api/carts/${cid}/products/${pid}`, {
-//         method: 'DELETE'
-//     })
-//     .then(alert('product deleted from cart'))
-//     .then( window.location.reload())
-// }
+function removeFromCart(pid) {
+
+    let currentCart = "63e281e5d43e02a3f30af2da";
+
+    fetch(`http://localhost:8080/api/carts/${currentCart}/products/${pid}`, { method: "DELETE" })
+      .then(alert("Product deleted from cart"))
+      
+  }

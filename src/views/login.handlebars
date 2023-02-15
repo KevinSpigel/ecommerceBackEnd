@@ -5,12 +5,12 @@
 
             <div class="form-floating mb-2">
                 <input id="nameLogIn" type="user" class="form-control" id="floatingInput" placeholder="Username"
-                    required maxlength="10">
+                     maxlength="10">
                 <label for="floatingInput">Username</label>
             </div>
             <div class="form-floating">
                 <input id="pass" type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                    required maxlength="8">
+                     maxlength="8">
                 <label for="floatingPassword">Password</label>
             </div>
 
@@ -20,6 +20,11 @@
                 <a href="/register" class="p-footer">Sing in</a>
             </div>
             
+            <h1 class="h6 mt-4 fw-normal">Or login with</h1>
+
+            <div>
+                <a href="/api/sessions/github" role="button" class="w-10 btn btn-sm btn-secondary">Github</a>
+            </div>
         </form>
     </div>
 

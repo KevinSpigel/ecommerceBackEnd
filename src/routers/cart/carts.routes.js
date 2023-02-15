@@ -1,14 +1,17 @@
 const { Router } = require("express");
 
-// const {options} = require("../../config/options");
+const {options} = require("../../config/options");
 
 const router = Router();
 
 //MONGODB
 
 const CartMongoManager = require("../../dao/mongoManager/cartManager.mongoose");
-
 const ecommerceCarts = new CartMongoManager();
+
+const ProductMongoManager = require("../../dao/mongoManager/productManager.mongoose");
+const ecommerce = new ProductMongoManager(options.mongoDb.url);
+
 
 // Routes
 
@@ -88,6 +91,9 @@ router.post("/:cid/products/:pid", async (req, res) => {
   const quantity = +req.query.quantity;
 
   try {
+    const productExist= await ecommerce.getProductById(pid)
+    
+    if(productExist){
     let defaultQuantity;
 
     if (!quantity) {
@@ -102,6 +108,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
       defaultQuantity
     );
     res.send({ status: "success", message: addProduct });
+  }
   } catch (error) {
     res.status(500).send({
       status: "error",
@@ -176,11 +183,11 @@ router.delete("/:cid/products/:pid", async (req, res) => {
   }
 });
 
-//DELETE cart by id
-router.delete("/:pid", async (req, res) => {
+//DELETE cart by id. Empty cart
+router.delete("/:cid", async (req, res) => {
   try {
-    const pid = req.params.pid;
-    const cartDelete = await ecommerceCarts.deleteCart(pid);
+    const cid = req.params.cid;
+    const cartDelete = await ecommerceCarts.deleteCart(cid);
     res.send({ status: "success", message: cartDelete });
   } catch (error) {
     res.status(500).send({
