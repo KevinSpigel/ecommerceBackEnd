@@ -2,7 +2,6 @@ const { Router } = require("express");
 const uploader = require("../utils");
 // const {options} = require("../config/options");
 
-
 const router = Router();
 
 //MONGODB
@@ -13,20 +12,17 @@ const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
 const ecommerce = new ProductMongoManager();
 const ecommerceCarts = new CartMongoManager();
 
-
-
 //PRODUCTS
 
 router.get("/products", async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
- 
+
   if (product.docs && product.docs != false) {
     const data = {
       status: true,
       title: "Real Time Products",
       style: "index.css",
       list: product.docs,
-      
     };
 
     res.render("realTimeProducts", data);
@@ -65,15 +61,15 @@ router.get("/cart/:cid", async (req, res) => {
   const cartById = await ecommerceCarts.getCartById(cid);
 
   if (cartById) {
-
     const populateProductsPromisesArr = [];
-    cartById.products.forEach(p => {
-      const promise = ecommerce.getProductById(p.id.toString());
+
+    cartById.products.forEach((p) => {
+      const promise = ecommerce.getProductById(p.product.toString());
       populateProductsPromisesArr.push(promise);
     });
     cartById.products = await Promise.all(populateProductsPromisesArr);
 
-    cartById.products = cartById.products.map(p => ({
+    cartById.products = cartById.products.map((p) => ({
       title: p.title,
       description: p.description,
       code: p.code,

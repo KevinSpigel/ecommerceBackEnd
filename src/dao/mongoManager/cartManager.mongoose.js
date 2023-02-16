@@ -33,7 +33,7 @@ class CartMongoManager {
     try {
       const cartById = await this.getCartById(cid);
       const targetProduct = cartById.products.find(
-        (product) => product.product == pid
+        (p) => p.product == pid
       );
 
       const productData = await productsModel.findById(pid);
@@ -44,8 +44,11 @@ class CartMongoManager {
           amount: quantity,
         });
       } else {
-        targetProduct.amount = quantity;
+        targetProduct.amount +=quantity;
       }
+
+      console.log("encontrameeee",cartById)
+
       const result = await cartsModel.updateOne({ _id: cid }, cartById);
       return result;
     } catch (error) {
@@ -57,7 +60,7 @@ class CartMongoManager {
     try {
       const cart = await this.getCartById(cid);
       cart.products = newProducts;
-      await cartsModel.updateOne(cid, cart);
+      await cartsModel.updateOne({_id:cid}, cart);
       return newProducts;
     } catch (error) {
       throw new Error(`Error updating: ${error}`);
@@ -69,14 +72,14 @@ class CartMongoManager {
       const cartById = await this.getCartById(cid);
 
       const targetProduct = cartById.products.find(
-        (product) => product.product.id == pid
+        (product) => product.id == pid
       );
 
       if (!targetProduct) {
         throw new Error("Product not found");
       } else {
-        cartById.products = cartById.products.filter((p) => p.id === pid);
-        const result = await cartsModel.updateOne(cid, cartById);
+        cartById.products = cartById.products.filter((p) => p.id !== pid);
+        const result = await cartsModel.updateOne({_id: cid}, cartById);
         return result;
       }
     } catch (error) {

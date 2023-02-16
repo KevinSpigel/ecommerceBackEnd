@@ -83,6 +83,7 @@ router.get("/:cid", async (req, res) => {
   }
 });
 
+
 //POST new product to cart
 
 router.post("/:cid/products/:pid", async (req, res) => {
@@ -117,7 +118,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
   }
 });
 
-//PUT update all products
+//PUT update all products. Product list
 
 router.put("/:cid", async (req, res) => {
   try {
