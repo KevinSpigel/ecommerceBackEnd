@@ -4,6 +4,9 @@ const uploader = require("../utils");
 
 const router = Router();
 
+const { auth } = require("../middlewares/auth.middleware");
+const { sessionMiddleware } = require("../middlewares/session.middleware");
+
 //MONGODB
 
 const ProductMongoManager = require("../dao/mongoManager/productManager.mongoose");
@@ -12,10 +15,39 @@ const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
 const ecommerce = new ProductMongoManager();
 const ecommerceCarts = new CartMongoManager();
 
+//LOGIN
+
+router.get("/", sessionMiddleware, (req, res) => {
+  res.redirect("/login");
+});
+
+router.get("/login", sessionMiddleware, (req, res) => {
+  const data = {
+    status: true,
+    title: "Login",
+    style: "index.css",
+  };
+
+  res.render("login", data);
+});
+
+//REGISTER
+
+router.get("/register", sessionMiddleware, (req, res) => {
+  const data = {
+    status: true,
+    title: "Register",
+    style: "index.css",
+  };
+
+  res.render("register", data);
+});
+
 //PRODUCTS
 
-router.get("/products", async (req, res) => {
+router.get("/products", auth, async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
+  const user = req.session.user;
 
   if (product.docs && product.docs != false) {
     const data = {
@@ -23,6 +55,7 @@ router.get("/products", async (req, res) => {
       title: "Real Time Products",
       style: "index.css",
       list: product.docs,
+      user: user,
     };
 
     res.render("realTimeProducts", data);
@@ -56,7 +89,7 @@ router.post("/products", uploader.single("thumbnail"), async (req, res) => {
 
 //CART
 
-router.get("/cart/:cid", async (req, res) => {
+router.get("/cart/:cid", auth, async (req, res) => {
   const cid = req.params.cid;
   const cartById = await ecommerceCarts.getCartById(cid);
 
@@ -98,7 +131,7 @@ router.get("/cart/:cid", async (req, res) => {
 });
 
 // CHAT
-router.get("/chat", (req, res) => {
+router.get("/chat", auth, (req, res) => {
   const data = {
     status: true,
     title: "Chat",
