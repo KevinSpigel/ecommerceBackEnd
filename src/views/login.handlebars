@@ -1,18 +1,22 @@
 <div class="text-center login-body">
     <div class="form-signin w-100 m-auto card card-box">
-        <form action="/api/sessions/login" method="post" enctype="multipart/form-data">
-            <h1 class="h3 mb-3 fw-normal">Welcome</h1>
-
+        
+        <h1 class="h3 mb-3 fw-normal">Welcome</h1>
+        
+        <form action="/api/sessions/login" method="post">
+            
             <div class="form-floating mb-2">
                 <input name="email" type="email" class="form-control"  placeholder="Email Address" required>
                 <label for="floatingInput">Email Address</label>
             </div>
+            
             <div class="form-floating">
                 <input name="password" type="password" class="form-control"  placeholder="Password" required>
                 <label for="floatingPassword">Password</label>
             </div>
 
             <button class="w-50 mt-3 btn btn-sm btn-primary" type="submit">Log in</button>
+            
             </form>
             
             <div class="mt-2">
