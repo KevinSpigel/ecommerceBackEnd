@@ -9,46 +9,40 @@ const router = Router();
 router.post("/login", roleMiddleware, async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
-  const userPassword = user.password == password ? true : false;
 
-  if (!user || !userPassword) {
+  if (!user || user.password !== password ) {
     return res
       .status(400)
       .json({ status: "error", error: "Wrong user or password" });
   }
+
   const sessionUser = {
     ...user,
     role: "user",
   };
 
   req.session.user = sessionUser;
-
-  req.session.save((err) => {
-    if (err) {
-      console.log("session error => ", err);
-    } else {
-      res.redirect("/products");
-    }
-  });
+  res.json({ status: "success", payload: sessionUser });
 });
 
 router.post("/register", async (req, res) => {
-  const { email } = req.body;
+  const { first_name, last_name, email, age, password } = req.body;
   let user = await userModel.findOne({ email });
   if (user) {
     return res.send("Error: Email already registered");
   }
 
-  const newUser = await userModel.create(req.body);
+  const newUser = await userModel.create({
+    first_name,
+    last_name,
+    email,
+    age,
+    password
+  });
+  
   req.session.user = newUser;
 
-  req.session.save((err) => {
-    if (err) {
-      console.log("session error => ", err);
-    } else {
-      res.redirect("/products");
-    }
-  });
+  res.json({ status: "success", payload: newUser });
 });
 
 router.get("/logout", async (req, res) => {

@@ -47,7 +47,7 @@ router.get("/register", sessionMiddleware, (req, res) => {
 
 router.get("/products", auth, async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
-  const user = req.session.user;
+  const user = await req.session.user;
 
   if (product.docs && product.docs != false) {
     const data = {
