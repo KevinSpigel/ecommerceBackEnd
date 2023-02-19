@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { roleMiddleware } = require("../../middlewares/role.middleware");
 const { userModel } = require("../../models/users.model");
+const { hashPassword, isValidPassword } = require("../../hash");
 
 const router = Router();
 
@@ -10,39 +11,53 @@ router.post("/login", roleMiddleware, async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
 
-  if (!user || user.password !== password ) {
+  if (!user || !isValidPassword(user,password)) {
     return res
       .status(400)
       .json({ status: "error", error: "Wrong user or password" });
   }
 
   const sessionUser = {
-    ...user,
+    _id: user._id,
+    first_name: user.first_name,
+    last_name: user.last_name,
+    age: user.age,
+    email: user.email,
     role: "user",
   };
 
   req.session.user = sessionUser;
-  res.json({ status: "success", payload: sessionUser });
+  res.status(200).json({ status: "success", payload: sessionUser });
 });
+
+
 
 router.post("/register", async (req, res) => {
   const { first_name, last_name, email, age, password } = req.body;
   let user = await userModel.findOne({ email });
   if (user) {
-    return res.send("Error: Email already registered");
+    return res
+      .status(400)
+      .json({ status: "error", error: "User already exists" });
   }
 
-  const newUser = await userModel.create({
-    first_name,
-    last_name,
-    email,
-    age,
-    password
-  });
-  
-  req.session.user = newUser;
+  const newUserHash = {
+    ...req.body,
+    password: hashPassword(password)
+  };
 
-  res.json({ status: "success", payload: newUser });
+  const response = await userModel.create(newUserHash);
+
+  const sessionUser={
+    _id: response._id,
+    first_name: response.first_name,
+    last_name: response.last_name,
+    age: response.age,
+    email: response.email
+  }
+  req.session.user = sessionUser;
+
+  res.status(201).json({ status: "success", payload: sessionUser });
 });
 
 router.get("/logout", async (req, res) => {
