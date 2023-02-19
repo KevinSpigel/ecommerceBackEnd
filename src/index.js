@@ -5,6 +5,7 @@ require("./config/dbConfig");
 
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+const passport = require("passport");
 
 const viewsRoutes = require("./routers/views.routes");
 const apiRoutes = require("./routers/app.routers");
@@ -68,6 +69,8 @@ app.use(
     }), // once the ttl is complete the session will automatically erased from the mongo atlas
   })
 );
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Routes
 app.use(viewsRoutes);

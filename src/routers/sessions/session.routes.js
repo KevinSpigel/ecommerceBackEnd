@@ -1,63 +1,58 @@
 const { Router } = require("express");
 const { roleMiddleware } = require("../../middlewares/role.middleware");
-const { userModel } = require("../../models/users.model");
-const { hashPassword, isValidPassword } = require("../../hash");
+const passport = require("../../middlewares/passport.middleware");
 
 const router = Router();
 
 // SESSION
 
-router.post("/login", roleMiddleware, async (req, res) => {
-  const { email, password } = req.body;
-  const user = await userModel.findOne({ email });
+router.post(
+  "/login",
+  roleMiddleware,
+  passport.authenticate("login", {
+    failureRedirect: "api/sessions/failedPetition",
+  }),
+  async (req, res) => {
+    if (!req.user) {
+      return res.status(400).send({
+        status: "error",
+        error: "Wrong User or Password",
+      });
+    }
 
-  if (!user || !isValidPassword(user,password)) {
-    return res
-      .status(400)
-      .json({ status: "error", error: "Wrong user or password" });
+    const sessionUser = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+      role: "user",
+    };
+
+    req.session.user = sessionUser;
+    res.status(200).json({ status: "success", payload: sessionUser });
   }
+);
 
-  const sessionUser = {
-    _id: user._id,
-    first_name: user.first_name,
-    last_name: user.last_name,
-    age: user.age,
-    email: user.email,
-    role: "user",
-  };
+router.post(
+  "/register",
+  passport.authenticate("register", {
+    failureRedirect: "api/sessions/failedPetition",
+  }),
+  async (req, res) => {
+    const sessionUser = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+    };
+    req.session.user = sessionUser;
 
-  req.session.user = sessionUser;
-  res.status(200).json({ status: "success", payload: sessionUser });
-});
-
-
-
-router.post("/register", async (req, res) => {
-  const { first_name, last_name, email, age, password } = req.body;
-  let user = await userModel.findOne({ email });
-  if (user) {
-    return res
-      .status(400)
-      .json({ status: "error", error: "User already exists" });
+    res.status(201).json({ status: "success", payload: sessionUser });
   }
+);
 
-  const newUserHash = {
-    ...req.body,
-    password: hashPassword(password)
-  };
-
-  const response = await userModel.create(newUserHash);
-
-  const sessionUser={
-    _id: response._id,
-    first_name: response.first_name,
-    last_name: response.last_name,
-    age: response.age,
-    email: response.email
-  }
-  req.session.user = sessionUser;
-
-  res.status(201).json({ status: "success", payload: sessionUser });
+router.get("/failedPetition", (req, res) => {
+  res.send({ error: "Failed Petition" });
 });
 
 router.get("/logout", async (req, res) => {
