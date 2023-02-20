@@ -51,6 +51,31 @@ router.post(
   }
 );
 
+//github
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/github/callback",
+  passport.authenticate("github", {
+    failureRedirect: "api/sessions/failedPetition",
+  }),
+  async (req, res) => {
+    const sessionUser = {
+      first_name: req.user.first_name,
+      last_name: req.user.last_name,
+      age: req.user.age,
+      email: req.user.email,
+      role: "user",
+    };
+
+    req.session.user = sessionUser;
+    res.redirect("/products");
+  }
+);
+
 router.get("/failedPetition", (req, res) => {
   res.send({ error: "Failed Petition" });
 });
