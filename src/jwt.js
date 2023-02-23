@@ -6,4 +6,12 @@ const generateToken = (user) => {
   return token;
 };
 
-module.exports = { generateToken };
+const cookieExtractor = (req) => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies("ecomm23");
+  }
+  return token;
+};
+
+module.exports = { generateToken, cookieExtractor };

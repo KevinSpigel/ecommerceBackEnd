@@ -2,11 +2,17 @@ const { Router } = require("express");
 const { userModel } = require("../../models/users.model");
 const { generateToken } = require("../../jwt");
 const { hashPassword, isValidPassword } = require("../../hash");
-const { authToken } = require("../../middlewares/authToken.middleware");
+const { authToken, authtorization } = require("../../middlewares/authtorization.middleware");
+const passport = require("../../middlewares/passport.middleware");
+const {
+  passportCustom,
+} = require("../../middlewares/passport-custom.middleware");
 
 const router = Router();
 
 router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
   const user = await userModel.findOne({ email });
   if (!user) {
     return res.status(400).json({ error: "Invalid credentials" });
@@ -15,8 +21,17 @@ router.post("/login", async (req, res) => {
     return false;
   }
 
-  const access_token = generateToken(user);
-  res.json({ access_token });
+  const role =
+    email === "adminCoder@coder.com" && password === "adminCod3r123"
+      ? "admin"
+      : "user";
+
+  const access_token = generateToken({ user, role });
+  res.cookie("ecomm23", access_token, {
+    maxAge: 60 * 60 * 100,
+    httpOnly: true,
+  });
+  res.json({ payload: "OK" });
 });
 
 router.post("/register", async (req, res) => {
@@ -38,7 +53,7 @@ router.post("/register", async (req, res) => {
   res.json({ access_token });
 });
 
-router.post("/current", authToken, (req, res) => {
+router.get("/current", passportCustom("login"), authtorization(role), async (req, res) => {
   res.json({ payload: req.user });
 });
 

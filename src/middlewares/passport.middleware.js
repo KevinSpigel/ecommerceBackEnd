@@ -4,6 +4,13 @@ const { hashPassword, isValidPassword } = require("../hash");
 const LocalStrategy = require("passport-local").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;
 
+const passportJwt = require("passport-jwt");
+const { SECRET_KEY } = require("../config/constants");
+const { cookieExtractor } = require("../jwt");
+
+const JwtStrategy = passportJwt.Strategy;
+const ExtractJwt = passportJwt.ExtractJwt; //extract info method
+
 //local strategy
 passport.use(
   "login",
@@ -104,6 +111,32 @@ passport.use(
     }
   )
 );
+
+//JWT strategy
+
+passport.use("login",
+  new JwtStrategy(
+    {
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
+      secretOrKey: SECRET_KEY,
+    },
+    async (jwt_payload, done) => {
+      try {
+        const user = await userModel.findOne({ email: jwt_payload.email });
+        if (!user) {
+          done(null, false);
+        }
+          if (!isValidPassword(user, password)) {
+            done(null, false);
+          } 
+          return done(null, jwt_payload);
+      } catch (error) {
+        return done(error);
+      }
+    }
+  )
+);
+
 
 passport.serializeUser((user, done) => {
   done(null, user._id);

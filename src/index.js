@@ -3,6 +3,7 @@ const { Server } = require("socket.io");
 const handlebars = require("express-handlebars");
 require("./config/dbConfig");
 
+const cookieParser = require('cookie-parser');
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const passport = require("passport");
@@ -56,6 +57,7 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(__dirname + "/../public"));
+app.use(cookieParser());
 app.use(
   session({
     name: "my-session", //Naming the session will set the same name to the cookie
