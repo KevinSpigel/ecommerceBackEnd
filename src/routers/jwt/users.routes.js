@@ -2,11 +2,9 @@ const { Router } = require("express");
 const { userModel } = require("../../models/users.model");
 const { generateToken } = require("../../jwt");
 const { hashPassword, isValidPassword } = require("../../hash");
-const { authToken, authtorization } = require("../../middlewares/authtorization.middleware");
-const passport = require("../../middlewares/passport.middleware");
-const {
-  passportCustom,
-} = require("../../middlewares/passport-custom.middleware");
+const { authToken } = require("../../middlewares/authToken.middleware");
+
+
 
 const router = Router();
 
@@ -21,24 +19,15 @@ router.post("/login", async (req, res) => {
     return false;
   }
 
-  const role =
-    email === "adminCoder@coder.com" && password === "adminCod3r123"
-      ? "admin"
-      : "user";
-
-  const access_token = generateToken({ user, role });
-  res.cookie("ecomm23", access_token, {
-    maxAge: 60 * 60 * 100,
-    httpOnly: true,
-  });
-  res.json({ payload: "OK" });
+  const access_token = generateToken(user);
+  res.json({ access_token });
 });
 
 router.post("/register", async (req, res) => {
   const { first_name, last_name, age, email, password } = req.body;
   const user = await userModel.findOne({ email });
   if (!user) {
-    return res.status(400).json({ error: "Invalid credentials" });
+    return res.status(400).json({ error: "User already exist" });
   }
 
   const newUser = {
@@ -53,7 +42,7 @@ router.post("/register", async (req, res) => {
   res.json({ access_token });
 });
 
-router.get("/current", passportCustom("login"), authtorization(role), async (req, res) => {
+router.get("/current", authToken, async (req, res) => {
   res.json({ payload: req.user });
 });
 
