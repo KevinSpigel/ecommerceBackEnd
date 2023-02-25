@@ -1,5 +1,4 @@
 const { Router } = require("express");
-const { roleMiddleware } = require("../../middlewares/role.middleware");
 const passport = require("../../middlewares/passport.middleware");
 
 const router = Router();
@@ -8,7 +7,6 @@ const router = Router();
 
 router.post(
   "/login",
-  roleMiddleware,
   passport.authenticate("login", {
     failureRedirect: "api/sessions/failedPetition",
   }),
@@ -25,7 +23,7 @@ router.post(
       last_name: req.user.last_name,
       age: req.user.age,
       email: req.user.email,
-      role: "user",
+      role: req.user.role,
     };
 
     req.session.user = sessionUser;
@@ -44,6 +42,7 @@ router.post(
       last_name: req.user.last_name,
       age: req.user.age,
       email: req.user.email,
+      role: req.user.role,
     };
     req.session.user = sessionUser;
 
@@ -68,7 +67,6 @@ router.get(
       last_name: req.user.last_name,
       age: req.user.age,
       email: req.user.email,
-      role: "user",
     };
 
     req.session.user = sessionUser;
