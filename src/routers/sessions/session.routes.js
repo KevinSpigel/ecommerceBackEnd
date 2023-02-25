@@ -1,24 +1,28 @@
 const { Router } = require("express");
-const { roleMiddleware } = require("../../middlewares/role.middleware");
 const { userModel } = require("../../models/users.model");
 
 const router = Router();
 
 // SESSION
 
-router.post("/login", roleMiddleware, async (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
 
-  if (!user || user.password !== password ) {
+  if (!user || user.password !== password) {
     return res
       .status(400)
       .json({ status: "error", error: "Wrong user or password" });
   }
 
+  const role =
+    email === "adminCoder@coder.com" && password === "adminCod3r123"
+      ? "admin"
+      : "user";
+
   const sessionUser = {
     ...user,
-    role: "user",
+    role,
   };
 
   req.session.user = sessionUser;
@@ -37,9 +41,9 @@ router.post("/register", async (req, res) => {
     last_name,
     email,
     age,
-    password
+    password,
   });
-  
+
   req.session.user = newUser;
 
   res.json({ status: "success", payload: newUser });
