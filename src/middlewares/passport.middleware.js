@@ -25,12 +25,19 @@ passport.use(
           if (!isValidPassword(user, password)) {
             done(null, false);
           } else {
+            const role =
+              username === "adminCoder@coder.com" &&
+              password === "adminCod3r123"
+                ? "admin"
+                : "user";
+
             const sessionUser = {
               _id: user._id,
               first_name: user.first_name,
               last_name: user.last_name,
               age: user.age,
               email: user.email,
+              role,
             };
             done(null, sessionUser);
           }
@@ -61,12 +68,19 @@ passport.use(
             password: hashPassword(password),
           };
           const userDB = await userModel.create(newUser);
+
+          const role =
+            username === "adminCoder@coder.com" && password === "adminCod3r123"
+              ? "admin"
+              : "user";
+
           const sessionUser = {
             _id: userDB._id,
             first_name: userDB.first_name,
             last_name: userDB.last_name,
             age: userDB.age,
             email: userDB.email,
+            role,
           };
           done(null, sessionUser);
         }
@@ -114,7 +128,8 @@ passport.use(
 
 //JWT strategy
 
-passport.use("login",
+passport.use(
+  "login",
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
@@ -126,17 +141,16 @@ passport.use("login",
         if (!user) {
           done(null, false);
         }
-          if (!isValidPassword(user, password)) {
-            done(null, false);
-          } 
-          return done(null, jwt_payload);
+        if (!isValidPassword(user, password)) {
+          done(null, false);
+        }
+        return done(null, jwt_payload);
       } catch (error) {
         return done(error);
       }
     }
   )
 );
-
 
 passport.serializeUser((user, done) => {
   done(null, user._id);
