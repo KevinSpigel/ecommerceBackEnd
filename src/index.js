@@ -4,8 +4,11 @@ const handlebars = require("express-handlebars");
 require("./config/dbConfig");
 
 const cookieParser = require('cookie-parser');
+
+//with JWT we don´t need sessions
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
+
 const passport = require("passport");
 
 const viewsRoutes = require("./routers/views.routes");
@@ -58,6 +61,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(__dirname + "/../public"));
 app.use(cookieParser());
+
+//with JWT we don´t need sessions
 app.use(
   session({
     name: "my-session", //Naming the session will set the same name to the cookie
@@ -72,7 +77,7 @@ app.use(
   })
 );
 app.use(passport.initialize());
-app.use(passport.session());
+app.use(passport.session()); 
 
 // Routes
 app.use(viewsRoutes);

@@ -9,7 +9,7 @@ const { SECRET_KEY } = require("../config/constants");
 const { cookieExtractor } = require("../jwt");
 
 const JwtStrategy = passportJwt.Strategy;
-const ExtractJwt = passportJwt.ExtractJwt; //extract info method
+const ExtractJwt = passportJwt.ExtractJwt; //where are we going to extract token info
 
 //local strategy
 passport.use(
@@ -129,7 +129,7 @@ passport.use(
 //JWT strategy
 
 passport.use(
-  "login",
+  "jwt",
   new JwtStrategy(
     {
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),

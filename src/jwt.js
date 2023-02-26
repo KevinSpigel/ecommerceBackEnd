@@ -6,10 +6,11 @@ const generateToken = (user) => {
   return token;
 };
 
+//custom function to extract the cookie that we want
 const cookieExtractor = (req) => {
   let token = null;
   if (req && req.cookies) {
-    token = req.cookies("ecomm23");
+    token = req.cookies["ecomm23"];
   }
   return token;
 };
