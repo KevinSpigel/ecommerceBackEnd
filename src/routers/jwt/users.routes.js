@@ -20,7 +20,15 @@ router.post("/login", async (req, res) => {
   }
 
   const access_token = generateToken(user);
-  res.json({ access_token });
+
+  //sent token via cookie
+  res.cookie("ecomm23", access_token,{
+    maxAge: 60*60*1000,
+    httpOnly: true
+  })
+
+  // res.json({ access_token });
+  res.json({ payload: "OK" });
 });
 
 router.post("/register", async (req, res) => {
