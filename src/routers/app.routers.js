@@ -9,6 +9,6 @@ const router = Router();
 router.use("/products", productsRoutes);
 router.use("/carts", cartsRoutes);
 router.use("/sessions", sessionsRouter);
-router.user("/users", usersJWT);
+router.use("/users", usersJWT);
 
 module.exports = router;

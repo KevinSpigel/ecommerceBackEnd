@@ -19,7 +19,7 @@ const PORT = process.env.PORT || 8080;
 
 // Listen
 const httpServer = app.listen(PORT, () => {
-  console.log("The Server is up and running in the port", PORT);
+  console.log(`The Server is up and running on port ${httpServer.address().port}`);
 });
 
 // SOCKET
