@@ -2,8 +2,11 @@ const { Router } = require("express");
 const { userModel } = require("../../models/users.model");
 const { generateToken } = require("../../jwt");
 const { hashPassword, isValidPassword } = require("../../hash");
+
 // const { authToken } = require("../../middlewares/authToken.middleware"); //with JWT we don´t need the middleware
-const passport = require("../../middlewares/passport.middleware");
+// const passport = require("../../middlewares/passport.middleware"); //with passportCustom middleware we don´t need to import passport
+
+const { passportCustom} = require("../../middlewares/passportCustom.middleware");
 
 const router = Router();
 
@@ -49,13 +52,19 @@ router.post("/register", async (req, res) => {
   res.json({ access_token });
 });
 
-router.get(
-  "/current",
-  passport.authenticate("jwt", { session: false }), //we are not using sessions, so we have to turn it off
-  async (req, res) => {
-    res.json({ payload: req.user });
-  }
-);
+//using passportCustom middleware to be able to manage the errors
+router.get("/current", passportCustom("jwt"), async (req, res) => {
+  res.json({ payload: req.user });
+});
+
+
+// router.get(
+//   "/current",
+//   passport.authenticate("jwt", { session: false }), //we are not using sessions, so we have to turn it off
+//   async (req, res) => {
+//     res.json({ payload: req.user });
+//   }
+// );
 
 //with JWT we don´t need the authToken middleware
 // router.get("/current", authToken, async (req, res) => {

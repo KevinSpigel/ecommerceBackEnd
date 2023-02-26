@@ -139,10 +139,10 @@ passport.use(
       try {
         const user = await userModel.findOne({ email: jwt_payload.email });
         if (!user) {
-          done(null, false);
+          done(null, false, {messages: "User not found"});
         }
         if (!isValidPassword(user, password)) {
-          done(null, false);
+          done(null, false, {messages: "Invalid credentials"});
         }
         return done(null, jwt_payload);
       } catch (error) {
