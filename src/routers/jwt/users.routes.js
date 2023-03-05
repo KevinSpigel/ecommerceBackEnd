@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const { userModel } = require("../../models/users.model");
-const { generateToken } = require("../../jwt");
-const { hashPassword, isValidPassword } = require("../../hash");
+const { generateToken } = require("../../utils/jwt");
+const { hashPassword, isValidPassword } = require("../../utils/hash");
 
 const { authToken } = require("../../middlewares/authToken.middleware");
 // const passport = require("../../middlewares/passport.middleware"); //with passportCustom middleware we don´t need to import passport
