@@ -2,8 +2,8 @@
 
 const options = {
   // FileSystem: {
-  //   products: "./fileSystemDb/productsDataBase.json",
-  //   carts: "./fileSystemDb/cartDataBase.json",
+  //   products: "../models/dao/fileManager/fileSystemDb/productsDataBase.json",
+  //   carts: "../models/dao/fileManager/fileSystemDb/cartDataBase.json",
   // },
   mongoDb: {
     url: "mongodb+srv://admin:Data1471@ecommercebackend0.voob3od.mongodb.net/ecommerceBackend0?retryWrites=true&w=majority",

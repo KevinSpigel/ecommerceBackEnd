@@ -47,8 +47,6 @@ class CartMongoManager {
         targetProduct.amount +=quantity;
       }
 
-      console.log("encontrameeee",cartById)
-
       const result = await cartsModel.updateOne({ _id: cid }, cartById);
       return result;
     } catch (error) {
