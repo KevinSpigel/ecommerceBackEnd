@@ -1,3 +1,7 @@
+const { apiSuccessResponse } = require("../utils/api.utils");
+const { HTTP_STATUS } = require("../constants/api.constants");
+const { HttpError } = require("../utils/error.utils");
+
 //MONGODB
 
 const ProductMongoManager = require("../dao/mongoManager/productManager.mongoose");
@@ -22,21 +26,19 @@ class ProductsController {
         addNewProduct.status
       );
 
-      res.send({ status: "success", payload: newProduct });
+      const response = apiSuccessResponse(newProduct);
+      return res.status(HTTP_STATUS.CREATED).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
   //GET all products + query param + paginate
 
-  static async getProducts(req, res) {
+  static async getProducts(req, res, next) {
     try {
       const products = await productsDao.getProducts(req.query);
-      return res.json({
+      const data = {
         status: "success",
         payload: products.doc,
         totalPages: products.totalPages,
@@ -51,40 +53,36 @@ class ProductsController {
         prevLink: products.hasPrevPage
           ? `http://localhost:8080${req.baseUrl}/?page=/${payload.prevPage}`
           : null,
-      });
+      };
+
+      const response = apiSuccessResponse(data);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
   //GET product by id
-  static async getProductById(req, res) {
+  static async getProductById(req, res, next) {
     try {
       const pid = req.params.pid;
 
       const productById = await productsDao.getProductById(pid);
 
       if (!productById) {
-        return res
-          .status(404)
-          .send({ status: "error", error: "Product not found" });
+        throw new HttpError(HTTP_STATUS.NOT_FOUND, "Product not found");
       }
 
-      res.send({ status: "success", payload: productById });
+      const response = apiSuccessResponse(productById);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
   //UPDATE product by id
 
-  static async updateProduct(req, res) {
+  static async updateProduct(req, res, next) {
     const pid = req.params.pid;
     const product = req.body;
     try {
@@ -106,35 +104,30 @@ class ProductsController {
         pid,
         newProductProperties
       );
-      res.send({ status: "success", message: productUpdated._id });
+
+      const response = apiSuccessResponse(productUpdated);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
   //DELETE product by id
 
-  static async deleteProduct(req, res) {
+  static async deleteProduct(req, res, next) {
     try {
       const pid = req.params.pid;
 
       const deleteProduct = await productsDao.deleteProduct(pid);
 
       if (!deleteProduct) {
-        return res
-          .status(404)
-          .send({ status: "error", error: "Product not found" });
+        throw new HttpError(HTTP_STATUS.NOT_FOUND, "Product not found");
       }
 
-      res.send({ status: "success", payload: deleteProduct });
+      const response = apiSuccessResponse(deleteProduct);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 }

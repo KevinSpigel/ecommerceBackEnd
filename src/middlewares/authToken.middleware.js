@@ -1,6 +1,6 @@
 //working with jtw-passport and authorization no need to import
 // const jwt = require("jsonwebtoken");
-// const { SECRET_KEY } = require("../config/constants");
+// const { SECRET_KEY } = require("../constants/key.constants");
 
 //working with jtw-passport and authorization
 

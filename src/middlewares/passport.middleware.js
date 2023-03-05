@@ -1,12 +1,12 @@
 const passport = require("passport");
 const { userModel } = require("../models/users.model");
-const { hashPassword, isValidPassword } = require("../utils/hash");
+const { hashPassword, isValidPassword } = require("../utils/hash.utils");
 const LocalStrategy = require("passport-local").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");
-const { SECRET_KEY } = require("../config/constants");
-const { cookieExtractor } = require("../utils/jwt");
+const { SECRET_KEY } = require("../constants/key.constants");
+const { cookieExtractor } = require("../utils/jwt.utils");
 
 const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt; //where are we going to extract token info

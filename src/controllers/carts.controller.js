@@ -1,3 +1,7 @@
+const { apiSuccessResponse } = require("../utils/api.utils");
+const { HTTP_STATUS } = require("../constants/api.constants");
+const { HttpError } = require("../utils/error.utils");
+
 //MONGODB
 
 const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
@@ -8,49 +12,24 @@ const productsDao = new ProductMongoManager();
 
 class CartsController {
   //CREATE cart
-  static async addCart(req, res) {
+  static async addCart(req, res, next) {
     try {
       let newCart = await cartsDao.addCart();
-      res.send({ status: "success", message: newCart });
+      const response = apiSuccessResponse(newCart);
+      res.status(HTTP_STATUS.CREATED).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
   //GET all carts
-  static async getCarts(req, res) {
+  static async getCarts(req, res, next) {
     try {
-      let carts = await cartsDao.getCarts();
-      const cartLimit = req.query.limit;
-
-      let integerCartLimit;
-
-      if (cartLimit) {
-        integerCartLimit = parseInt(cartLimit);
-        if (isNaN(integerCartLimit)) {
-          return res.status(400).send({
-            status: "error",
-            error: "cartLimit must be a valid number",
-          });
-        }
-        if (integerCartLimit <= 0 || integerCartLimit > carts.length) {
-          return res
-            .status(404)
-            .send({ status: "error", error: "Carts not found" });
-        }
-      }
-
-      if (integerCartLimit) carts = carts.slice(0, integerCartLimit);
-
-      res.send({ status: "success", payload: carts });
+      const carts = await cartsDao.getCarts();
+      const response = apiSuccessResponse(carts);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
@@ -62,15 +41,13 @@ class CartsController {
       const cartById = await cartsDao.getCartById(cid);
 
       if (!cartById) {
-        return res.status(404).send({ status: "error", error: error.message });
+        throw new HttpError(HTTP_STATUS.NOT_FOUND, "Cart not found");
       }
 
-      res.send({ status: "success", payload: cartById });
+      const response = apiSuccessResponse(cartById);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error);
     }
   }
 
@@ -97,18 +74,16 @@ class CartsController {
           pid,
           defaultQuantity
         );
-        res.send({ status: "success", message: addProduct });
+        const response = apiSuccessResponse(addProduct);
+        res.status(HTTP_STATUS.OK).json(response);
       }
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error)
     }
   }
 
   //PUT update all products. Product list
-  static async updatePropertiesProducts(req, res) {
+  static async updatePropertiesProducts(req, res, next) {
     try {
       const cid = req.params.cid;
       const newProducts = req.body;
@@ -117,70 +92,56 @@ class CartsController {
         cid,
         newProducts
       );
-      res.send({
-        status: "success",
-        payload: updatedCart,
-      });
+      const response = apiSuccessResponse(updatedCart);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error)
     }
   }
 
   //PUT update only the quantity of a product
-  static async updateCartProduct(req, res) {
+  static async updateCartProduct(req, res, next) {
     const cid = req.params.cid;
     const pid = req.params.pid;
     const quantity = +req.body.quantity;
     try {
       if (!quantity) {
-        throw new Error("an amount of product must be provided");
+        throw new HttpError(HTTP_STATUS.BAD_REQUEST, "an amount of product must be provided");
       }
       const updateProduct = await cartsDao.updateCartProduct(
         cid,
         pid,
         quantity
       );
-      res.send({
-        status: "success",
-        payload: updateProduct,
-      });
+      const response = apiSuccessResponse(updateProduct);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error)
     }
   }
 
   //DELETE product from cart
-  static async deleteProductFromCart(req, res) {
+  static async deleteProductFromCart(req, res, next) {
     try {
       const cid = req.params.cid;
       const pid = req.params.pid;
       const deleteProduct = await cartsDao.deleteProductFromCart(cid, pid);
-      res.send({ status: "success", message: deleteProduct });
+      const response = apiSuccessResponse(deleteProduct);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+      next(error)
     }
   }
 
   //DELETE cart by id. Empty cart
-  static async deleteCart(req, res) {
+  static async deleteCart(req, res, next) {
     try {
       const cid = req.params.cid;
       const cartDelete = await cartsDao.deleteCart(cid);
-      res.send({ status: "success", message: cartDelete });
+      const response = apiSuccessResponse(cartDelete);
+      res.status(HTTP_STATUS.OK).json(response);;
     } catch (error) {
-      res.status(500).send({
-        status: "error",
-        error: error.message,
-      });
+     next(error)
     }
   }
 }
