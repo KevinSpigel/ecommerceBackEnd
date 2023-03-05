@@ -8,8 +8,8 @@ const { sessionMiddleware } = require("../middlewares/session.middleware");
 
 //MONGODB
 
-const ProductMongoManager = require("../dao/mongoManager/productManager.mongoose");
-const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
+const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
+const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
 
 const ecommerce = new ProductMongoManager();
 const ecommerceCarts = new CartMongoManager();

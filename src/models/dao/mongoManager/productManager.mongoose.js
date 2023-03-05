@@ -1,4 +1,4 @@
-const { productsModel } = require("../../models/products.model.js");
+const { productsModel } = require("../../schemas/products.model");
 
 class ProductMongoManager {
   async getProducts({limit, page, query, sort}) {

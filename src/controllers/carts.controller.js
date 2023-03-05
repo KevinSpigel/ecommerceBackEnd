@@ -4,10 +4,10 @@ const { HttpError } = require("../utils/error.utils");
 
 //MONGODB
 
-const CartMongoManager = require("../dao/mongoManager/cartManager.mongoose");
+const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
 const cartsDao = new CartMongoManager();
 
-const ProductMongoManager = require("../dao/mongoManager/productManager.mongoose");
+const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
 const productsDao = new ProductMongoManager();
 
 class CartsController {

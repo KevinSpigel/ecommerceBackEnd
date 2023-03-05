@@ -1,5 +1,5 @@
 const passport = require("passport");
-const { userModel } = require("../models/users.model");
+const { userModel } = require("../models/schemas/users.model");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
 const LocalStrategy = require("passport-local").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;

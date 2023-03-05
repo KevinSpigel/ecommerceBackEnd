@@ -9,7 +9,6 @@ const userSchema = new mongoose.Schema({
   },
   last_name: {
     type: String,
-    required: true,
   },
   email: {
     type: String,
@@ -18,15 +17,22 @@ const userSchema = new mongoose.Schema({
   },
   age: {
     type: Number,
-    required: true,
   },
   password: {
     type: String,
-    required: true,
   },
-  githubLogin: {
+  github_username: {
     type: String,
     unique: true,
+  },
+  role: {
+    type: String,
+    enum: ["user", "admin"],
+    default: "user",
+  },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "carts",
   },
 });
 

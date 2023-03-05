@@ -4,7 +4,7 @@ const { HttpError } = require("../utils/error.utils");
 
 //MONGODB
 
-const ProductMongoManager = require("../dao/mongoManager/productManager.mongoose");
+const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
 
 const productsDao = new ProductMongoManager();
 

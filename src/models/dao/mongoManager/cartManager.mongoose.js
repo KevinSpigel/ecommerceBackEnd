@@ -1,5 +1,5 @@
-const { cartsModel } = require("../../models/carts.model.js");
-const { productsModel } = require("../../models/products.model.js");
+const { cartsModel } = require("../../schemas/carts.model");
+const { productsModel } = require("../../schemas/products.model");
 
 class CartMongoManager {
   async getCarts() {

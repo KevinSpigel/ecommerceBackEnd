@@ -1,5 +1,5 @@
 const { Router } = require("express");
-const { userModel } = require("../../models/users.model");
+const { userModel } = require("../../models/schemas/users.model");
 const { generateToken } = require("../../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../../utils/hash.utils");
 

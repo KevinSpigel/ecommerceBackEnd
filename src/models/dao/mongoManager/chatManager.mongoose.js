@@ -1,4 +1,4 @@
-const { messagesModel } = require("../../models/chat.model.js");
+const { messagesModel } = require("../../schemas/chat.model");
 
 class ChatMongoManager {
   async getMessages() {
