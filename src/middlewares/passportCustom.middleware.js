@@ -1,21 +1,25 @@
-//this middleware is needed to be able to manage the errors
+//this middleware is needed to be able to manage the errors with JWT
 
 const passport = require("../middlewares/passport.middleware");
+const {HTTP_STATUS} = require("../constants/api.constants")
 
-const passportCustom = (strategy) => {
+const passportCustom = (strategy, options = {}) => {
   return async (req, res, next) => {
-    passport.authenticate(strategy, { session: false }, (error, user, info) => {
-      if (error) {
-        return next(error); //specific errors
+    await passport.authenticate(
+      strategy,
+      { session: false, ...options },
+      (error, user, info) => {
+        if (error) {
+          return next(error); //specific errors
+        }
+        if (!user) {
+          return res
+            .status(HTTP_STATUS.UNAUTHORIZED).json({error: info.messages ? info.messages : `${info}`}) // authentication errors
+        }
+        req.user = user;
+        next();
       }
-      if (!user) {
-        return res
-          .status(401)
-          .json({ error: info.messages ? info.messages : `${info}` }); // authentication errors
-      }
-      req.user = user;
-      next();
-    })(req, res, next);
+    )(req, res, next);
   };
 };
 

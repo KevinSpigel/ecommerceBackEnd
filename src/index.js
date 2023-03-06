@@ -3,11 +3,7 @@ const { Server } = require("socket.io");
 const handlebars = require("express-handlebars");
 require("./config/dbConfig");
 
-const cookieParser = require('cookie-parser');
-
-//with JWT we don´t need sessions
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
+const cookieParser = require("cookie-parser");
 
 const passport = require("passport");
 
@@ -22,7 +18,9 @@ const PORT = process.env.PORT || 8080;
 
 // Listen
 const httpServer = app.listen(PORT, () => {
-  console.log(`The Server is up and running on port ${httpServer.address().port}`);
+  console.log(
+    `The Server is up and running on port ${httpServer.address().port}`
+  );
 });
 
 // SOCKET
@@ -61,23 +59,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(__dirname + "/../public"));
 app.use(cookieParser());
-
-//with JWT we don´t need sessions
-app.use(
-  session({
-    name: "my-session", //Naming the session will set the same name to the cookie
-    secret: "top-secret", //protect info with password
-    resave: false, //depends on the store method. If value is "true" the session would be active and not expire
-    saveUninitialized: false, //store session before it is initialize
-    store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://admin:Data1471@ecommercebackend0.voob3od.mongodb.net/ecommerceBackend0?retryWrites=true&w=majority",
-      ttl: 3600,
-    }), // once the ttl is complete the session will automatically erased from the mongo atlas
-  })
-);
 app.use(passport.initialize());
-app.use(passport.session()); 
+
 
 // Routes
 app.use(viewsRoutes);

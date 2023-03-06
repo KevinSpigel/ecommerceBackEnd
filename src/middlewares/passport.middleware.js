@@ -1,98 +1,19 @@
 const passport = require("passport");
 const { userModel } = require("../models/schemas/users.model");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
-const LocalStrategy = require("passport-local").Strategy;
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");
-const { SECRET_KEY } = require("../constants/key.constants");
+const { SECRET_KEY } = require("../constants/sessions.constants");
 const { cookieExtractor } = require("../utils/jwt.utils");
 
 const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt; //where are we going to extract token info
 
-//local strategy
-passport.use(
-  "login",
-  new LocalStrategy(
-    { usernameField: "email" },
-    async (username, password, done) => {
-      try {
-        const user = await userModel.findOne({ email: username });
-        if (!user) {
-          done(null, false);
-        } else {
-          if (!isValidPassword(user, password)) {
-            done(null, false);
-          } else {
-            const role =
-              username === "adminCoder@coder.com" &&
-              password === "adminCod3r123"
-                ? "admin"
-                : "user";
-
-            const sessionUser = {
-              _id: user._id,
-              first_name: user.first_name,
-              last_name: user.last_name,
-              age: user.age,
-              email: user.email,
-              role,
-            };
-            done(null, sessionUser);
-          }
-        }
-      } catch (error) {
-        done(error);
-      }
-    }
-  )
-);
-
-passport.use(
-  "register",
-  new LocalStrategy(
-    { passReqToCallback: true, usernameField: "email" },
-    async (req, username, password, done) => {
-      const { first_name, last_name, age } = req.body;
-      try {
-        const user = await userModel.findOne({ email: username });
-        if (user) {
-          done(null, false);
-        } else {
-          const newUser = {
-            first_name,
-            last_name,
-            age,
-            email: username,
-            password: hashPassword(password),
-          };
-          const userDB = await userModel.create(newUser);
-
-          const role =
-            username === "adminCoder@coder.com" && password === "adminCod3r123"
-              ? "admin"
-              : "user";
-
-          const sessionUser = {
-            _id: userDB._id,
-            first_name: userDB.first_name,
-            last_name: userDB.last_name,
-            age: userDB.age,
-            email: userDB.email,
-            role,
-          };
-          done(null, sessionUser);
-        }
-      } catch (error) {
-        done(error);
-      }
-    }
-  )
-);
+const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
+const cartsDao = new CartMongoManager();
 
 //github strategy
-
 passport.use(
   new GithubStrategy(
     {
@@ -105,13 +26,17 @@ passport.use(
         const userData = profile._json;
         const user = await userModel.findOne({ emai: userData.email });
         if (!user) {
+          const cartForNewUser = await cartsDao.addCart();
+
           const newUser = {
             first_name: userData.name.split(" ")[0],
             last_name: userData.name.split(" ")[1],
             age: userData.age || null,
             email: userData.email || null,
             password: null,
-            githubLogin: userData.login || null,
+            role: "user",
+            github_username: userData.login,
+            cart: cartForNewUser._id,
           };
 
           const response = await userModel.create(newUser);
@@ -127,22 +52,21 @@ passport.use(
 );
 
 //JWT strategy
-
 passport.use(
   "jwt",
   new JwtStrategy(
     {
-      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
       secretOrKey: SECRET_KEY,
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
     },
     async (jwt_payload, done) => {
       try {
         const user = await userModel.findOne({ email: jwt_payload.email });
         if (!user) {
-          done(null, false, {messages: "User not found"});
+          done(null, false, { messages: "User not found" });
         }
         if (!isValidPassword(user, password)) {
-          done(null, false, {messages: "Invalid credentials"});
+          done(null, false, { messages: "Invalid credentials" });
         }
         return done(null, jwt_payload);
       } catch (error) {
@@ -151,14 +75,5 @@ passport.use(
     }
   )
 );
-
-passport.serializeUser((user, done) => {
-  done(null, user._id);
-});
-
-passport.deserializeUser(async (id, done) => {
-  const user = await userModel.findById(id);
-  done(null, user);
-});
 
 module.exports = passport;

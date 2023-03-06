@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { SECRET_KEY } = require("../constants/key.constants");
+const { SECRET_KEY, SESSION_KEY } = require("../constants/sessions.constants");
 
 const generateToken = (user) => {
   const token = jwt.sign({ user }, SECRET_KEY, { expiresIn: "24h" });
@@ -10,7 +10,7 @@ const generateToken = (user) => {
 const cookieExtractor = (req) => {
   let token = null;
   if (req && req.cookies) {
-    token = req.cookies["ecomm23"];
+    token = req.cookies[SESSION_KEY];
   }
   return token;
 };
