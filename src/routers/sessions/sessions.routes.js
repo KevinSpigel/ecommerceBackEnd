@@ -26,5 +26,4 @@ router.get(
 
 router.get("/logout", SessionsController.logOut);
 
-
 module.exports = router;

@@ -78,7 +78,7 @@ class CartsController {
         res.status(HTTP_STATUS.OK).json(response);
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -95,7 +95,7 @@ class CartsController {
       const response = apiSuccessResponse(updatedCart);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -106,7 +106,10 @@ class CartsController {
     const quantity = +req.body.quantity;
     try {
       if (!quantity) {
-        throw new HttpError(HTTP_STATUS.BAD_REQUEST, "an amount of product must be provided");
+        throw new HttpError(
+          HTTP_STATUS.BAD_REQUEST,
+          "an amount of product must be provided"
+        );
       }
       const updateProduct = await cartsDao.updateCartProduct(
         cid,
@@ -116,7 +119,7 @@ class CartsController {
       const response = apiSuccessResponse(updateProduct);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -129,7 +132,7 @@ class CartsController {
       const response = apiSuccessResponse(deleteProduct);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -139,9 +142,9 @@ class CartsController {
       const cid = req.params.cid;
       const cartDelete = await cartsDao.deleteCart(cid);
       const response = apiSuccessResponse(cartDelete);
-      res.status(HTTP_STATUS.OK).json(response);;
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-     next(error)
+      next(error);
     }
   }
 }

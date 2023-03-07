@@ -3,11 +3,7 @@ const uploader = require("../utils/multer.utils");
 const { passportCustom } = require("../middlewares/passportCustom.middleware");
 const { authToken } = require("../middlewares/authToken.middleware");
 
-
-
 const router = Router();
-
-
 
 //MONGODB
 
@@ -46,11 +42,11 @@ router.get("/register", (req, res) => {
 });
 
 //PRODUCTS
-router.use(passportCustom("jwt"), authToken ); //this middleware is going to be available for all router from here.
+router.use(passportCustom("jwt"), authToken); //this middleware is going to be available for all router from here.
 
 router.get("/products", async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
-  const user=req.user
+  const user = req.user;
 
   if (product.docs) {
     const data = {
@@ -58,7 +54,7 @@ router.get("/products", async (req, res) => {
       title: "Real Time Products",
       style: "index.css",
       list: product.docs,
-      user
+      user,
     };
 
     res.render("realTimeProducts", data);

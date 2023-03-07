@@ -1,5 +1,5 @@
 const express = require("express");
-const path = require("path")
+const path = require("path");
 const { Server } = require("socket.io");
 const handlebars = require("express-handlebars");
 require("./config/dbConfig");
@@ -60,7 +60,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(path.resolve(__dirname, "../public")));
 app.use(cookieParser());
 app.use(passport.initialize());
-
 
 // Routes
 app.use(viewsRoutes);

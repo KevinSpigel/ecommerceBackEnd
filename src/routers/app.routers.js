@@ -10,7 +10,6 @@ router.use("/products", productsRoutes.getRouter());
 router.use("/carts", cartsRoutes.getRouter());
 router.use("/sessions", sessionsRouter);
 
-
 router.use(errorMiddleware);
 
 module.exports = router;

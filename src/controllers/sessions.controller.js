@@ -46,7 +46,6 @@ class SessionsController {
       const response = apiSuccessResponse("User registered successfully!");
       return res.json(response);
     } catch (error) {
-      console.log(error, "error del register");
       next(error);
     }
   }
@@ -99,7 +98,7 @@ class SessionsController {
   static async logOut(req, res, next) {
     try {
       res.clearCookie("my-session");
-      res.json({message:"Session close"})
+      res.json({ message: "Session close" });
     } catch (error) {
       next(error);
     }

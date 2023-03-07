@@ -6,8 +6,6 @@ const { SECRET_KEY, SESSION_KEY } = require("../constants/sessions.constants");
 const { passportCustom } = require("../middlewares/passportCustom.middleware");
 const { apiErrorResponse } = require("../utils/api.utils");
 
-
-
 class BaseRouter {
   constructor() {
     this.router = Router();
