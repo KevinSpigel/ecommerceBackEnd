@@ -1,15 +1,20 @@
-const { Router } = require('express')
-const CartsController = require('../../controllers/carts.controller')
+const CartsController = require("../../controllers/carts.controller");
+const { cartValidatorMiddleware } = require("../../middlewares/cartValidator.middleware");
+const { BaseRouter } = require("../base.router");
 
-const router = Router()
 
-router.get('/', CartsController.getCarts)
-router.get('/:cid', CartsController.getCartById)
-router.post('/', CartsController.addCart)
-router.post('/:cid/products/:pid', CartsController.addProductToCart)
-router.put('/:cid', CartsController.updatePropertiesProducts)
-router.put('/:cid/products/:pid', CartsController.updateCartProduct)
-router.delete('/:cid/products/:pid', CartsController.deleteProductFromCart)
-router.delete('/:cid', CartsController.deleteCart)
+class CartsRouter extends BaseRouter {
+  init() {
+    this.get("/",["admin"], CartsController.getCarts);
+    this.get("/:cid",["user","admin"], cartValidatorMiddleware, CartsController.getCartById);
+    this.post("/",["admin"], CartsController.addCart);
+    this.post("/:cid/products/:pid",["user","admin"], CartsController.addProductToCart);
+    this.put("/:cid",["user","admin"], CartsController.updatePropertiesProducts);
+    this.put("/:cid/products/:pid",["user","admin"], CartsController.updateCartProduct);
+    this.delete("/:cid/products/:pid",["user","admin"], CartsController.deleteProductFromCart);
+    this.delete("/:cid",["user","admin"], CartsController.deleteCart);
+  }
+}
 
-module.exports = router
+
+module.exports = new CartsRouter();

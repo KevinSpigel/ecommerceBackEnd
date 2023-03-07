@@ -6,17 +6,17 @@
     >
       {{#if status}}
         {{#each list}}
-          <div class="card card-product" value="{{this._id}}" style="width: 18rem;">
+          <div class="card card-product" value="{{this.product._id}}" style="width: 18rem;">
             <img
               class="card-img-top"
-              src="/static/img/{{this.thumbnail}}"
-              alt="{{this.title}}"
+              src="/static/img/{{this.product.thumbnail}}"
+              alt="{{this.product.title}}"
             />
             <div class="card-body">
-              <h3 class="card-title">{{this.title}}</h3>
-              <h5 class="card-title">${{this.price}} per product</h5>
-              <p class="card-text">{{this.quantity}}</p>
-              <button class="btn btn-danger" onclick=removeFromTCart("{{this._id}}")>X</button>
+              <h3 class="card-title">{{this.product.title}}</h3>
+              <h5 class="card-title">${{this.product.price}} per product</h5>
+              <p class="card-text">{{this.product.quantity}}</p>
+              <button class="btn btn-danger" onclick=removeFromTCart("{{this.product._id}}")>X</button>
             </div>
           </div>
         {{/each}}

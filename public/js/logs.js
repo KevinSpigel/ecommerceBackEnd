@@ -44,10 +44,11 @@ registerForm?.addEventListener("submit", async (event) => {
     registerForm.reset();
   } catch (error) {
     console.log(error);
-    window.location.href = "http://localhost:8080/api/sessions/register";
+    window.location.href = "http://localhost:8080/register";
   }
 });
 
 const logout = () => {
-  window.location.href = "http://localhost:8080/api/sessions/logout";
+  fetch("http://localhost:8080/api/sessions/logout");
+  window.location.href = "http://localhost:8080/";
 };

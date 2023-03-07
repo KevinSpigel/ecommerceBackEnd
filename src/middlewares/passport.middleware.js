@@ -1,6 +1,5 @@
 const passport = require("passport");
 const { userModel } = require("../models/schemas/users.model");
-const { hashPassword, isValidPassword } = require("../utils/hash.utils");
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");
@@ -34,7 +33,6 @@ passport.use(
             age: userData.age || null,
             email: userData.email || null,
             password: null,
-            role: "user",
             github_username: userData.login,
             cart: cartForNewUser._id,
           };
@@ -61,16 +59,9 @@ passport.use(
     },
     async (jwt_payload, done) => {
       try {
-        const user = await userModel.findOne({ email: jwt_payload.email });
-        if (!user) {
-          done(null, false, { messages: "User not found" });
-        }
-        if (!isValidPassword(user, password)) {
-          done(null, false, { messages: "Invalid credentials" });
-        }
-        return done(null, jwt_payload);
+        done(null, jwt_payload);
       } catch (error) {
-        return done(error);
+        done(error);
       }
     }
   )

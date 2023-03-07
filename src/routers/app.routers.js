@@ -6,8 +6,8 @@ const { errorMiddleware } = require("../middlewares/error.middleware");
 
 const router = Router();
 
-router.use("/products", productsRoutes);
-router.use("/carts", cartsRoutes);
+router.use("/products", productsRoutes.getRouter());
+router.use("/carts", cartsRoutes.getRouter());
 router.use("/sessions", sessionsRouter);
 
 

@@ -3,7 +3,10 @@ const { Router } = require("express");
 const jwt = require("jsonwebtoken");
 const { HTTP_STATUS } = require("../constants/api.constants");
 const { SECRET_KEY, SESSION_KEY } = require("../constants/sessions.constants");
+const { passportCustom } = require("../middlewares/passportCustom.middleware");
 const { apiErrorResponse } = require("../utils/api.utils");
+
+
 
 class BaseRouter {
   constructor() {
@@ -40,7 +43,7 @@ class BaseRouter {
       }
 
       const user = jwt.verify(token, SECRET_KEY);
-      if (!roles.includes(`${user.role}`.toUpperCase())) {
+      if (!roles.includes(`${user.role}`.toLowerCase())) {
         const response = apiErrorResponse("Access Denied");
         return res.status(HTTP_STATUS.FORBIDDEN).json(response);
       }
@@ -51,6 +54,7 @@ class BaseRouter {
   get(path, roles, ...callbacks) {
     this.router.get(
       path,
+      passportCustom("jwt"),
       this.handleAuthRoles(roles),
       this.applyCallbacks(callbacks)
     );

@@ -14,7 +14,7 @@ router.get("/github", passportCustom("github", { scope: ["user:email"] }));
 
 router.get(
   "/github/callback",
-  passportCustom("github", { failureRedirect: "api/sessions/failedPetition" }),
+  passportCustom("github"),
   SessionsController.loginGithub
 );
 
@@ -24,8 +24,7 @@ router.get(
   SessionsController.currentSession
 );
 
-router.post("/logout", SessionsController.logOut);
+router.get("/logout", SessionsController.logOut);
 
-router.get("/failedPetition", SessionsController.failedPetition);
 
 module.exports = router;

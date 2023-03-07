@@ -1,10 +1,10 @@
 const express = require("express");
+const path = require("path")
 const { Server } = require("socket.io");
 const handlebars = require("express-handlebars");
 require("./config/dbConfig");
 
 const cookieParser = require("cookie-parser");
-
 const passport = require("passport");
 
 const viewsRoutes = require("./routers/views.routes");
@@ -57,7 +57,7 @@ app.set("view engine", "handlebars");
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/static", express.static(__dirname + "/../public"));
+app.use("/static", express.static(path.resolve(__dirname, "../public")));
 app.use(cookieParser());
 app.use(passport.initialize());
 

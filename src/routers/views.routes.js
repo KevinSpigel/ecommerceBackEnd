@@ -1,10 +1,13 @@
 const { Router } = require("express");
 const uploader = require("../utils/multer.utils");
+const { passportCustom } = require("../middlewares/passportCustom.middleware");
+const { authToken } = require("../middlewares/authToken.middleware");
+
+
 
 const router = Router();
 
-const { auth } = require("../middlewares/auth.middleware");
-const { sessionMiddleware } = require("../middlewares/session.middleware");
+
 
 //MONGODB
 
@@ -16,11 +19,11 @@ const ecommerceCarts = new CartMongoManager();
 
 //LOGIN
 
-router.get("/", sessionMiddleware, (req, res) => {
+router.get("/", (req, res) => {
   res.redirect("/login");
 });
 
-router.get("/login", sessionMiddleware, (req, res) => {
+router.get("/login", (req, res) => {
   const data = {
     status: true,
     title: "Login",
@@ -32,7 +35,7 @@ router.get("/login", sessionMiddleware, (req, res) => {
 
 //REGISTER
 
-router.get("/register", sessionMiddleware, (req, res) => {
+router.get("/register", (req, res) => {
   const data = {
     status: true,
     title: "Register",
@@ -43,10 +46,11 @@ router.get("/register", sessionMiddleware, (req, res) => {
 });
 
 //PRODUCTS
+router.use(passportCustom("jwt"), authToken ); //this middleware is going to be available for all router from here.
 
-router.get("/products", auth, async (req, res) => {
+router.get("/products", async (req, res) => {
   const product = await ecommerce.getProducts(req.query);
-  const user = await req.session.user;
+  const user=req.user
 
   if (product.docs) {
     const data = {
@@ -54,7 +58,7 @@ router.get("/products", auth, async (req, res) => {
       title: "Real Time Products",
       style: "index.css",
       list: product.docs,
-      user: user,
+      user
     };
 
     res.render("realTimeProducts", data);
@@ -88,30 +92,11 @@ router.post("/products", uploader.single("thumbnail"), async (req, res) => {
 
 //CART
 
-router.get("/cart/:cid", auth, async (req, res) => {
+router.get("/cart/:cid", async (req, res) => {
   const cid = req.params.cid;
   const cartById = await ecommerceCarts.getCartById(cid);
 
   if (cartById) {
-    const populateProductsPromisesArr = [];
-
-    cartById.products.forEach((p) => {
-      const promise = ecommerce.getProductById(p.product.toString());
-      populateProductsPromisesArr.push(promise);
-    });
-    cartById.products = await Promise.all(populateProductsPromisesArr);
-
-    cartById.products = cartById.products.map((p) => ({
-      title: p.title,
-      description: p.description,
-      code: p.code,
-      price: p.price,
-      thumbnail: p.thumbnail,
-      stock: p.stock,
-      category: p.category,
-      status: p.status,
-    }));
-
     const data = {
       status: true,
       title: "Cart",
@@ -130,7 +115,7 @@ router.get("/cart/:cid", auth, async (req, res) => {
 });
 
 // CHAT
-router.get("/chat", auth, (req, res) => {
+router.get("/chat", (req, res) => {
   const data = {
     status: true,
     title: "Chat",

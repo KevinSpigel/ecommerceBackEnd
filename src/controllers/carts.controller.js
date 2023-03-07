@@ -34,7 +34,7 @@ class CartsController {
   }
 
   //GET cart by id
-  static async getCartById(req, res) {
+  static async getCartById(req, res, next) {
     try {
       const cid = req.params.cid;
 

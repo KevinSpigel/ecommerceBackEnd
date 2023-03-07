@@ -4,35 +4,41 @@ const { HttpError } = require("../utils/error.utils");
 const { userModel } = require("../models/schemas/users.model");
 const { generateToken } = require("../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
+const { SESSION_KEY } = require("../constants/sessions.constants");
 
 const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
 const cartsDao = new CartMongoManager();
-
 
 class SessionsController {
   static async register(req, res, next) {
     try {
       const { first_name, last_name, age, email, password } = req.body;
       const user = await userModel.findOne({ email });
-      if (!user) {
+      if (user) {
         return res.status(400).json({ error: "User already exist" });
       }
 
-      const cartForNewUser= await cartsDao.addCart()
+      const cartForNewUser = await cartsDao.addCart();
 
       const newUser = {
         first_name,
         last_name,
         age,
-        email: username,
+        email,
         password: hashPassword(password),
-        cart: cartForNewUser._id
+        cart: cartForNewUser._id,
       };
       await userModel.create(newUser);
 
+      const userForCookie = {
+        first_name: newUser.first_name,
+        last_name: newUser.last_name,
+        age: newUser.age,
+        email: newUser.email,
+        cart: newUser.cart,
+      };
 
-
-      const access_token = generateToken(user);
+      const access_token = generateToken(userForCookie);
       res.cookie(SESSION_KEY, access_token, {
         maxAge: 60 * 60 * 60 * 24 * 1000,
         httpOnly: true,
@@ -40,6 +46,7 @@ class SessionsController {
       const response = apiSuccessResponse("User registered successfully!");
       return res.json(response);
     } catch (error) {
+      console.log(error, "error del register");
       next(error);
     }
   }
@@ -52,8 +59,14 @@ class SessionsController {
       if (!user || !isValidPassword(user, password)) {
         throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Wrong email or password");
       }
-
-      const access_token = generateToken(user);
+      const userForCookie = {
+        first_name: user.first_name,
+        last_name: user.last_name,
+        age: user.age,
+        email: user.email,
+        cart: user.cart,
+      };
+      const access_token = generateToken(userForCookie);
 
       res.cookie(SESSION_KEY, access_token, {
         maxAge: 60 * 60 * 60 * 24 * 1000,
@@ -86,7 +99,7 @@ class SessionsController {
   static async logOut(req, res, next) {
     try {
       res.clearCookie("my-session");
-      res.redirect("/login");
+      res.json({message:"Session close"})
     } catch (error) {
       next(error);
     }
@@ -95,10 +108,6 @@ class SessionsController {
   static async currentSession(req, res, next) {
     const response = apiSuccessResponse(req.user);
     return res.json(response);
-  }
-
-  static async failedPetition(req, res, next) {
-    res.send({ error: "Failed Petition" });
   }
 }
 
