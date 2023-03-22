@@ -17,7 +17,9 @@ form.addEventListener("submit", (event) => {
     redirect: "manual",
   };
 
-  fetch("http://localhost:8080/", requestOptions); //Send formData object within the body request, to be received in req.body from newProduct function
+  fetch("http://localhost:8080/api/products", requestOptions)
+    .then((res) => console.log(res))
+    .catch((error) => console.log(error)); //Send formData object within the body request, to be received in req.body from newProduct function
 
   form.reset();
 });
@@ -48,15 +50,7 @@ socket.on("newProduct", (data) => {
 //add product to cart button
 
 function addToCart(pid) {
-  let currentCart = "63e281e5d43e02a3f30af2da";
-
-  if (!currentCart) {
-    fetch("http://localhost:8080/api/carts/", { method: "POST" })
-      .then((response) => response.json())
-      .then((data) => (currentCart = data._id));
-  }
-
-  fetch(`http://localhost:8080/api/carts/${currentCart}/products/${pid}`, {
+  fetch(`http://localhost:8080/api/carts/products/${pid}`, {
     method: "POST",
   }).then(alert("Product added to cart"));
 }

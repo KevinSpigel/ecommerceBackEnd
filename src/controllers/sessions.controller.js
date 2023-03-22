@@ -4,7 +4,7 @@ const { HttpError } = require("../utils/error.utils");
 const { userModel } = require("../models/schemas/users.model");
 const { generateToken } = require("../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
-const { SESSION_KEY } = require("../constants/sessions.constants");
+const { SESSION_KEY } = require("../config/env.config");
 
 const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
 const cartsDao = new CartMongoManager();
@@ -28,14 +28,15 @@ class SessionsController {
         password: hashPassword(password),
         cart: cartForNewUser._id,
       };
-      await userModel.create(newUser);
+      const createdUser = await userModel.create(newUser);
 
       const userForCookie = {
-        first_name: newUser.first_name,
-        last_name: newUser.last_name,
-        age: newUser.age,
-        email: newUser.email,
-        cart: newUser.cart,
+        first_name: createdUser.first_name,
+        last_name: createdUser.last_name,
+        age: createdUser.age,
+        email: createdUser.email,
+        cart: createdUser.cart,
+        role: createdUser.role,
       };
 
       const access_token = generateToken(userForCookie);
@@ -64,6 +65,7 @@ class SessionsController {
         age: user.age,
         email: user.email,
         cart: user.cart,
+        role: user.role,
       };
       const access_token = generateToken(userForCookie);
 

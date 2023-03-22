@@ -1,3 +1,5 @@
+const { MONGO_URI } = require("./env.config");
+
 //Ways to connect to different systems
 
 const options = {
@@ -6,8 +8,8 @@ const options = {
   //   carts: "../models/dao/fileManager/fileSystemDb/cartDataBase.json",
   // },
   mongoDb: {
-    url: "mongodb+srv://admin:Data1471@ecommercebackend0.voob3od.mongodb.net/ecommerceBackend0?retryWrites=true&w=majority",
+    url: MONGO_URI,
   },
 };
 
-module.exports = {options};
+module.exports = { options };

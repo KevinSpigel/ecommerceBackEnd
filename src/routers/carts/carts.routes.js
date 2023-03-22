@@ -15,26 +15,22 @@ class CartsRouter extends BaseRouter {
     );
     this.post("/", ["admin"], CartsController.addCart);
     this.post(
-      "/:cid/products/:pid",
+      "/products/:pid",
       ["user", "admin"],
       CartsController.addProductToCart
     );
+    this.put("/", ["user", "admin"], CartsController.updatePropertiesProducts);
     this.put(
-      "/:cid",
-      ["user", "admin"],
-      CartsController.updatePropertiesProducts
-    );
-    this.put(
-      "/:cid/products/:pid",
+      "/products/:pid",
       ["user", "admin"],
       CartsController.updateCartProduct
     );
     this.delete(
-      "/:cid/products/:pid",
+      "/products/:pid",
       ["user", "admin"],
       CartsController.deleteProductFromCart
     );
-    this.delete("/:cid", ["user", "admin"], CartsController.deleteCart);
+    this.delete("/:cid", ["admin"], CartsController.deleteCart);
   }
 }
 

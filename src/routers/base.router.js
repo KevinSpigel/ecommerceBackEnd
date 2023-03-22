@@ -2,7 +2,7 @@ const { Router } = require("express");
 
 const jwt = require("jsonwebtoken");
 const { HTTP_STATUS } = require("../constants/api.constants");
-const { SECRET_KEY, SESSION_KEY } = require("../constants/sessions.constants");
+const { SECRET_KEY, SESSION_KEY } = require("../config/env.config");
 const { passportCustom } = require("../middlewares/passportCustom.middleware");
 const { apiErrorResponse } = require("../utils/api.utils");
 
@@ -61,6 +61,7 @@ class BaseRouter {
   post(path, roles, ...callbacks) {
     this.router.post(
       path,
+      passportCustom("jwt"),
       this.handleAuthRoles(roles),
       this.applyCallbacks(callbacks)
     );
@@ -69,6 +70,7 @@ class BaseRouter {
   put(path, roles, ...callbacks) {
     this.router.put(
       path,
+      passportCustom("jwt"),
       this.handleAuthRoles(roles),
       this.applyCallbacks(callbacks)
     );
@@ -77,6 +79,7 @@ class BaseRouter {
   delete(path, roles, ...callbacks) {
     this.router.delete(
       path,
+      passportCustom("jwt"),
       this.handleAuthRoles(roles),
       this.applyCallbacks(callbacks)
     );

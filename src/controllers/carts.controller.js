@@ -53,10 +53,9 @@ class CartsController {
 
   //POST new product to cart
   static async addProductToCart(req, res) {
-    const cid = req.params.cid;
+    const cid = req.user.cart;
     const pid = req.params.pid;
     const quantity = +req.query.quantity;
-
     try {
       const productExist = await productsDao.getProductById(pid);
 
@@ -74,6 +73,7 @@ class CartsController {
           pid,
           defaultQuantity
         );
+
         const response = apiSuccessResponse(addProduct);
         res.status(HTTP_STATUS.OK).json(response);
       }
@@ -85,7 +85,7 @@ class CartsController {
   //PUT update all products. Product list
   static async updatePropertiesProducts(req, res, next) {
     try {
-      const cid = req.params.cid;
+      const cid = req.user.cart;
       const newProducts = req.body;
 
       const updatedCart = await cartsDao.updatePropertiesProducts(
@@ -101,7 +101,7 @@ class CartsController {
 
   //PUT update only the quantity of a product
   static async updateCartProduct(req, res, next) {
-    const cid = req.params.cid;
+    const cid = req.user.cart;
     const pid = req.params.pid;
     const quantity = +req.body.quantity;
     try {
@@ -126,7 +126,7 @@ class CartsController {
   //DELETE product from cart
   static async deleteProductFromCart(req, res, next) {
     try {
-      const cid = req.params.cid;
+      const cid = req.user.cart;
       const pid = req.params.pid;
       const deleteProduct = await cartsDao.deleteProductFromCart(cid, pid);
       const response = apiSuccessResponse(deleteProduct);
@@ -139,7 +139,7 @@ class CartsController {
   //DELETE cart by id. Empty cart
   static async deleteCart(req, res, next) {
     try {
-      const cid = req.params.cid;
+      const cid = req.user.cart;
       const cartDelete = await cartsDao.deleteCart(cid);
       const response = apiSuccessResponse(cartDelete);
       res.status(HTTP_STATUS.OK).json(response);

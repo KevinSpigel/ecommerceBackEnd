@@ -3,7 +3,7 @@ const { userModel } = require("../models/schemas/users.model");
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");
-const { SECRET_KEY } = require("../constants/sessions.constants");
+const { SECRET_KEY, CLIENT_ID, CLIENT_SECRET, CALLBACK_URL } = require("../config/env.config");
 const { cookieExtractor } = require("../utils/jwt.utils");
 
 const JwtStrategy = passportJwt.Strategy;
@@ -16,9 +16,9 @@ const cartsDao = new CartMongoManager();
 passport.use(
   new GithubStrategy(
     {
-      clientID: "Iv1.6105c4b4bc9e8628",
-      clientSecret: "48b6ffd7d029ad78252aca60bf1d42a1ce5fb6c1",
-      callbackURL: "http://localhost:8080/api/sessions/github/callback",
+      clientID: CLIENT_ID,
+      clientSecret: CLIENT_SECRET,
+      callbackURL: CALLBACK_URL,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {

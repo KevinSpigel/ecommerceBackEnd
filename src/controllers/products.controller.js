@@ -1,6 +1,7 @@
 const { apiSuccessResponse } = require("../utils/api.utils");
 const { HTTP_STATUS } = require("../constants/api.constants");
 const { HttpError } = require("../utils/error.utils");
+const {PORT} = require ("../config/env.config")
 
 //MONGODB
 
@@ -13,6 +14,7 @@ class ProductsController {
   static async addProduct(req, res, next) {
     try {
       const addNewProduct = req.body;
+      const socket = req.app.get("socket");
       const filename = req.file.filename;
 
       const newProduct = await productsDao.addProduct(
@@ -25,7 +27,7 @@ class ProductsController {
         addNewProduct.category,
         addNewProduct.status
       );
-
+      socket.emit("newProduct", newProduct);
       const response = apiSuccessResponse(newProduct);
       return res.status(HTTP_STATUS.CREATED).json(response);
     } catch (error) {
@@ -48,10 +50,10 @@ class ProductsController {
         hasPrevPage: products.hasPrevPage,
         hasNextPage: products.hasNextPage,
         nextLink: products.hasNextPage
-          ? `http://localhost:8080${req.baseUrl}/?limit=${limit}&page=${payload.nextPage}`
+          ? `http://localhost:${PORT}${req.baseUrl}/?limit=${limit}&page=${payload.nextPage}`
           : null,
         prevLink: products.hasPrevPage
-          ? `http://localhost:8080${req.baseUrl}/?page=/${payload.prevPage}`
+          ? `http://localhost:${PORT}${req.baseUrl}/?page=/${payload.prevPage}`
           : null,
       };
 

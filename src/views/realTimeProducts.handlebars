@@ -52,14 +52,13 @@
 
   </div>
 
+{{#if isAdmin}}
   <div class="card mt-5">
     <div class="mt-4">
       <h2>Add new product</h2>
       <h6>On real time</h6>
       <div class="d-flex justify-content-center column">
         <form
-          action="/products"
-          method="post"
           id="newProductForm"
           enctype="multipart/form-data"
         >
@@ -132,6 +131,7 @@
       </div>
     </div>
   </div>
+  {{/if}}
 </div>
 
 {{! script which stores all FrontEnd logic }}

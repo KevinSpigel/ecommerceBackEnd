@@ -5,6 +5,8 @@ const { authToken } = require("../middlewares/authToken.middleware");
 
 const router = Router();
 
+const authMiddlewares = [passportCustom("jwt"), authToken];
+
 //MONGODB
 
 const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
@@ -15,110 +17,107 @@ const ecommerceCarts = new CartMongoManager();
 
 //LOGIN
 
-router.get("/", (req, res) => {
-  res.redirect("/login");
-});
-
-router.get("/login", (req, res) => {
+router.get("/", (req, res, next) => {
   const data = {
     status: true,
     title: "Login",
     style: "index.css",
   };
-
-  res.render("login", data);
+  try {
+    res.render("login", data);
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
+  }
 });
 
 //REGISTER
 
-router.get("/register", (req, res) => {
+router.get("/register", (req, res, next) => {
   const data = {
     status: true,
     title: "Register",
     style: "index.css",
   };
-
-  res.render("register", data);
-});
-
-//PRODUCTS
-router.use(passportCustom("jwt"), authToken); //this middleware is going to be available for all router from here.
-
-router.get("/products", async (req, res) => {
-  const product = await ecommerce.getProducts(req.query);
-  const user = req.user;
-
-  if (product.docs) {
-    const data = {
-      status: true,
-      title: "Real Time Products",
-      style: "index.css",
-      list: product.docs,
-      user,
-    };
-
-    res.render("realTimeProducts", data);
-  } else {
-    return res.status(404).render("realTimeProducts", {
-      status: false,
-      style: "index.css",
-      data: "Empty list",
-    });
+  try {
+    res.render("register", data);
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
   }
 });
 
-router.post("/products", uploader.single("thumbnail"), async (req, res) => {
-  const addNewProduct = req.body;
-  const socket = req.app.get("socket");
-  const filename = req.file.filename;
+//PRODUCTS
 
-  const newProduct = await ecommerce.addProduct(
-    addNewProduct.title,
-    addNewProduct.description,
-    addNewProduct.code,
-    +addNewProduct.price,
-    (addNewProduct.thumbnail = filename),
-    +addNewProduct.stock,
-    addNewProduct.category,
-    addNewProduct.status
-  );
-  socket.emit("newProduct", newProduct);
-  res.send({ status: "success" });
+router.get("/products", authMiddlewares, async (req, res, next) => {
+  try {
+    const product = await ecommerce.getProducts(req.query);
+    const user = req.user;
+    const isAdmin= req.user.role=="admin"
+
+    if (product.docs) {
+      const data = {
+        status: true,
+        title: "Real Time Products",
+        style: "index.css",
+        list: product.docs,
+        user,
+        isAdmin
+      };
+
+      res.render("realTimeProducts", data);
+    } else {
+      return res.status(404).render("realTimeProducts", {
+        status: false,
+        style: "index.css",
+        data: "Empty list",
+      });
+    }
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
+  }
 });
+
 
 //CART
 
-router.get("/cart/:cid", async (req, res) => {
-  const cid = req.params.cid;
-  const cartById = await ecommerceCarts.getCartById(cid);
+router.get("/cart", authMiddlewares, async (req, res, next) => {
+  try {
+    const cid = req.user.cart;
+    const cartById = await ecommerceCarts.getCartById(cid);
 
-  if (cartById) {
-    const data = {
-      status: true,
-      title: "Cart",
-      style: "index.css",
-      list: cartById.products,
-    };
+    if (cartById) {
+      const data = {
+        status: true,
+        title: "Cart",
+        style: "index.css",
+        list: cartById.products,
+      };
 
-    res.render("cart", data);
-  } else {
-    return res.status(404).render("cart", {
-      status: false,
-      style: "index.css",
-      data: "The cart is empty",
-    });
+      res.render("cart", data);
+    } else {
+      return res.status(404).render("cart", {
+        status: false,
+        style: "index.css",
+        data: "The cart is empty",
+      });
+    }
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
   }
 });
 
 // CHAT
-router.get("/chat", (req, res) => {
-  const data = {
-    status: true,
-    title: "Chat",
-    style: "index.css",
-  };
+router.get("/chat", authMiddlewares, (req, res, next) => {
+  try {
+    const data = {
+      status: true,
+      title: "Chat",
+      style: "index.css",
+    };
 
-  res.render("chat", data);
+    res.render("chat", data);
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
+  }
 });
 
 module.exports = router;

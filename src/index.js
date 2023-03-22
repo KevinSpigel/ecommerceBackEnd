@@ -1,3 +1,4 @@
+const env = require("./config/env.config");
 const express = require("express");
 const path = require("path");
 const { Server } = require("socket.io");
@@ -14,7 +15,7 @@ const ChatMongoManager = require("./models/dao/mongoManager/chatManager.mongoose
 const messages = new ChatMongoManager();
 
 const app = express();
-const PORT = process.env.PORT || 8080;
+const PORT = env.PORT;
 
 // Listen
 const httpServer = app.listen(PORT, () => {
@@ -57,17 +58,10 @@ app.set("view engine", "handlebars");
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/static", express.static(path.resolve(__dirname, "../public")));
+app.use("/static", express.static(path.resolve(__dirname, "./public")));
 app.use(cookieParser());
 app.use(passport.initialize());
 
 // Routes
 app.use(viewsRoutes);
 app.use("/api", apiRoutes);
-
-app.use((error, req, res, next) => {
-  res.status(500).json({
-    status: "error",
-    error,
-  });
-});
