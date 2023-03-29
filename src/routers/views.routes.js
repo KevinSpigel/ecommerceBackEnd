@@ -7,13 +7,9 @@ const router = Router();
 
 const authMiddlewares = [passportCustom("jwt"), authToken];
 
-//MONGODB
+const { getDAOS } = require("../models/daos/daosFactory");
 
-const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
-const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
-
-const ecommerce = new ProductMongoManager();
-const ecommerceCarts = new CartMongoManager();
+const { cartsDao, productsDao } = getDAOS();
 
 //LOGIN
 
@@ -49,9 +45,9 @@ router.get("/register", (req, res, next) => {
 
 router.get("/products", authMiddlewares, async (req, res, next) => {
   try {
-    const product = await ecommerce.getProducts(req.query);
+    const product = await productsDao.getProducts(req.query);
     const user = req.user;
-    const isAdmin= req.user.role=="admin"
+    const isAdmin = req.user.role == "admin";
 
     if (product.docs) {
       const data = {
@@ -60,7 +56,7 @@ router.get("/products", authMiddlewares, async (req, res, next) => {
         style: "index.css",
         list: product.docs,
         user,
-        isAdmin
+        isAdmin,
       };
 
       res.render("realTimeProducts", data);
@@ -76,13 +72,12 @@ router.get("/products", authMiddlewares, async (req, res, next) => {
   }
 });
 
-
 //CART
 
 router.get("/cart", authMiddlewares, async (req, res, next) => {
   try {
     const cid = req.user.cart;
-    const cartById = await ecommerceCarts.getCartById(cid);
+    const cartById = await cartsDao.getCartById(cid);
 
     if (cartById) {
       const data = {

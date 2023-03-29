@@ -1,7 +1,7 @@
 //this middleware is needed to be able to manage the errors with JWT
 
 const passport = require("../middlewares/passport.middleware");
-const { HTTP_STATUS } = require("../constants/api.constants");
+const { HTTP_STATUS } = require("../utils/api.utils");
 
 const passportCustom = (strategy, options = {}) => {
   return async (req, res, next) => {

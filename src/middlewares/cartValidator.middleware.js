@@ -1,6 +1,5 @@
-const { HTTP_STATUS } = require("../constants/api.constants");
-const { userModel } = require("../models/schemas/users.model");
-const { apiErrorResponse } = require("../utils/api.utils");
+const { UsersModel } = require("../models/schemas/users.model");
+const { apiErrorResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 const cartValidatorMiddleware = async (req, res, next) => {
   const user = req.user;
@@ -9,7 +8,7 @@ const cartValidatorMiddleware = async (req, res, next) => {
     return next();
   }
 
-  const userDb = await userModel.find({ email: user.email }).lean();
+  const userDb = await UsersModel.find({ email: user.email }).lean();
 
   if (user.cart._id == userDb[0].cart._id) {
     next();

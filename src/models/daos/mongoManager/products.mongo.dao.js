@@ -1,6 +1,11 @@
-const { productsModel } = require("../../schemas/products.model");
+const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
+const { ProductsModel } = require("../../schemas/products.model");
 
-class ProductMongoManager {
+class ProductsMongoDao {
+  constructor() {
+    MongoDbConnection.getInstance();
+  }
+
   async getProducts({ limit, page, query, sort }) {
     try {
       const filter = query ? { category: query } : {};
@@ -12,7 +17,7 @@ class ProductMongoManager {
         lean: true,
       };
 
-      const allProducts = await productsModel.paginate(filter, options);
+      const allProducts = await ProductsModel.paginate(filter, options);
       return allProducts;
     } catch (error) {
       throw new Error(`Couldn't read file ${error}`);
@@ -40,7 +45,7 @@ class ProductMongoManager {
         category,
         status,
       };
-      const newProduct = await productsModel.create(obj);
+      const newProduct = await ProductsModel.create(obj);
       return newProduct;
     } catch (error) {
       throw new Error(`Error saving: ${error}`);
@@ -49,7 +54,7 @@ class ProductMongoManager {
 
   async getProductById(pid) {
     try {
-      const productById = await productsModel.findById(pid);
+      const productById = await ProductsModel.findById(pid);
       return productById;
     } catch (error) {
       throw new Error(`Product with id: ${pid} was not found: ${error}`);
@@ -58,7 +63,7 @@ class ProductMongoManager {
 
   async updateProduct(pid, newProductProperties) {
     try {
-      const productUpdated = await productsModel.findByIdAndUpdate(
+      const productUpdated = await ProductsModel.findByIdAndUpdate(
         pid,
         newProductProperties
       );
@@ -70,7 +75,7 @@ class ProductMongoManager {
 
   async deleteProduct(pid) {
     try {
-      const response = await productsModel.findByIdAndDelete(pid);
+      const response = await ProductsModel.findByIdAndDelete(pid);
       return `Product with id: ${response.id} was deleted successfully`;
     } catch (error) {
       throw new Error(`Error deleting: ${error}`);
@@ -78,4 +83,4 @@ class ProductMongoManager {
   }
 }
 
-module.exports = ProductMongoManager;
+module.exports = ProductsMongoDao;

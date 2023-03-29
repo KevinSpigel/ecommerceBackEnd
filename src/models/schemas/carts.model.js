@@ -20,5 +20,5 @@ const cartsSchema = new mongoose.Schema({
 });
 
 module.exports = {
-  cartsModel: mongoose.model(cartsCollection, cartsSchema),
+  CartsModel: mongoose.model(cartsCollection, cartsSchema),
 };

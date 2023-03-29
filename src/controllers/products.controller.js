@@ -1,13 +1,10 @@
-const { apiSuccessResponse } = require("../utils/api.utils");
-const { HTTP_STATUS } = require("../constants/api.constants");
+const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 const { HttpError } = require("../utils/error.utils");
-const {PORT} = require ("../config/env.config")
+const { PORT } = require("../config/env.config");
 
-//MONGODB
+const { getDAOS } = require("../models/daos/daosFactory");
 
-const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
-
-const productsDao = new ProductMongoManager();
+const { productsDao } = getDAOS();
 
 class ProductsController {
   //CREATE new product

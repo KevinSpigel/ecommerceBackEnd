@@ -1,10 +1,8 @@
 const { Router } = require("express");
-
 const jwt = require("jsonwebtoken");
-const { HTTP_STATUS } = require("../constants/api.constants");
 const { SECRET_KEY, SESSION_KEY } = require("../config/env.config");
 const { passportCustom } = require("../middlewares/passportCustom.middleware");
-const { apiErrorResponse } = require("../utils/api.utils");
+const { apiErrorResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 class BaseRouter {
   constructor() {

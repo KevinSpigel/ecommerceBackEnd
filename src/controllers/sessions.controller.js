@@ -1,19 +1,19 @@
-const { apiSuccessResponse } = require("../utils/api.utils");
-const { HTTP_STATUS } = require("../constants/api.constants");
+const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 const { HttpError } = require("../utils/error.utils");
-const { userModel } = require("../models/schemas/users.model");
+const { UsersModel } = require("../models/schemas/users.model");
 const { generateToken } = require("../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
 const { SESSION_KEY } = require("../config/env.config");
 
-const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
-const cartsDao = new CartMongoManager();
+const { getDAOS } = require("../models/daos/daosFactory");
+
+const { cartsDao } = getDAOS();
 
 class SessionsController {
   static async register(req, res, next) {
     try {
       const { first_name, last_name, age, email, password } = req.body;
-      const user = await userModel.findOne({ email });
+      const user = await UsersModel.findOne({ email });
       if (user) {
         return res.status(400).json({ error: "User already exist" });
       }
@@ -28,7 +28,7 @@ class SessionsController {
         password: hashPassword(password),
         cart: cartForNewUser._id,
       };
-      const createdUser = await userModel.create(newUser);
+      const createdUser = await UsersModel.create(newUser);
 
       const userForCookie = {
         first_name: createdUser.first_name,
@@ -55,7 +55,7 @@ class SessionsController {
     try {
       const { email, password } = req.body;
 
-      const user = await userModel.findOne({ email });
+      const user = await UsersModel.findOne({ email });
       if (!user || !isValidPassword(user, password)) {
         throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Wrong email or password");
       }

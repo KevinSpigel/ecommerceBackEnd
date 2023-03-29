@@ -1,5 +1,5 @@
 const passport = require("passport");
-const { userModel } = require("../models/schemas/users.model");
+const { UsersModel } = require("../models/schemas/users.model");
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");
@@ -9,8 +9,8 @@ const { cookieExtractor } = require("../utils/jwt.utils");
 const JwtStrategy = passportJwt.Strategy;
 const ExtractJwt = passportJwt.ExtractJwt; //where are we going to extract token info
 
-const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
-const cartsDao = new CartMongoManager();
+const CartsMongoDao = require("../models/daos/mongoManager/carts.mongo.dao");
+const cartsDao = new CartsMongoDao();
 
 //github strategy
 passport.use(
@@ -23,7 +23,7 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const userData = profile._json;
-        const user = await userModel.findOne({ emai: userData.email });
+        const user = await UsersModel.findOne({ emai: userData.email });
         if (!user) {
           const cartForNewUser = await cartsDao.addCart();
 
@@ -37,7 +37,7 @@ passport.use(
             cart: cartForNewUser._id,
           };
 
-          const response = await userModel.create(newUser);
+          const response = await UsersModel.create(newUser);
           done(null, response._doc);
         } else {
           done(null, user);

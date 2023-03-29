@@ -1,5 +1,4 @@
-const { HTTP_STATUS } = require("../constants/api.constants");
-const { apiErrorResponse } = require("../utils/api.utils");
+const { apiErrorResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 const authToken = async (req, res, next) => {
   const user = req.user;

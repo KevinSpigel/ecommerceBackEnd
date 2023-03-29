@@ -11,8 +11,8 @@ const passport = require("passport");
 const viewsRoutes = require("./routers/views.routes");
 const apiRoutes = require("./routers/app.routers");
 
-const ChatMongoManager = require("./models/dao/mongoManager/chatManager.mongoose");
-const messages = new ChatMongoManager();
+const ChatsMongoDao = require("./models/daos/mongoManager/chats.mongo.dao");
+const messages = new ChatsMongoDao();
 
 const app = express();
 const PORT = env.PORT;

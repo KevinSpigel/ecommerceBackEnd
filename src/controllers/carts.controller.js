@@ -1,14 +1,9 @@
-const { apiSuccessResponse } = require("../utils/api.utils");
-const { HTTP_STATUS } = require("../constants/api.constants");
+const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 const { HttpError } = require("../utils/error.utils");
 
-//MONGODB
+const { getDAOS } = require("../models/daos/daosFactory");
 
-const CartMongoManager = require("../models/dao/mongoManager/cartManager.mongoose");
-const cartsDao = new CartMongoManager();
-
-const ProductMongoManager = require("../models/dao/mongoManager/productManager.mongoose");
-const productsDao = new ProductMongoManager();
+const { cartsDao, productsDao } = getDAOS();
 
 class CartsController {
   //CREATE cart
