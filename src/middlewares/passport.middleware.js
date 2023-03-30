@@ -1,5 +1,5 @@
 const passport = require("passport");
-const { UsersModel } = require("../models/schemas/users.model");
+const { UsersModel } = require("../models/schemas/users.schema");
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");

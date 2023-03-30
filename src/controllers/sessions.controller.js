@@ -1,6 +1,6 @@
 const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 const { HttpError } = require("../utils/error.utils");
-const { UsersModel } = require("../models/schemas/users.model");
+const { UsersModel } = require("../models/schemas/users.schema");
 const { generateToken } = require("../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
 const { SESSION_KEY } = require("../config/env.config");

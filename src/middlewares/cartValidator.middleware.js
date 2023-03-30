@@ -1,4 +1,4 @@
-const { UsersModel } = require("../models/schemas/users.model");
+const { UsersModel } = require("../models/schemas/users.schema");
 const { apiErrorResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 const cartValidatorMiddleware = async (req, res, next) => {

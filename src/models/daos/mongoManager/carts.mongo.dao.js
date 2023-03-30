@@ -1,6 +1,6 @@
 const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
-const { CartsModel } = require("../../schemas/carts.model");
-const { ProductsModel } = require("../../schemas/products.model");
+const { CartsModel } = require("../../schemas/carts.schema");
+const { ProductsModel } = require("../../schemas/products.schema");
 
 class CartsMongoDao {
   constructor() {

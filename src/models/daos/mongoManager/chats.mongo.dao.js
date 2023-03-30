@@ -1,5 +1,5 @@
 const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
-const { MessagesModel } = require("../../schemas/chat.model");
+const { MessagesModel } = require("../../schemas/chat.schema");
 
 class ChatsMongoDao {
   constructor() {
