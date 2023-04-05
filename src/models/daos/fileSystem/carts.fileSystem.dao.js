@@ -1,23 +1,19 @@
 const fs = require("fs/promises");
-const { existsSync } = require("fs");
+// const { existsSync } = require("fs");
+const uuid = require("uuid");
 
 class CartsFileSystemDao {
-  static lastCartId = 0;
-
   constructor(path) {
     this.path = path;
   }
 
   async getCarts() {
-    if (existsSync(this.path)) {
+    try {
       const dataCarts = await fs.readFile(this.path, "utf-8");
       const allCarts = JSON.parse(dataCarts);
-      allCarts.forEach((cart) => {
-        cart.id = Number(cart.id);
-      });
       return allCarts;
-    } else {
-      return [];
+    } catch (error) {
+      throw new Error(`Couldn't read file ${error}`);
     }
   }
 
@@ -26,26 +22,27 @@ class CartsFileSystemDao {
   }
 
   async addCart() {
-    const data = await this.getCarts();
-    CartManager.lastCartId++;
-    const newCart = {
-      id: CartManager.lastCartId,
-      products: [],
-    };
-
-    data.push(newCart);
-    await this.saveCarts(data);
-
-    return newCart;
+    try {
+      const data = await this.getCarts();
+      const newCart = {
+        id: uuid(),
+        products: [],
+      };
+      data.push(newCart);
+      await this.saveCarts(data);
+      return newCart;
+    } catch (error) {
+      throw new Error(`Error saving: ${error}`);
+    }
   }
 
-  async getCartById(id) {
-    const allCarts = await this.getCarts();
-    const cartById = allCarts.find((cart) => cart.id === id);
-    if (cartById) {
+  async getCartById(cid) {
+    try {
+      const allCarts = await this.getCarts();
+      const cartById = allCarts.find((cart) => cart.cid === id);
       return cartById;
-    } else {
-      console.error("Not found");
+    } catch (error) {
+      throw new Error(`Cart with id: ${cid} was not found: ${error}`);
     }
   }
 
@@ -112,11 +109,15 @@ class CartsFileSystemDao {
     }
   }
 
-  async deleteCart(id) {
-    const AllCarts = await this.getCarts();
-    const filteredById = AllCarts.filter((cart) => cart.id !== id);
-    await this.saveCarts(filteredById);
-    return filteredById;
+  async deleteCart(cid) {
+    try {
+      const AllCarts = await this.getCarts();
+      const filteredById = AllCarts.filter((cart) => cart.cid !== id);
+      await this.saveCarts(filteredById);
+      return filteredById;
+    } catch (error) {
+      throw new Error(`Error deleting: ${error.message}`);
+    }
   }
 }
 

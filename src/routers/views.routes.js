@@ -80,6 +80,13 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
     const cartById = await cartsDao.getCartById(cid);
 
     if (cartById) {
+      if (!cartById.products.length) {
+        res.status(404).render("cart", {
+          status: false,
+          style: "index.css",
+          data: "The cart is empty",
+        });
+      }
       const data = {
         status: true,
         title: "Cart",
@@ -89,10 +96,10 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
 
       res.render("cart", data);
     } else {
-      return res.status(404).render("cart", {
+      res.status(404).render("cart", {
         status: false,
         style: "index.css",
-        data: "The cart is empty",
+        data: "Cart not found, please try again later",
       });
     }
   } catch (error) {

@@ -1,5 +1,4 @@
-const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
-const { HttpError } = require("../utils/error.utils");
+const { apiSuccessResponse, HTTP_STATUS, HttpError } = require("../utils/api.utils");
 const { PORT } = require("../config/env.config");
 
 const { getDAOS } = require("../models/daos/daosFactory");

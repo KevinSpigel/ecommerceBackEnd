@@ -1,0 +1,39 @@
+const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
+const { UsersModel } = require("../../schemas/users.schema");
+
+class UsersMongoDao {
+  constructor() {
+    MongoDbConnection.getInstance();
+  }
+  async getUsers() {
+    const users = await UsersModel.find().lean();
+    return users;
+  }
+
+  async getUserById(id) {
+    const user = await UsersModel.findOne({ _id: id }).lean();
+    return user;
+  }
+
+  async getUserByEmail(email) {
+    const user = await UsersModel.findOne({ email }).lean();
+    return user;
+  }
+
+  async createUser(payload) {
+    const newUser = await UsersModel.create(payload);
+    return newUser;
+  }
+
+  async updateUser(id, payload) {
+    const updatedUser = await UsersModel.updateOne(
+      { _id: id },
+      {
+        $set: payload,
+      }
+    );
+    return updatedUser;
+  }
+}
+
+module.exports = UsersMongoDao;

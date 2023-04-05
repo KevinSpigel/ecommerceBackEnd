@@ -34,6 +34,16 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "carts",
   },
+
+
+
+
+//DEBERIA TENER TAMBIEN LA ORDEN ASOCIADA. PERO LA ORDEN ASOCIADA TAMBIEN TIENE LA REFERENCIA DEL CART.
+
+
+
+
+
 });
 
 module.exports = {

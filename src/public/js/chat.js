@@ -1,6 +1,5 @@
 const socketChat = io();
 
-
 // CHAT
 
 //START utility functions
@@ -52,21 +51,14 @@ const Toast = Swal.mixin({
 });
 
 //Authentification
-Swal.fire({
-  title: "Identify yourself",
-  input: "text",
-  text: "Enter your Username into the chat to log in",
-  inputValidator: (value) => {
-    return !value && "To continue, you need to write your Username ";
-  },
-  allowOutsideClick: false,
-  allowEscapeKey: false,
-  padding: "16px",
-}).then((result) => {
-  user = result.value;
+fetch("http://localhost:8080/api/sessions/current")
+  .then((response) => response.json())
+  .then((result) => {
+    const { first_name, last_name } = result.payload;
+    const user = first_name + " " +last_name;
 
-  socketChat.emit("login", user);
-});
+    socketChat.emit("login", user);
+  });
 
 //Socket logic
 

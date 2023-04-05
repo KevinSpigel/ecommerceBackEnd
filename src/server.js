@@ -1,18 +1,15 @@
 const env = require("./config/env.config");
 const express = require("express");
 const path = require("path");
-const { Server } = require("socket.io");
 const handlebars = require("express-handlebars");
 require("./config/dbConfig");
+const socketServer = require("./socket/socket.controller");
 
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
 const viewsRoutes = require("./routers/views.routes");
 const apiRoutes = require("./routers/app.routers");
-
-const ChatsMongoDao = require("./models/daos/mongoManager/chats.mongo.dao");
-const messages = new ChatsMongoDao();
 
 const app = express();
 const PORT = env.PORT;
@@ -24,31 +21,18 @@ const httpServer = app.listen(PORT, () => {
   );
 });
 
-// SOCKET
+// Server listen connection error
 
-const io = new Server(httpServer);
-
-io.on("connection", (socket) => {
-  console.log("New client connected");
-  app.set("socket", socket);
-
-  const getChats = async () => {
-    const msg = await messages.getMessages();
-    socket.emit("message-logs", msg);
-  };
-
-  socket.on("login", async (user) => {
-    await getChats();
-    socket.emit("welcome", user);
-    socket.broadcast.emit("new-user", user);
-  });
-
-  socket.on("message", async (data) => {
-    await messages.addMessages(data);
-    const msg = await messages.getMessages();
-    io.emit("message-logs", msg);
-  });
+httpServer.on("error", (error) => {
+  console.log(
+    `There was an error tryg to start the server on ${
+      httpServer.address().port
+    }`
+  );
 });
+
+// Socket
+socketServer(app, httpServer);
 
 // Template Engine
 app.engine("handlebars", handlebars.engine());

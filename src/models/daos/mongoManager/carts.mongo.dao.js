@@ -38,7 +38,7 @@ class CartsMongoDao {
   async updateCartProduct(cid, pid, quantity) {
     try {
       const cartById = await this.getCartById(cid);
-      const targetProduct = cartById.products.find((p) => p.product == pid);
+      const targetProduct = cartById.products.find((p) => p.product._id == pid);
 
       const productData = await ProductsModel.findById(pid);
 
@@ -74,13 +74,16 @@ class CartsMongoDao {
       const cartById = await this.getCartById(cid);
 
       const targetProduct = cartById.products.find(
-        (product) => product.id == pid
+        (product) => product.product._id == pid
       );
 
       if (!targetProduct) {
         throw new Error("Product not found");
       } else {
-        cartById.products = cartById.products.filter((p) => p.id !== pid);
+        cartById.products = cartById.products.filter(
+          (p) => p.product._id.toString() !== pid
+        );
+
         const result = await CartsModel.updateOne({ _id: cid }, cartById);
         return result;
       }

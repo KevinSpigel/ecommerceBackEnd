@@ -1,5 +1,4 @@
-const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
-const { HttpError } = require("../utils/error.utils");
+const { apiSuccessResponse, HTTP_STATUS, HttpError } = require("../utils/api.utils");
 
 const { getDAOS } = require("../models/daos/daosFactory");
 
@@ -51,6 +50,7 @@ class CartsController {
     const cid = req.user.cart;
     const pid = req.params.pid;
     const quantity = +req.query.quantity;
+
     try {
       const productExist = await productsDao.getProductById(pid);
 

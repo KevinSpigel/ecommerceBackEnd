@@ -4,7 +4,7 @@ const {
 } = require("../../middlewares/cartValidator.middleware");
 const { BaseRouter } = require("../base.router");
 
-class CartsRouter extends BaseRouter {
+class CartsRoutes extends BaseRouter {
   init() {
     this.get("/", ["admin"], CartsController.getCarts);
     this.get(
@@ -25,6 +25,12 @@ class CartsRouter extends BaseRouter {
       ["user", "admin"],
       CartsController.updateCartProduct
     );
+
+
+    // this.post("/:cid/purchase", ["user"], CartsController.purchaseCart);   ?????????????????????
+
+
+    ;
     this.delete(
       "/products/:pid",
       ["user", "admin"],
@@ -34,4 +40,4 @@ class CartsRouter extends BaseRouter {
   }
 }
 
-module.exports = new CartsRouter();
+module.exports = new CartsRoutes();

@@ -1,5 +1,4 @@
-const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
-const { HttpError } = require("../utils/error.utils");
+const { apiSuccessResponse, HTTP_STATUS, HttpError } = require("../utils/api.utils");
 const { UsersModel } = require("../models/schemas/users.schema");
 const { generateToken } = require("../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
@@ -7,13 +6,13 @@ const { SESSION_KEY } = require("../config/env.config");
 
 const { getDAOS } = require("../models/daos/daosFactory");
 
-const { cartsDao } = getDAOS();
+const { cartsDao, usersDao } = getDAOS();
 
 class SessionsController {
   static async register(req, res, next) {
     try {
       const { first_name, last_name, age, email, password } = req.body;
-      const user = await UsersModel.findOne({ email });
+      const user = await usersDao.getUserByEmail(email);
       if (user) {
         return res.status(400).json({ error: "User already exist" });
       }
@@ -28,7 +27,7 @@ class SessionsController {
         password: hashPassword(password),
         cart: cartForNewUser._id,
       };
-      const createdUser = await UsersModel.create(newUser);
+      const createdUser = await usersDao.createdUser(newUser);
 
       const userForCookie = {
         first_name: createdUser.first_name,

@@ -1,3 +1,12 @@
+//Sweet alert definition
+const Toast = Swal.mixin({
+  toast: true,
+  position: "top-end",
+  showConfirmButton: false,
+  timer: 3000,
+  timerProgressBar: true,
+});
+
 // Socket Client side
 // Socket server connection --> connection event
 const socket = io();
@@ -50,7 +59,16 @@ socket.on("newProduct", (data) => {
 //add product to cart button
 
 function addToCart(pid) {
-  fetch(`http://localhost:8080/api/carts/products/${pid}`, {
-    method: "POST",
-  }).then(alert("Product added to cart"));
+  const selectedQuantity = document.getElementById(`selectedQuantity-${pid}`);
+  const quantity =
+    selectedQuantity.options[selectedQuantity.selectedIndex].value;
+
+  fetch(`http://localhost:8080/api/carts/products/${pid}?quantity=${quantity}`, {
+    method: "POST"
+  }).then(
+    Toast.fire({
+      icon: "success",
+      title: "Product added to cart",
+    })
+  );
 }
