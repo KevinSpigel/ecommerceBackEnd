@@ -42,4 +42,14 @@ function removeFromCart(pid) {
 
 // checkOut
 
-// function checkOut()
+function checkOut(cid) {
+  fetch(`http://localhost:8080/api/carts/${cid}/purchase`, {
+    method: "POST",
+  }).then(() => {
+    Toast.fire({
+      icon: "success",
+      title: "Order complete",
+    });
+    window.location.href("http://localhost:8080/products");
+  });
+}

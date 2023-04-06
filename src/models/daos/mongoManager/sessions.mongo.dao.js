@@ -1,9 +1,9 @@
-const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
+const { MongoDbConnection } = require("../../../db/mongoDB/mongo.manager");
 
 class SessionsMongoDao {
-    constructor() {
-        MongoDbConnection.getInstance();
-      }
+  constructor() {
+    MongoDbConnection.getInstance();
+  }
 }
 
 module.exports = SessionsMongoDao;

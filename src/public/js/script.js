@@ -63,9 +63,12 @@ function addToCart(pid) {
   const quantity =
     selectedQuantity.options[selectedQuantity.selectedIndex].value;
 
-  fetch(`http://localhost:8080/api/carts/products/${pid}?quantity=${quantity}`, {
-    method: "POST"
-  }).then(
+  fetch(
+    `http://localhost:8080/api/carts/products/${pid}?quantity=${quantity}`,
+    {
+      method: "POST",
+    }
+  ).then(
     Toast.fire({
       icon: "success",
       title: "Product added to cart",

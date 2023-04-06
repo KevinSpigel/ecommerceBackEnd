@@ -1,3 +1,10 @@
+const {
+  apiSuccessResponse,
+  HTTP_STATUS,
+  HttpError,
+} = require("../../utils/api.utils");
+const { PORT } = require("../../config/env.config");
+
 const { getDAOS } = require("../daos/daosFactory");
 
 const { productsDao } = getDAOS();
@@ -17,4 +24,4 @@ class ProductsRepository {
   async deleteProductById() {}
 }
 
-module.exports = ProductsRepository;
+module.exports = new ProductsRepository();

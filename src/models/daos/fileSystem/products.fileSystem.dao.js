@@ -1,23 +1,21 @@
 const fs = require("fs/promises");
-const { existsSync } = require("fs");
+const { ProductsModel } = require("../../schemas/products.schema");
 
 class ProductsFileSystemDao {
-  static lastProductId = 0;
-
   constructor(path) {
     this.path = path;
   }
 
-  async loadProducts() {
-    if (existsSync(this.path)) {
+  async getProducts() {
+    try {
       const dataProducts = await fs.readFile(this.path, "utf-8");
       const allProducts = JSON.parse(dataProducts);
       allProducts.forEach((product) => {
         product.id = Number(product.id);
       });
       return allProducts;
-    } else {
-      return [];
+    } catch (error) {
+      throw new Error(`Couldn't read file ${error}`);
     }
   }
 
@@ -35,82 +33,83 @@ class ProductsFileSystemDao {
     category,
     status
   ) {
-    const data = await this.getProducts();
-    if (
-      !data.find((product) => product.code === code) &&
-      title &&
-      description &&
-      code &&
-      price &&
-      thumbnail &&
-      stock &&
-      category &&
-      status
-    ) {
-      ProductManager.lastProductId++;
+    try {
+      const allProducts = await this.getProducts();
+      if (
+        !allProducts.find((product) => product.code === code) &&
+        title &&
+        description &&
+        code &&
+        price &&
+        thumbnail &&
+        stock &&
+        category &&
+        status
+      ) {
+        const newProduct = new ProductsModel({
+          title,
+          description,
+          code,
+          price,
+          thumbnail,
+          stock,
+          category,
+          status,
+        });
 
-      const newProduct = {
-        id: ProductManager.lastProductId,
-        title,
-        description,
-        code,
-        price,
-        thumbnail,
-        stock,
-        category,
-        status,
-      };
+        allProducts.push(newProduct);
 
-      data.push(newProduct);
+        await this.saveProducts(allProducts);
 
-      await this.saveProducts(data);
-
-      return newProduct;
+        return newProduct;
+      }
+    } catch (error) {
+      throw new Error(`Error saving: ${error}`);
     }
   }
 
-  async getProducts() {
-    if (existsSync(this.path)) {
-      return await this.loadProducts();
-    } else {
-      console.error("Not found");
-    }
-  }
-
-  async getProductById(id) {
-    const allProducts = await this.getProducts();
-    const productById = allProducts.find((product) => product.id === id);
-    if (productById) {
+  async getProductById(pid) {
+    try {
+      const allProducts = await this.getProducts();
+      const productById = allProducts.find((product) => product._id === pid);
       return productById;
-    } else {
-      console.error("Not found");
+    } catch (error) {
+      throw new Error(`Product with id: ${pid} was not found: ${error}`);
     }
   }
 
   async updateProduct(id, newProductProperties) {
-    const products = await this.getProducts();
-    const foundProduct = await this.getProductById(id);
+    try {
+      const allProducts = await this.getProducts();
+      const productById = await this.getProductById(id);
 
-    const productUpdated = { ...foundProduct, ...newProductProperties };
+      const productUpdates = { ...productById, ...newProductProperties };
 
-    const updatedList = products.map((elem) => {
-      if (elem.id === productUpdated.id) {
-        return productUpdated;
-      } else {
-        return elem;
-      }
-    });
+      const updatedProduct = allProducts.map((product) => {
+        if (product._id === productUpdates._id) {
+          return productUpdates;
+        } else {
+          return product;
+        }
+      });
 
-    await this.saveProducts(updatedList);
+      await this.saveProducts(updatedProduct);
 
-    return updatedList;
+      return updatedProduct;
+    } catch (error) {
+      throw new Error(`Error updating ${error}`);
+    }
   }
 
-  async deleteProduct(id) {
-    const products = await this.getProducts();
-    const filteredById = products.filter((product) => product.id !== id);
-    await this.saveProducts(filteredById);
-    return filteredById;
+  async deleteProduct(pid) {
+    try {
+      const allProducts = await this.getProducts();
+      const filteredById = allProducts.filter((product) => product._id !== pid);
+      await this.saveProducts(filteredById);
+      return `Product with id: ${pid} was deleted successfully`;
+    } catch (error) {
+      throw new Error(`Error deleting: ${error}`);
+    }
   }
 }
 

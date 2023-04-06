@@ -1,10 +1,14 @@
-const { apiSuccessResponse, HTTP_STATUS, HttpError } = require("../utils/api.utils");
-const { UsersModel } = require("../models/schemas/users.schema");
+const {
+  apiSuccessResponse,
+  HTTP_STATUS,
+  HttpError,
+} = require("../utils/api.utils");
 const { generateToken } = require("../utils/jwt.utils");
 const { hashPassword, isValidPassword } = require("../utils/hash.utils");
 const { SESSION_KEY } = require("../config/env.config");
 
 const { getDAOS } = require("../models/daos/daosFactory");
+const sessionsRepository = require("../models/repositories/sessions.repository");
 
 const { cartsDao, usersDao } = getDAOS();
 
@@ -54,7 +58,7 @@ class SessionsController {
     try {
       const { email, password } = req.body;
 
-      const user = await UsersModel.findOne({ email });
+      const user = await usersDao.getUserByEmail(email);
       if (!user || !isValidPassword(user, password)) {
         throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Wrong email or password");
       }
@@ -106,7 +110,8 @@ class SessionsController {
   }
 
   static async currentSession(req, res, next) {
-    const response = apiSuccessResponse(req.user);
+    const currentUser = sessionsRepository.getUserSession(req);
+    const response = apiSuccessResponse(currentUser);
     return res.json(response);
   }
 }

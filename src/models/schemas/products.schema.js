@@ -32,7 +32,7 @@ const productsSchema = new mongoose.Schema({
   },
   category: {
     type: String,
-    //enum: ["category1","category2","category3"] 
+    //enum: ["category1","category2","category3"]
     //The value of category can be only one of these options
     required: true,
   },
@@ -41,7 +41,6 @@ const productsSchema = new mongoose.Schema({
     required: true,
   },
 });
-
 
 productsSchema.plugin(mongoosePaginate);
 

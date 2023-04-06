@@ -92,6 +92,7 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
         title: "Cart",
         style: "index.css",
         list: cartById.products,
+        cid
       };
 
       res.render("cart", data);

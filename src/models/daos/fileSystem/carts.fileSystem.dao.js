@@ -1,10 +1,10 @@
 const fs = require("fs/promises");
-// const { existsSync } = require("fs");
-const uuid = require("uuid");
+const { CartsModel } = require("../../schemas/carts.schema");
 
 class CartsFileSystemDao {
-  constructor(path) {
+  constructor(path, productsDao) {
     this.path = path;
+    this.productsDao = productsDao;
   }
 
   async getCarts() {
@@ -24,10 +24,7 @@ class CartsFileSystemDao {
   async addCart() {
     try {
       const data = await this.getCarts();
-      const newCart = {
-        id: uuid(),
-        products: [],
-      };
+      const newCart = new CartsModel();
       data.push(newCart);
       await this.saveCarts(data);
       return newCart;
@@ -39,80 +36,90 @@ class CartsFileSystemDao {
   async getCartById(cid) {
     try {
       const allCarts = await this.getCarts();
-      const cartById = allCarts.find((cart) => cart.cid === id);
+      const cartById = allCarts.find((cart) => cart._id === cid);
+      const allProducts = await this.productsDao.getProducts();
+
+      cartById.products = cartById.products.map((p) => {
+        const filteredProduct = allProducts.find(
+          (product) => product._id === p.product
+        );
+        return {
+          product: {
+            ...filteredProduct,
+          },
+          amount: p.amount,
+        };
+      });
+
       return cartById;
     } catch (error) {
       throw new Error(`Cart with id: ${cid} was not found: ${error}`);
     }
   }
 
-  async addProductToCart(cid, pid, quantity) {
-    const allCarts = await this.getCarts();
-    const cartById = await this.getCartById(cid);
+  async updateCartProduct(cid, pid, quantity) {
+    try {
+      const allCarts = await this.getCarts();
 
-    const targetProduct = await cartById.products.find(
-      (product) => product.product == pid
-    );
+      const cartIndex = allCarts.findIndex((c) => c._id === cid);
 
-    const updatedProduct = targetProduct
-      ? {
+      const cartById = allCarts[cartIndex];
+      const productIndex = cartById.products.findIndex(
+        (product) => product.product === pid
+      );
+
+      if (productIndex >= 0) {
+        cartById.products[productIndex] = {
           product: targetProduct.product,
-          quantity: targetProduct.quantity + +quantity,
-        }
-      : { product: pid, quantity: +quantity };
-
-    const targetCartFiltered = await cartById.products.filter(
-      (id) => id.product !== pid
-    );
-    const updatedCart = {
-      ...cartById,
-      products: [...targetCartFiltered, updatedProduct],
-    };
-    const updatedList = allCarts.map((cart) => {
-      if (cart.id === cid) {
-        return updatedCart;
+          amount: targetProduct.amount + +quantity,
+        };
       } else {
-        return cart;
+        cartById.products.push({ product: pid, amount: +quantity });
       }
-    });
 
-    await this.saveCarts(updatedList);
-    return `product id ${pid} update from id cart ${cartById.id} `;
+      allCarts[cartIndex] = cartById;
+
+      await this.saveCarts(allCarts);
+      return `product id ${pid} update from id cart ${cid} `;
+    } catch (error) {
+      throw new Error(`Couldn't add the product: ${error}`);
+    }
   }
 
   async deleteProductFromCart(cid, pid) {
-    const allCarts = await this.getCarts();
-    const cartById = await this.getCartById(cid);
+    try {
+      const allCarts = await this.getCarts();
 
-    const targetProduct = await cartById.products.find(
-      (product) => product.product == pid
-    );
+      const cartIndex = allCarts.findIndex((c) => c._id === cid);
 
-    if (!targetProduct) {
-      throw new Error("Product not found");
-    } else {
-      const filteredCart = await cartById.products.filter(
-        (id) => id.product !== pid
+      const cartById = allCarts[cartIndex];
+
+      const targetProduct = await cartById.products.find(
+        (product) => product.product === pid
       );
-      const updatedCart = { ...cartById, products: [...filteredCart] };
 
-      const updatedList = allCarts.map((cart) => {
-        if (cart.id === cid) {
-          return updatedCart;
-        } else {
-          return cart;
-        }
-      });
+      if (!targetProduct) {
+        throw new Error("Product not found");
+      } else {
+        const filteredCart = await cartById.products.filter(
+          (id) => id.product !== pid
+        );
+        const updatedCart = { ...cartById, products: [...filteredCart] };
 
-      await this.saveCarts(updatedList);
-      return `product id ${pid} delete from id cart ${cartById.id} `;
+        allCarts[cartIndex] = updatedCart;
+
+        await this.saveCarts(allCarts);
+        return `product id ${pid} delete from id cart ${cid} `;
+      }
+    } catch (error) {
+      throw new Error(`Error deleting: ${error.message}`);
     }
   }
 
   async deleteCart(cid) {
     try {
       const AllCarts = await this.getCarts();
-      const filteredById = AllCarts.filter((cart) => cart.cid !== id);
+      const filteredById = AllCarts.filter((cart) => cart._id !== cid);
       await this.saveCarts(filteredById);
       return filteredById;
     } catch (error) {

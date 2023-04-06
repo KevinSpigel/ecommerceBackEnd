@@ -55,7 +55,7 @@ fetch("http://localhost:8080/api/sessions/current")
   .then((response) => response.json())
   .then((result) => {
     const { first_name, last_name } = result.payload;
-    const user = first_name + " " +last_name;
+    const user = first_name + " " + last_name;
 
     socketChat.emit("login", user);
   });

@@ -1,4 +1,4 @@
-const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
+const { MongoDbConnection } = require("../../../db/mongoDB/mongo.manager");
 const { UsersModel } = require("../../schemas/users.schema");
 
 class UsersMongoDao {
@@ -6,8 +6,12 @@ class UsersMongoDao {
     MongoDbConnection.getInstance();
   }
   async getUsers() {
-    const users = await UsersModel.find().lean();
-    return users;
+    try {
+      const users = await UsersModel.find().lean();
+      return users;
+    } catch (error) {
+      throw new Error(`Couldn't read file ${error}`);
+    }
   }
 
   async getUserById(id) {

@@ -19,18 +19,14 @@ class CartsRoutes extends BaseRouter {
       ["user", "admin"],
       CartsController.addProductToCart
     );
-    this.put("/", ["user", "admin"], CartsController.updatePropertiesProducts);
     this.put(
       "/products/:pid",
       ["user", "admin"],
       CartsController.updateCartProduct
     );
 
+    this.post("/:cid/purchase", ["user"], CartsController.purchaseCart);
 
-    // this.post("/:cid/purchase", ["user"], CartsController.purchaseCart);   ?????????????????????
-
-
-    ;
     this.delete(
       "/products/:pid",
       ["user", "admin"],

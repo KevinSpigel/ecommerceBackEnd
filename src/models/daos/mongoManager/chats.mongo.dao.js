@@ -1,4 +1,4 @@
-const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
+const { MongoDbConnection } = require("../../../db/mongoDB/mongo.manager");
 const { MessagesModel } = require("../../schemas/chat.schema");
 
 class ChatsMongoDao {

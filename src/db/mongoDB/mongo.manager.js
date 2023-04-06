@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { DB_CONFIG } = require("../../../config/dbConfig");
+const { DB_CONFIG } = require("../../config/dbConfig");
 
 //connect with the database with SINGLETON METHOD
 

@@ -1,4 +1,9 @@
-const { GMAIL_AUTHOR, GMAIL_PWD, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN } = require("../config/env.config");
+const {
+  GMAIL_AUTHOR,
+  GMAIL_PWD,
+  TWILIO_ACCOUNT_SID,
+  TWILIO_AUTH_TOKEN,
+} = require("../config/env.config");
 const nodemailer = require("nodemailer");
 const twilio = require("twilio");
 
@@ -15,7 +20,5 @@ const transporter = nodemailer.createTransport({
 
 //SMS
 const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
-
-
 
 module.exports = { transporter, twilioClient };

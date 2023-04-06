@@ -1,4 +1,4 @@
-const { MongoDbConnection } = require("../../db/mongoDB/mongo.manager");
+const { MongoDbConnection } = require("../../../db/mongoDB/mongo.manager");
 const { CartsModel } = require("../../schemas/carts.schema");
 const { ProductsModel } = require("../../schemas/products.schema");
 
@@ -55,17 +55,6 @@ class CartsMongoDao {
       return result;
     } catch (error) {
       throw new Error(`Couldn't add the product: ${error}`);
-    }
-  }
-
-  async updatePropertiesProducts(cid, newProducts) {
-    try {
-      const cart = await this.getCartById(cid);
-      cart.products = newProducts;
-      await CartsModel.updateOne({ _id: cid }, cart);
-      return newProducts;
-    } catch (error) {
-      throw new Error(`Error updating: ${error}`);
     }
   }
 

@@ -3,7 +3,12 @@ const { UsersModel } = require("../models/schemas/users.schema");
 const GithubStrategy = require("passport-github2").Strategy;
 
 const passportJwt = require("passport-jwt");
-const { SECRET_KEY, CLIENT_ID, CLIENT_SECRET, CALLBACK_URL } = require("../config/env.config");
+const {
+  SECRET_KEY,
+  CLIENT_ID,
+  CLIENT_SECRET,
+  CALLBACK_URL,
+} = require("../config/env.config");
 const { cookieExtractor } = require("../utils/jwt.utils");
 
 const JwtStrategy = passportJwt.Strategy;

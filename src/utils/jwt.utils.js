@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const { SECRET_KEY, SESSION_KEY } = require("../config/env.config");
 
 const generateToken = (user) => {
-  const token = jwt.sign(user , SECRET_KEY, { expiresIn: "24h" });
+  const token = jwt.sign(user, SECRET_KEY, { expiresIn: "24h" });
   return token;
 };
 
