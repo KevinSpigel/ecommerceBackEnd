@@ -34,7 +34,7 @@ function removeFromCart(pid) {
 //   if (result.isConfirmed) {
 //     Swal.fire(
 //       'Confirm!',
-//       'Your order has been confirm.',
+//       'Your order has been confirm. Please, check your email',
 //       'success'
 //     )
 //   }

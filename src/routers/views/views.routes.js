@@ -1,15 +1,14 @@
 const { Router } = require("express");
-const uploader = require("../utils/multer.utils");
-const { passportCustom } = require("../middlewares/passportCustom.middleware");
-const { authToken } = require("../middlewares/authToken.middleware");
+const { passportCustom } = require("../../middlewares/passportCustom.middleware");
+const { authToken } = require("../../middlewares/authToken.middleware");
 
 const router = Router();
 
 const authMiddlewares = [passportCustom("jwt"), authToken];
 
-const { getDAOS } = require("../models/daos/daosFactory");
+const { getDAOS } = require("../../models/daos/daosFactory");
 
-const { cartsDao, productsDao } = getDAOS();
+const { cartsDao, productsDao, ticketsDao } = getDAOS();
 
 //LOGIN
 
@@ -103,6 +102,24 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
         data: "Cart not found, please try again later",
       });
     }
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
+  }
+});
+
+// TICKET
+router.get("/ticket", authMiddlewares, async (req, res, next) => {
+  //const {tid} = req.params
+  try {
+    const orderPurchased = await ticketsDao.getTicketById(tid)
+    const data = {
+      status: true,
+      title: "Your Order",
+      style: "index.css",
+      orderPurchased
+    };
+
+    res.render("ticket", data);
   } catch (error) {
     res.redirect("/static/html/failedRequest.html");
   }

@@ -1,7 +1,12 @@
-const { apiSuccessResponse, HTTP_STATUS, HttpError } = require("../utils/api.utils");
+const {
+  apiSuccessResponse,
+  HTTP_STATUS,
+  HttpError,
+} = require("../utils/api.utils");
 const { PORT } = require("../config/env.config");
 
 const { getDAOS } = require("../models/daos/daosFactory");
+const productsRepository = require("../models/repositories/products.repository");
 
 const { productsDao } = getDAOS();
 
@@ -62,17 +67,11 @@ class ProductsController {
 
   //GET product by id
   static async getProductById(req, res, next) {
+    const pid = req.params.pid;
     try {
-      const pid = req.params.pid;
-
-      const productById = await productsDao.getProductById(pid);
-
-      if (!productById) {
-        throw new HttpError(HTTP_STATUS.NOT_FOUND, "Product not found");
-      }
-
-      const response = apiSuccessResponse(productById);
-      return res.status(HTTP_STATUS.OK).json(response);
+      const result = await productsRepository.getProductById(pid);
+      const response = apiSuccessResponse(result);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -84,27 +83,9 @@ class ProductsController {
     const pid = req.params.pid;
     const product = req.body;
     try {
-      const productById = await productsDao.getProductById(pid);
-      const price = product.price ? Number(product.price) : productById.price;
-      const stock = product.stock ? Number(product.stock) : productById.stock;
-      const thumbnail = product.thumbnail
-        ? +product.thumbnail
-        : productById.thumbnail;
-      const status = product.status ? +product.status : productById.status;
-      const newProductProperties = {
-        ...product,
-        thumbnail,
-        price,
-        stock,
-        status,
-      };
-      const productUpdated = await productsDao.updateProduct(
-        pid,
-        newProductProperties
-      );
-
-      const response = apiSuccessResponse(productUpdated);
-      return res.status(HTTP_STATUS.OK).json(response);
+      const result = await productsRepository.updateProductById(pid, product);
+      const response = apiSuccessResponse(result);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -113,17 +94,11 @@ class ProductsController {
   //DELETE product by id
 
   static async deleteProduct(req, res, next) {
+    const pid = req.params.pid;
     try {
-      const pid = req.params.pid;
-
-      const deleteProduct = await productsDao.deleteProduct(pid);
-
-      if (!deleteProduct) {
-        throw new HttpError(HTTP_STATUS.NOT_FOUND, "Product not found");
-      }
-
-      const response = apiSuccessResponse(deleteProduct);
-      return res.status(HTTP_STATUS.OK).json(response);
+      const result = await productsRepository.deleteProductById(pid);
+      const response = apiSuccessResponse(result);
+      res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }

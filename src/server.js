@@ -8,7 +8,7 @@ const socketServer = require("./socket/socket.controller");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
-const viewsRoutes = require("./routers/views.routes");
+const viewsRoutes = require("./routers/views/views.routes");
 const apiRoutes = require("./routers/app.routers");
 
 const app = express();
