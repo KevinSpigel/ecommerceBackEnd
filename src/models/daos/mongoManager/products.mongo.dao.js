@@ -27,8 +27,7 @@ class ProductsMongoDao {
     price,
     thumbnail,
     stock,
-    category,
-    status
+    category
   ) {
     const obj = {
       title,
@@ -38,7 +37,6 @@ class ProductsMongoDao {
       thumbnail,
       stock,
       category,
-      status,
     };
     const newProduct = await ProductsModel.create(obj);
     return newProduct;

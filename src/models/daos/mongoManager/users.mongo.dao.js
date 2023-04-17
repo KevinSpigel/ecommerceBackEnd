@@ -38,6 +38,12 @@ class UsersMongoDao {
     );
     return updatedUser;
   }
+
+  async deleteUser(id) {
+    const deletedUser = await UsersModel.findByIdAndDelete(id);
+    return deletedUser;
+  }
+
 }
 
 module.exports = UsersMongoDao;

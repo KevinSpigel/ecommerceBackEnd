@@ -8,9 +8,13 @@ class ProductsRepository {
   constructor() {
     this.dao = productsDao;
   }
-  async addProduct() {}
+  async addProduct() {
 
-  async getAllProduct() {}
+  }
+
+  async getAllProduct() {
+    
+  }
 
   async getProductById(pid) {
     if (!pid) {

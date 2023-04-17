@@ -53,7 +53,7 @@ class TicketsFileSystemDao {
         if (ticket._id === newTicketProperties._id) {
           return newTicketProperties;
         } else {
-          return user;
+          return updatedTicket;
         }
       });
 

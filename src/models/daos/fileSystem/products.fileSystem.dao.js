@@ -11,7 +11,7 @@ class ProductsFileSystemDao {
       const dataProducts = await fs.readFile(this.path, "utf-8");
       const allProducts = JSON.parse(dataProducts);
       allProducts.forEach((product) => {
-        product.id = Number(product.id);
+        product._id = String(product._id);
       });
       return allProducts;
     } catch (error) {
@@ -30,8 +30,7 @@ class ProductsFileSystemDao {
     price,
     thumbnail,
     stock,
-    category,
-    status
+    category
   ) {
     try {
       const allProducts = await this.getProducts();
@@ -43,8 +42,7 @@ class ProductsFileSystemDao {
         price &&
         thumbnail &&
         stock &&
-        category &&
-        status
+        category
       ) {
         const newProduct = new ProductsModel({
           title,
@@ -54,7 +52,6 @@ class ProductsFileSystemDao {
           thumbnail,
           stock,
           category,
-          status,
         });
 
         allProducts.push(newProduct);

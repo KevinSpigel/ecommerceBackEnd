@@ -102,7 +102,7 @@ class SessionsController {
 
   static async logOut(req, res, next) {
     try {
-      res.clearCookie("my-session");
+      res.clearCookie(SESSION_KEY);
       res.json({ message: "Session close" });
     } catch (error) {
       next(error);

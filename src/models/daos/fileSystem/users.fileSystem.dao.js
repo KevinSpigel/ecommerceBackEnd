@@ -66,11 +66,22 @@ class UsersFileSystemDao {
         }
       });
 
-      await this.saveProducts(updatedUser);
+      await this.saveUsers(updatedUser);
 
       return updatedUser;
     } catch (error) {
       throw new Error(`Couldn't update the user: ${error}`);
+    }
+  }
+
+  async deleteUser(id) {
+    try {
+      const allUsers = await this.getUsers();
+      const filteredById = allUsers.filter((user) => user._id !== id);
+      await this.saveUsers(filteredById);
+      return `User with id: ${id} was deleted successfully`;
+    } catch (error) {
+      throw new Error(`Error deleting: ${error}`);
     }
   }
 }
