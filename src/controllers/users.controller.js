@@ -14,7 +14,7 @@ class UsersController {
   }
 
   static async getUserById(req, res, next) {
-    const { uid } = req.params;
+    const { uid } = req.body;
     try {
       const user = await usersRepository.getUserById(uid);
       const response = apiSuccessResponse(user);
@@ -25,9 +25,9 @@ class UsersController {
   }
 
   static async getUserByEmail(req, res, next) {
-    const { email } = req.params;
+    const { email } = req.body;
     try {
-      const user = await usersRepository.getUserById(email);
+      const user = await usersRepository.getUserByEmail(email);
       const response = apiSuccessResponse(user);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
@@ -47,10 +47,9 @@ class UsersController {
   }
 
   static async updateUser(req, res, next) {
-    const { uid } = req.params;
-    const payload = req.body;
+    const {payload, email} = req.body;
     try {
-      const updatedUser = await usersRepository.updateUser(uid, payload);
+      const updatedUser = await usersRepository.updateUser(payload, email);
       const response = apiSuccessResponse(updatedUser);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

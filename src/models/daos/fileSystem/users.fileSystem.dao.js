@@ -2,8 +2,9 @@ const fs = require("fs/promises");
 const { UsersModel } = require("../../schemas/users.schema");
 
 class UsersFileSystemDao {
-  constructor(path) {
+  constructor(path, cartsDao) {
     this.path = path;
+    this.cartsDao = cartsDao;
   }
   async getUsers() {
     try {
@@ -42,8 +43,13 @@ class UsersFileSystemDao {
   async createUser(payload) {
     try {
       const allUsers = await this.getUsers();
-      const newUser = new UsersModel(payload);
-      allUsers.push(newUser);
+      const newCart = await this.cartsDao.addCart();
+      const newUser = {
+        ...payload,
+        newCart,
+      };
+      const createUser = new UsersModel(newUser);
+      allUsers.push(createUser);
       await this.saveUsers(allUsers);
       return newUser;
     } catch (error) {

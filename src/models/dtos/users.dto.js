@@ -1,8 +1,8 @@
 class CurrentUserDTO {
   constructor(payload) {
-    this.first_name = payload.name;
-    this.last_name = payload.lastName;
-    this.full_name = `${payload.name} ${payload.lastName || ""}`.trim();
+    this.firstName = payload.first_name;
+    this.lastName = payload.last_name;
+    this.fullName = `${payload.first_name} ${payload.last_name || ""}`.trim();
     this.email = payload.email;
     this.role = payload.role;
   }

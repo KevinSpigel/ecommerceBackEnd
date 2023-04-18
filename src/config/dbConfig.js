@@ -9,7 +9,6 @@ const DB_CONFIG = {
     chats: process.cwd() + "/src/db/files/chatsDB.json",
     users: process.cwd() + "/src/db/files/usersDB.json",
     tickets: process.cwd() + "/src/db/files/ticketsDB.json",
-    sessions: process.cwd() + "/src/db/files/sessionsDB.json",
   },
   mongoDb: {
     uri: MONGO_URI,

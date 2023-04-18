@@ -29,7 +29,17 @@ class UsersMongoDao {
     return newUser;
   }
 
-  async updateUser(id, payload) {
+  async updateUserByEmail(email, payload) {
+    const updatedUser = await UsersModel.updateOne(
+      { email: email },
+      {
+        $set: payload,
+      }
+    );
+    return updatedUser;
+  }
+
+  async updateUserById(id, payload) {
     const updatedUser = await UsersModel.updateOne(
       { _id: id },
       {
