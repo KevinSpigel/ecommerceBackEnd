@@ -8,6 +8,8 @@ const socketServer = require("./socket/socket.controller");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
+const addLogger = require("./middlewares/logger.middleware");
+
 const viewsRoutes = require("./routers/views/views.routes");
 const apiRoutes = require("./routers/app.routers");
 
@@ -45,6 +47,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/static", express.static(path.resolve(__dirname, "./public")));
 app.use(cookieParser());
 app.use(passport.initialize());
+app.use(addLogger);
 
 // Routes
 app.use(viewsRoutes);
