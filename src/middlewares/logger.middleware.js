@@ -1,12 +1,15 @@
-const { devLogger, prodlogger } = require("../logger/logger");
+const args = require("../config/args.config");
 
-// if (process.env.NODE_ENV !== "production") {
- 
-// }
+const { devLogger, prodLogger } = require("../logger/logger");
+
+const environment = args.mode;
+
+const logger = (environment !== "production") ? devLogger : prodLogger;
+
 
 const addLogger = (req, res, next) => {
-  req.logger = prodlogger; //falta logica segun entorno de desarrollo
-  prodlogger.info(
+  req.logger = logger;
+  logger.info(
     `[${req.method}]=> ${req.url} - ${new Date().toLocaleDateString()}`
   );
   next();

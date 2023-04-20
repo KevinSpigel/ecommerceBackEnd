@@ -5,6 +5,7 @@ const cartsRoutes = require("./carts/carts.routes");
 const sessionsRoutes = require("./sessions/sessions.routes");
 const mocksProductsRoutes = require("./mocks/mocksProducts.routes");
 const usersRoutes = require("./users/users.routes");
+const loggersTestRoutes = require("./loggers/loggersTest.routes");
 
 const router = Router();
 
@@ -13,6 +14,7 @@ router.use("/carts", cartsRoutes.getRouter());
 router.use("/sessions", sessionsRoutes);
 router.use("/users", usersRoutes.getRouter());
 router.use("/mockingproducts", mocksProductsRoutes.getRouter());
+router.use("/loggerTest", loggersTestRoutes.getRouter());
 
 router.use(errorMiddleware);
 
