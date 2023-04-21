@@ -1,8 +1,8 @@
-const ticketsService = require("../../services/tickets.service");
 const { HTTP_STATUS, HttpError } = require("../../utils/api.utils");
 const { getDAOS } = require("../daos/daosFactory");
 const { UpdateProductDTO } = require("../dtos/products.dto");
 const { TicketDTO } = require("../dtos/tickets.dto");
+const ticketsService = require("../../services/tickets.service");
 
 const { productsDao, cartsDao } = getDAOS();
 
@@ -70,22 +70,26 @@ class CartsRepository {
     return cartDelete;
   }
 
-  async purchaseCart(cid, purchaser, payload) {
-    if (!Object.keys(payload).length) {
+  async purchaseCart(req, cid, purchaser, payload) {
+    if (!cid) {
+      throw new HttpError("Missing Cart ID value", HTTP_STATUS.BAD_REQUEST);
+    }
+    if (!Array.isArray(payload) || payload.length === 0) {
       throw new HttpError("Missing products", HTTP_STATUS.BAD_REQUEST);
     }
-    payload.totalPrice = 0;
+
+    let totalPrice = 0;
 
     const notSoldItems = [];
 
     await payload.forEach(async (item) => {
       if (item.amount > item.product.stock) {
-        console.log(
+        req.logger.debug(
           `Not enough stock for this item ${item.product.title} with id: ${item.product._id}`
         );
-        notSoldItems.push(item)
+        notSoldItems.push(item);
       } else {
-        payload.totalPrice += item.amount * item.product.price;
+        totalPrice += item.amount * item.product.price;
         await cartsDao.deleteProductFromCart(cid, item.product._id);
         const updateProductPayload = {};
         updateProductPayload.stock = item.product.stock - item.amount;
@@ -94,10 +98,12 @@ class CartsRepository {
         }
         const productPayloadDTO = new UpdateProductDTO(updateProductPayload);
         await productsDao.updateProduct(item.product._id, productPayloadDTO);
-        console.log(`Item ${item.product.title} deleted from cart: ${cid}`);
+        req.logger.debug(
+          `Item ${item.product.title} deleted from cart: ${cid}`
+        );
       }
     });
-    const amount = payload.totalPrice;
+    const amount = totalPrice;
     if (!amount) {
       throw new HttpError(
         "Not enough stock for purchase any product",
@@ -105,7 +111,7 @@ class CartsRepository {
       );
     }
 
-    const order = new TicketDTO(purchaser, amount, products);
+    const order = new TicketDTO(purchaser, amount, payload);
     const createNewTicket = await ticketsService.generateTicket(order);
     return createNewTicket;
   }

@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const { getDAOS } = require("../models/daos/daosFactory");
+const { logger } = require("../logger/logger");
 
 const { chatsDao } = getDAOS();
 
@@ -9,7 +10,7 @@ module.exports = (app, httpServer) => {
   const io = new Server(httpServer);
 
   io.on("connection", (socket) => {
-    console.log("New client connected");
+    logger.debug("New client connected");
     app.set("socket", socket);
 
     const getChats = async () => {

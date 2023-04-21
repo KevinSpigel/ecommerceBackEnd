@@ -1,15 +1,8 @@
-const args = require("../config/args.config");
-
-const { devLogger, prodLogger } = require("../logger/logger");
-
-const environment = args.mode;
-
-const logger = (environment !== "production") ? devLogger : prodLogger;
-
+const { logger } = require("../logger/logger");
 
 const addLogger = (req, res, next) => {
   req.logger = logger;
-  logger.info(
+  logger.http(
     `[${req.method}]=> ${req.url} - ${new Date().toLocaleDateString()}`
   );
   next();

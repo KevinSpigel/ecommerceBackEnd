@@ -8,10 +8,12 @@ const socketServer = require("./socket/socket.controller");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
+const { logger } = require("./logger/logger");
 const addLogger = require("./middlewares/logger.middleware");
 
 const viewsRoutes = require("./routers/views/views.routes");
 const apiRoutes = require("./routers/app.routers");
+
 
 const app = express();
 const PORT = env.PORT;
@@ -26,8 +28,8 @@ const httpServer = app.listen(PORT, () => {
 // Server listen connection error
 
 httpServer.on("error", (error) => {
-  console.log(
-    `There was an error tryg to start the server on ${
+  logger.fatal(
+    `There was an error trying to start the server on ${
       httpServer.address().port
     }`
   );

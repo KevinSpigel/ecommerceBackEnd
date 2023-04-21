@@ -6,17 +6,35 @@ class ProductsFileSystemDao {
     this.path = path;
   }
 
-  async getProducts() {
-    try {
-      const dataProducts = await fs.readFile(this.path, "utf-8");
-      const allProducts = JSON.parse(dataProducts);
-      allProducts.forEach((product) => {
-        product._id = String(product._id);
-      });
-      return allProducts;
-    } catch (error) {
-      throw new Error(`Couldn't read file ${error}`);
-    }
+  async getProducts({ limit, page, query, sort }) {
+    const dataProducts = await fs.readFile(this.path, "utf-8");
+    const allProducts = JSON.parse(dataProducts);
+    const filteredProducts = query
+      ? allProducts.filter((product) => product.category === query)
+      : allProducts;
+
+    const sortedProducts = sort
+      ? filteredProducts.sort((a, b) => {
+          return sort === "asc" ? a.price - b.price : b.price - a.price;
+        })
+      : filteredProducts;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const paginatedProducts = sortedProducts.slice(startIndex, endIndex);
+
+    return {
+      docs: paginatedProducts,
+      totalDocs: allProducts.length,
+      limit: limit,
+      totalPages: Math.ceil(allProducts.length / limit),
+      page: page,
+      pagingCounter: (page - 1) * limit + 1,
+      hasPrevPage: page > 1,
+      hasNextPage: page < Math.ceil(allProducts.length / limit),
+      prevPage: page > 1 ? page - 1 : null,
+      nextPage: page < Math.ceil(allProducts.length / limit) ? page + 1 : null,
+    };
   }
 
   async saveProducts(allProducts) {
@@ -32,81 +50,65 @@ class ProductsFileSystemDao {
     stock,
     category
   ) {
-    try {
-      const allProducts = await this.getProducts();
-      if (
-        !allProducts.find((product) => product.code === code) &&
-        title &&
-        description &&
-        code &&
-        price &&
-        thumbnail &&
-        stock &&
-        category
-      ) {
-        const newProduct = new ProductsModel({
-          title,
-          description,
-          code,
-          price,
-          thumbnail,
-          stock,
-          category,
-        });
+    const allProducts = await this.getProducts();
+    if (
+      !allProducts.find((product) => product.code === code) &&
+      title &&
+      description &&
+      code &&
+      price &&
+      thumbnail &&
+      stock &&
+      category
+    ) {
+      const newProduct = new ProductsModel({
+        title,
+        description,
+        code,
+        price,
+        thumbnail,
+        stock,
+        category,
+      });
 
-        allProducts.push(newProduct);
+      allProducts.push(newProduct);
 
-        await this.saveProducts(allProducts);
+      await this.saveProducts(allProducts);
 
-        return newProduct;
-      }
-    } catch (error) {
-      throw new Error(`Error saving: ${error}`);
+      return newProduct;
     }
   }
 
   async getProductById(pid) {
-    try {
-      const allProducts = await this.getProducts();
-      const productById = allProducts.find((product) => product._id === pid);
-      return productById;
-    } catch (error) {
-      throw new Error(`Product with id: ${pid} was not found: ${error}`);
-    }
+    const allProducts = await this.getProducts();
+    const productById = allProducts.find((product) => product._id === pid);
+    return productById;
   }
 
   async updateProduct(id, newProductProperties) {
-    try {
-      const allProducts = await this.getProducts();
-      const productById = await this.getProductById(id);
+    const allProducts = await this.getProducts();
+    const productById = await this.getProductById(id);
 
-      const productUpdates = { ...productById, ...newProductProperties };
+    const productUpdates = { ...productById, ...newProductProperties };
 
-      const updatedProduct = allProducts.map((product) => {
-        if (product._id === productUpdates._id) {
-          return productUpdates;
-        } else {
-          return product;
-        }
-      });
+    const updatedProduct = allProducts.map((product) => {
+      if (product._id === productUpdates._id) {
+        return productUpdates;
+      } else {
+        return product;
+      }
+    });
 
-      await this.saveProducts(updatedProduct);
+    await this.saveProducts(updatedProduct);
 
-      return updatedProduct;
-    } catch (error) {
-      throw new Error(`Error updating ${error}`);
-    }
+    return updatedProduct;
   }
 
   async deleteProduct(pid) {
-    try {
-      const allProducts = await this.getProducts();
-      const filteredById = allProducts.filter((product) => product._id !== pid);
-      await this.saveProducts(filteredById);
-      return `Product with id: ${pid} was deleted successfully`;
-    } catch (error) {
-      throw new Error(`Error deleting: ${error}`);
-    }
+    const allProducts = await this.getProducts();
+    const filteredById = allProducts.filter((product) => product._id !== pid);
+    await this.saveProducts(filteredById);
+    return filteredById;
   }
 }
 

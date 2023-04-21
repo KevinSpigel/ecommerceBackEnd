@@ -7,13 +7,9 @@ class TicketsFileSystemDao {
   }
 
   async getTickets() {
-    try {
-      const dataTickets = await fs.readFile(this.path, "utf-8");
-      const allTickets = JSON.parse(dataTickets);
-      return allTickets;
-    } catch (error) {
-      throw new Error(`Couldn't read file ${error}`);
-    }
+    const dataTickets = await fs.readFile(this.path, "utf-8");
+    const allTickets = JSON.parse(dataTickets);
+    return allTickets;
   }
 
   async saveTickets(allTickets) {
@@ -21,48 +17,33 @@ class TicketsFileSystemDao {
   }
 
   async getTicketById(id) {
-    try {
-      const allTickets = await this.getTickets();
-      const ticketById = allTickets.find((ticket) => ticket._id === id);
-      return ticketById;
-    } catch (error) {
-      throw new Error("Ticket not found");
-    }
+    const allTickets = await this.getTickets();
+    const ticketById = allTickets.find((ticket) => ticket._id === id);
+    return ticketById;
   }
 
   async createTicket(payload) {
-    try {
-      const allTickets = await this.getTickets();
-      const newTicket = new TicketsModel(payload);
-      allTickets.push(newTicket);
-      await this.saveTickets(allTickets);
-      return newTicket;
-    } catch (error) {
-      throw new Error(`Error saving: ${error}`);
-    }
+    const allTickets = await this.getTickets();
+    const newTicket = new TicketsModel(payload);
+    allTickets.push(newTicket);
+    await this.saveTickets(allTickets);
+    return newTicket;
   }
 
   async updateTicket(id, payload) {
-    try {
-      const allTickets = await this.getTickets();
-      const ticketById = await this.getTicketById(id);
+    const allTickets = await this.getTickets();
+    const ticketIndex = allTickets.findIndex((ticket) => ticket._id === id);
 
-      const newTicketProperties = { ...ticketById, ...payload };
-
-      const updatedTicket = allTickets.map((ticket) => {
-        if (ticket._id === newTicketProperties._id) {
-          return newTicketProperties;
-        } else {
-          return updatedTicket;
-        }
-      });
-
-      await this.saveTickets(updatedTicket);
-
-      return updatedTicket;
-    } catch (error) {
-      throw new Error(`Couldn't update the ticket: ${error}`);
+    if (ticketIndex === -1) {
+      throw new Error(`Ticket with ID ${id} not found`);
     }
+
+    const updatedTicket = { ...allTickets[ticketIndex], ...payload };
+    allTickets[ticketIndex] = updatedTicket;
+
+    await this.saveTickets(allTickets);
+
+    return updatedTicket;
   }
 }
 

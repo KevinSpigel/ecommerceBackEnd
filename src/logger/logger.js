@@ -1,4 +1,9 @@
-const winston = require("winston");
+const args = require("../config/args.config");
+
+const environment = args.mode;
+
+const { createLogger, format, transports } = require("winston");
+const { combine, timestamp, printf, colorize, simple } = format;
 
 const customLevelOptions = {
   levels: {
@@ -19,38 +24,60 @@ const customLevelOptions = {
   },
 };
 
-const prodLogger = winston.createLogger({
+const myFormat = printf(({ level, message, timestamp }) => {
+  return `[${timestamp}] - [${level}]: ${message}`;
+});
+
+const prodLogger = createLogger({
   levels: customLevelOptions.levels,
   transports: [
-    new winston.transports.Console({
+    new transports.Console({
       level: "info",
-      format: winston.format.combine(
-        winston.format.colorize({ colors: customLevelOptions.colors }),
-        winston.format.simple()
+      format: combine(
+        colorize({ colors: customLevelOptions.colors }),
+        simple(),
+        timestamp(),
+        myFormat
       ),
     }),
-    new winston.transports.File({
+    new transports.File({
       filename: process.cwd() + "/src/db/logs/error.log",
       level: "error",
+      format: combine(
+        colorize({ colors: customLevelOptions.colors }),
+        simple(),
+        timestamp(),
+        myFormat
+      ),
     }),
   ],
 });
 
-const devLogger = winston.createLogger({
+const devLogger = createLogger({
   levels: customLevelOptions.levels,
   transports: [
-    new winston.transports.Console({
+    new transports.Console({
       level: "debug",
-      format: winston.format.combine(
-        winston.format.colorize({ colors: customLevelOptions.colors }),
-        winston.format.simple()
+      format: combine(
+        colorize({ colors: customLevelOptions.colors }),
+        simple(),
+        timestamp(),
+        myFormat
       ),
     }),
-    new winston.transports.File({
+    new transports.File({
       filename: process.cwd() + "/src/db/logs/error.log",
       level: "error",
+      format: combine(
+        colorize({ colors: customLevelOptions.colors }),
+        simple(),
+        timestamp(),
+        myFormat
+      ),
     }),
   ],
 });
 
-module.exports = { prodLogger, devLogger };
+const logger = environment !== "production" ? devLogger : prodLogger;
+
+module.exports = { logger };

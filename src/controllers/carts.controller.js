@@ -70,7 +70,7 @@ class CartsController {
     const cid = req.user.cart;
     const pid = req.params.pid;
     try {
-      const result = await cartsRepository(cid, pid);
+      const result = await cartsRepository.deleteProductFromCart(cid, pid);
       const response = apiSuccessResponse(result);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
@@ -98,13 +98,16 @@ class CartsController {
       const cartById = await cartsRepository.getCartById(cid);
       const payload = cartById.products;
       const result = await cartsRepository.purchaseCart(
+        req,
         cid,
         purchaser,
         payload
       );
       const response = apiSuccessResponse(result);
+      req.logger.info("CheckOut Successful");
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
+      req.logger.error("CheckOut Unsuccessful");
       next(error);
     }
   }

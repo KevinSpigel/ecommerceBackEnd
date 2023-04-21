@@ -50,7 +50,7 @@ class UsersMongoDao {
   }
 
   async deleteUser(id) {
-    const deletedUser = await UsersModel.findByIdAndDelete(id);
+    const deletedUser = await UsersModel.deleteOne({ _id: id });
     return deletedUser;
   }
 

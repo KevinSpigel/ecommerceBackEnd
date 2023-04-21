@@ -1,4 +1,4 @@
-const { apiSuccessResponse } = require("../utils/api.utils");
+const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 const usersRepository = require("../models/repositories/users.repository");
 
@@ -14,7 +14,7 @@ class UsersController {
   }
 
   static async getUserById(req, res, next) {
-    const { uid } = req.body;
+    const { uid } = req.user;
     try {
       const user = await usersRepository.getUserById(uid);
       const response = apiSuccessResponse(user);
@@ -25,7 +25,7 @@ class UsersController {
   }
 
   static async getUserByEmail(req, res, next) {
-    const { email } = req.body;
+    const { email } = req.user;
     try {
       const user = await usersRepository.getUserByEmail(email);
       const response = apiSuccessResponse(user);
@@ -47,7 +47,7 @@ class UsersController {
   }
 
   static async updateUser(req, res, next) {
-    const {payload, email} = req.body;
+    const {payload, email} = req.user;
     try {
       const updatedUser = await usersRepository.updateUser(payload, email);
       const response = apiSuccessResponse(updatedUser);
@@ -58,7 +58,7 @@ class UsersController {
   }
 
   static async deleteUser(req, res, next) {
-    const { uid } = req.params;
+    const { uid } = req.user;
     try {
       const deletedUser = await usersRepository.deleteUser(uid);
       const response = apiSuccessResponse(deletedUser);

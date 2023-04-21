@@ -1,5 +1,6 @@
 const { DB_CONFIG } = require("../../config/dbConfig");
 const { PERSISTENCE } = require("../../config/env.config");
+const { logger } = require("../../logger/logger");
 
 let productsDao;
 
@@ -11,8 +12,7 @@ let ticketsDao;
 
 let usersDao;
 
-
-console.log(`Using "${PERSISTENCE}" as persistence`);
+logger.debug(`Using "${PERSISTENCE}" as persistence`);
 
 switch (PERSISTENCE) {
   case "FILES": {

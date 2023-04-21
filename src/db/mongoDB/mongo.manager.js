@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { DB_CONFIG } = require("../../config/dbConfig");
+const { logger } = require("../../logger/logger");
 
 //connect with the database with SINGLETON METHOD
 
@@ -11,10 +12,10 @@ class MongoDbConnection {
     mongoose
       .connect(DB_CONFIG.mongoDb.uri)
       .then(() => {
-        console.log("Database connection successful");
+        logger.info("Database connection successful");
       })
       .catch((error) => {
-        console.log("Database connection error");
+        logger.fatal("Database connection error");
         throw error;
       });
   }

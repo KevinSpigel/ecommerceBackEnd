@@ -25,7 +25,7 @@ class UsersRepository {
     if (!email) {
       throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing param");
     }
-    const user = await usersDao.getUserByeEmail(email);
+    const user = await usersDao.getUserByEmail(email);
     if (!user) {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }

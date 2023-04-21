@@ -1,3 +1,4 @@
+const { PORT } = require("../../config/env.config");
 const { HTTP_STATUS, HttpError } = require("../../utils/api.utils");
 
 const { getDAOS } = require("../daos/daosFactory");
@@ -8,12 +9,45 @@ class ProductsRepository {
   constructor() {
     this.dao = productsDao;
   }
-  async addProduct() {
+  async addProduct(req) {
+    const addNewProduct = req.body;
+    const socket = req.app.get("socket");
+    const filename = req.file.filename;
 
+    const newProduct = await productsDao.addProduct(
+      addNewProduct.title,
+      addNewProduct.description,
+      addNewProduct.code,
+      +addNewProduct.price,
+      (addNewProduct.thumbnail = filename),
+      +addNewProduct.stock,
+      addNewProduct.category,
+      addNewProduct.status
+    );
+    socket.emit("newProduct", newProduct);
+    return newProduct;
   }
 
-  async getAllProduct() {
-    
+  async getAllProduct(req) {
+    const limit = req.query.limit || 10;
+    const products = await productsDao.getProducts(req.query);
+    const data = {
+      status: "success",
+      payload: products.doc,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      nextLink: products.hasNextPage
+        ? `http://localhost:${PORT}${req.baseUrl}/?limit=${limit}&page=${payload.nextPage}`
+        : null,
+      prevLink: products.hasPrevPage
+        ? `http://localhost:${PORT}${req.baseUrl}/?page=/${payload.prevPage}`
+        : null,
+    };
+    return data;
   }
 
   async getProductById(pid) {
