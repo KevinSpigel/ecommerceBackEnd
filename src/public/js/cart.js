@@ -21,7 +21,7 @@ function removeFromCart(pid) {
   });
 }
 
-//Sweet alert definition
+//Sweet alert CheckOut
 Swal.fire({
   title: "CheckOut confirmation",
   text: "Do you want to finalize the checkout?",

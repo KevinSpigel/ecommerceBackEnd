@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const ticketcollection = "tickets";
 const ticketSchema = new mongoose.Schema({
-  code: { type: String, required: true },
+  code: { type: String, required: true, unique: true },
   purchase_datetime: { type: String, required: true },
   purchaser: {
     type: String,

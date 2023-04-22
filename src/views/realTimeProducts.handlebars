@@ -22,7 +22,7 @@
       class="d-flex flex-wrap justify-content-around mt-4" id="product-list-container">
       {{#if status}}
         {{#each list}}
-          <div id="pid" value="{{this._id}}" class="card card-product" style="width: 18rem;">
+          <div id="pid" value="{{this._id}}" class="d-flex card card-product" style="width: 18rem;">
             <img
               class="card-img-top"
               src="/static/img/{{this.thumbnail}}"
@@ -32,8 +32,9 @@
               <h3 class="card-title">{{this.title}}</h3>
               <h5 class="card-title">${{this.price}}</h5>
               <p class="card-text">{{this.description}}</p>
-              <h5 class="card-text">Stock: {{this.stock}}</h5>
+              
               {{#if stock}}
+              <h5 class="card-text">Stock: {{this.stock}}</h5>
               <div class="d-flex row justify-content-center gap-3">
                 <div class="col-5">
                 <select id="selectedQuantity-{{this._id}}" class="form-select form-select-sm text-center" aria-label="Default select example">
@@ -54,7 +55,7 @@
               </div>
               </div>
               {{else}}
-                <button class="btn btn-secondary" disabled>Out of stock</button>
+                <button class="btn btn-secondary mt-5" disabled>Out of stock</button>
               {{/if}}
             </div>
           </div>
