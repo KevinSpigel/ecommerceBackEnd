@@ -48,6 +48,7 @@ switch (PERSISTENCE) {
   }
 
   default: {
+    logger.fatal("An invalid persistence method was provided");
     throw new Error("Please provide a valid persistence method");
   }
 }
