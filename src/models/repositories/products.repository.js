@@ -22,7 +22,6 @@ class ProductsRepository {
       (addNewProduct.thumbnail = filename),
       +addNewProduct.stock,
       addNewProduct.category,
-      addNewProduct.status
     );
     socket.emit("newProduct", newProduct);
     return newProduct;

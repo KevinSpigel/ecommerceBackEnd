@@ -22,6 +22,8 @@ function removeFromCart(pid) {
 }
 
 //Sweet alert CheckOut
+
+const checkOut = (cid) =>{
 Swal.fire({
   title: "CheckOut confirmation",
   text: "Do you want to finalize the checkout?",
@@ -44,3 +46,4 @@ Swal.fire({
     });
   }
 });
+}
