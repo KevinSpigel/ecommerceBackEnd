@@ -41,7 +41,7 @@ const prodLogger = createLogger({
       ),
     }),
     new transports.File({
-      filename: process.cwd() + "/src/db/logs/error.log",
+      filename: process.cwd() + "/error.log",
       level: "error",
       format: combine(
         colorize({ colors: customLevelOptions.colors }),
@@ -66,7 +66,7 @@ const devLogger = createLogger({
       ),
     }),
     new transports.File({
-      filename: process.cwd() + "/src/db/logs/error.log",
+      filename: process.cwd() + "/error.log",
       level: "error",
       format: combine(
         colorize({ colors: customLevelOptions.colors }),
