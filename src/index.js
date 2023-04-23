@@ -14,8 +14,9 @@ if (cluster.isPrimary) {
   for (let i = 0; i < cores; i++) {
     cluster.fork();
   }
-  cluster.on("error", () => {
-    process.disconnect();
+  cluster.on("exit", (worker) => {
+    logger.info(`Worker ${+worker.process.pid} has ended`);
+    cluster.fork();
   });
 } else {
   // Listen
@@ -34,7 +35,6 @@ if (cluster.isPrimary) {
         httpServer.address().port
       }`
     );
-    process.send(error);
   });
 
   // Socket
