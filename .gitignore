@@ -14,7 +14,7 @@
 
 # logs
 !/logs
-
+error.log
 
 # misc
 .DS_Store
