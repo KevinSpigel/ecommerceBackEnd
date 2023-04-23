@@ -6,7 +6,6 @@ require("./config/dbConfig");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
-const { logger } = require("./logger/logger");
 const addLogger = require("./middlewares/logger.middleware");
 
 const viewsRoutes = require("./routers/views/views.routes");

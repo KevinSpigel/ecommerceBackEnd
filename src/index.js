@@ -14,6 +14,9 @@ if (cluster.isPrimary) {
   for (let i = 0; i < cores; i++) {
     cluster.fork();
   }
+  cluster.on("error", () => {
+    process.disconnect();
+  });
 } else {
   // Listen
   const httpServer = app.listen(PORT, () => {
@@ -31,8 +34,21 @@ if (cluster.isPrimary) {
         httpServer.address().port
       }`
     );
+    process.send(error);
   });
 
   // Socket
   socketServer(app, httpServer);
+
+  // Add error handling for uncaught exceptions
+  process.on("uncaughtException", (error) => {
+    logger.error(`Uncaught exception: ${error.message}`);
+    process.exit(1);
+  });
+
+  // Add error handling for unhandled promise rejections
+  process.on("unhandledRejection", (error) => {
+    logger.error(`Unhandled promise rejection: ${error.message}`);
+    process.exit(1);
+  });
 }
