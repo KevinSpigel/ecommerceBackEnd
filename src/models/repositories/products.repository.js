@@ -32,7 +32,7 @@ class ProductsRepository {
     const products = await productsDao.getProducts(req.query);
     const data = {
       status: "success",
-      payload: products.doc,
+      payload: products.docs,
       totalPages: products.totalPages,
       prevPage: products.prevPage,
       nextPage: products.nextPage,
