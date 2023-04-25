@@ -21,7 +21,7 @@ class ProductsRepository {
       +addNewProduct.price,
       (addNewProduct.thumbnail = filename),
       +addNewProduct.stock,
-      addNewProduct.category,
+      addNewProduct.category
     );
     socket.emit("newProduct", newProduct);
     return newProduct;
@@ -40,10 +40,10 @@ class ProductsRepository {
       hasPrevPage: products.hasPrevPage,
       hasNextPage: products.hasNextPage,
       nextLink: products.hasNextPage
-        ? `http://localhost:${PORT}${req.baseUrl}/?limit=${limit}&page=${payload.nextPage}`
+        ? `http://localhost:${PORT}${req.baseUrl}/?limit=${limit}&page=${products.nextPage}`
         : null,
       prevLink: products.hasPrevPage
-        ? `http://localhost:${PORT}${req.baseUrl}/?page=/${payload.prevPage}`
+        ? `http://localhost:${PORT}${req.baseUrl}/?page=/${products.prevPage}`
         : null,
     };
     return data;
