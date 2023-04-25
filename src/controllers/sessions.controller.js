@@ -1,4 +1,4 @@
-const { apiSuccessResponse } = require("../utils/api.utils");
+const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 const sessionsRepository = require("../models/repositories/sessions.repository");
 
@@ -15,7 +15,7 @@ class SessionsController {
         password
       );
       const response = apiSuccessResponse("User registered successfully!");
-      return res.json(response);
+      return res.status(HTTP_STATUS.CREATED).json(response);
     } catch (error) {
       next(error);
     }
@@ -26,7 +26,7 @@ class SessionsController {
     try {
       const loginUser = await sessionsRepository.login(res, email, password);
       const response = apiSuccessResponse("User logued in successfully!");
-      return res.json(response);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -39,7 +39,7 @@ class SessionsController {
       const response = apiSuccessResponse(
         "User logued in successfully with github!"
       );
-      return res.json(response);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -49,7 +49,7 @@ class SessionsController {
     try {
       const clearCookie = await sessionsRepository.logOutSession(res);
       const response = apiSuccessResponse("Session close");
-      return res.json(response);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }
@@ -59,7 +59,7 @@ class SessionsController {
     try {
       const currentUser = await sessionsRepository.getUserSession(req);
       const response = apiSuccessResponse(currentUser);
-      return res.json(response);
+      return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);
     }

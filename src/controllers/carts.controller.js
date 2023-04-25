@@ -1,4 +1,4 @@
-const { apiSuccessResponse } = require("../utils/api.utils");
+const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
 
 const cartsRepository = require("../models/repositories/carts.repository");
 class CartsController {
@@ -16,7 +16,7 @@ class CartsController {
   //GET all carts
   static async getCarts(req, res, next) {
     try {
-      const result = await cartsRepository.getCarts();
+      const result = await cartsRepository.getAllCarts();
       const response = apiSuccessResponse(result);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
@@ -80,7 +80,7 @@ class CartsController {
 
   //DELETE cart by id. Empty cart
   static async deleteCart(req, res, next) {
-    const cid = req.user.cart;
+    const cid = req.params.cid;
     try {
       const result = await cartsRepository.deleteCart(cid);
       const response = apiSuccessResponse(result);
