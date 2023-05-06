@@ -4,9 +4,7 @@ FROM node
 #Create internal folder to save the project
 WORKDIR /app
 
-#Copying the package.json to dockeroperations folder
-COPY package*.json ./
-
+#Copying the content of the project into the directory created with WORKDIR command "/app"
 COPY . .
 
 #Run npm install to install the dependencies
