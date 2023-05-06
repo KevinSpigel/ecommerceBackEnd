@@ -1,4 +1,4 @@
-const { DB_CONFIG } = require("../../config/dbConfig");
+const { DB_CONFIG } = require("../../config/db.config");
 const { PERSISTENCE } = require("../../config/env.config");
 const { logger } = require("../../logger/logger");
 

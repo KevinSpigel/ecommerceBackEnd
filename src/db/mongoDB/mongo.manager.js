@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const { DB_CONFIG } = require("../../config/dbConfig");
+const { DB_CONFIG } = require("../../config/db.config");
 const { logger } = require("../../logger/logger");
 const { PERSISTENCE } = require("../../config/env.config");
 
