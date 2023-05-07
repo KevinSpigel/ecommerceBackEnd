@@ -16,9 +16,21 @@ const generateProduct = () => {
   };
 };
 
+const ages = [];
+for (let i = 0; i <= 60; i++) {
+  ages.push(i + 14);
+}
+
 const generateUser = () => {
   return {
     _id: faker.database.mongodbObjectId(),
+    first_name: faker.name.firstName(),
+    last_name: faker.name.lastName(),
+    email: faker.internet.email(),
+    age: faker.helpers.arrayElement(ages),
+    password: "1234",
+    role: faker.helpers.arrayElements(["user", "admin", "premium"]),
+    cart: faker.database.mongodbObjectId(),
   };
 };
 
