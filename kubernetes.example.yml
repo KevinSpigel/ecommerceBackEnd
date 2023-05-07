@@ -17,7 +17,7 @@ metadata:
 spec:
   replicas: XXX
   selector:
-    matchLabels: 
+    matchLabels:
       app: kubernetes pod name
   template:
     metadata:
@@ -27,9 +27,37 @@ spec:
       containers:
         - name: kubernetes container name
           image: image name
-          ports: 
+          ports:
             - containerPort: XXX
           env:
-            - name: env variables name
-              value: XXX                              
+            - name: PORT
+              value: "XXX"
+            - name: SECRET_KEY
+              value: "XXX"
+            - name: SESSION_KEY
+              value: "XXX"
+            - name: MONGO_URI
+              value: "XXX"
+            - name: PERSISTENCE
+              value: "MONGO or FILES"
+            - name: CLIENT_ID
+              value: "XXX"
+            - name: CLIENT_SECRET
+              value: "XXX"
+            - name: CALLBACK_URL
+              value: "XXX"
+            - name: GMAIL_AUTHOR
+              value: "XXX"
+            - name: GMAIL_PWD
+              value: "XXX"
+            - name: TWILIO_ACCOUNT_SID
+              value: "XXX"
+            - name: TWILIO_AUTH_TOKEN
+              value: "XXX"
+            - name: TWILIO_PHONE_NUMBER
+              value: "XXX"
+            - name: WILIO_VERIFIED_CALLER
+              value: "XXX"
+            - name: NODE_ENV
+              value: "XXX"
           imagePullPolicy: Always
