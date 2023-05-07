@@ -16,4 +16,10 @@ const generateProduct = () => {
   };
 };
 
-module.exports = { generateProduct };
+const generateUser = () => {
+  return {
+    _id: faker.database.mongodbObjectId(),
+  };
+};
+
+module.exports = { generateProduct, generateUser };
