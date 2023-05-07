@@ -6,3 +6,7 @@
 
 # logs
 error.log
+
+# kubernetes
+*.yml
+!kubernetes.example.yml

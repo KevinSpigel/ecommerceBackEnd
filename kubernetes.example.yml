@@ -1,0 +1,35 @@
+apiVersion: version number
+kind: Service
+metadata:
+  name: kubernetes service name
+spec:
+  selector:
+    app: kubernetes pod name
+  ports:
+    - port: XX
+      targetPort: XX
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes deployment name
+spec:
+  replicas: XXX
+  selector:
+    matchLabels: 
+      app: kubernetes pod name
+  template:
+    metadata:
+      labels:
+        app: kubernetes pod name
+    spec:
+      containers:
+        - name: kubernetes container name
+          image: image name
+          ports: 
+            - containerPort: XXX
+          env:
+            - name: env variables name
+              value: XXX                              
+          imagePullPolicy: Always
