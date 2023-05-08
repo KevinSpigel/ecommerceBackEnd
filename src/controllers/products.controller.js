@@ -56,8 +56,9 @@ class ProductsController {
 
   static async deleteProduct(req, res, next) {
     const pid = req.params.pid;
+    const user = req.user;
     try {
-      const result = await productsRepository.deleteProductById(pid);
+      const result = await productsRepository.deleteProductById(pid, user);
       const response = apiSuccessResponse(result);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

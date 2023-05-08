@@ -9,27 +9,31 @@ class CartsRoutes extends BaseRouter {
     this.get("/", ["admin"], CartsController.getCarts);
     this.get(
       "/:cid",
-      ["user", "admin"],
+      ["user", "admin", "premium"],
       cartValidatorMiddleware,
       CartsController.getCartById
     );
     this.post("/", ["admin"], CartsController.addCart);
     this.post(
       "/products/:pid",
-      ["user", "admin"],
+      ["user", "admin", "premium"],
       CartsController.addProductToCart
     );
     this.put(
       "/products/:pid",
-      ["user", "admin"],
+      ["user", "admin", "premium"],
       CartsController.updateCartProduct
     );
 
-    this.post("/:cid/purchase", ["user"], CartsController.purchaseCart);
+    this.post(
+      "/:cid/purchase",
+      ["user", "admin", "premium"],
+      CartsController.purchaseCart
+    );
 
     this.delete(
       "/products/:pid",
-      ["user", "admin"],
+      ["user", "admin", "premium"],
       CartsController.deleteProductFromCart
     );
     this.delete("/:cid", ["admin"], CartsController.deleteCart);

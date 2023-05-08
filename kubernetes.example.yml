@@ -56,7 +56,7 @@ spec:
               value: "XXX"
             - name: TWILIO_PHONE_NUMBER
               value: "XXX"
-            - name: WILIO_VERIFIED_CALLER
+            - name: TWILIO_VERIFIED_CALLER
               value: "XXX"
             - name: NODE_ENV
               value: "XXX"

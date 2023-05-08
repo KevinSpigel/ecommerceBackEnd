@@ -1,10 +1,11 @@
 const { HTTP_STATUS, HttpError } = require("../../utils/api.utils");
 const { getDAOS } = require("../daos/daosFactory");
+const { getServices } = require("../../services/app.service");
 const { UpdateProductDTO } = require("../dtos/products.dto");
 const { TicketDTO } = require("../dtos/tickets.dto");
-const ticketsService = require("../../services/tickets.service");
 
 const { productsDao, cartsDao } = getDAOS();
+const { ticketService, messagesService } = getServices();
 
 class CartsRepository {
   async addCart() {
@@ -38,8 +39,14 @@ class CartsRepository {
     return updateProduct;
   }
 
-  async addProductToCart(cid, pid, quantity) {
+  async addProductToCart(cid, pid, quantity, user) {
     const productExist = await productsDao.getProductById(pid);
+    if (!productExist) {
+      throw new HttpError("Product not found", HTTP_STATUS.NOT_FOUND);
+    }
+    if (productExist.owner === user.email) {
+      throw new HttpError("Can not add own products", HTTP_STATUS.FORBIDDEN);
+    }
 
     if (productExist) {
       let defaultQuantity;
@@ -112,7 +119,11 @@ class CartsRepository {
     }
 
     const order = new TicketDTO(purchaser, amount, payload);
-    const createNewTicket = await ticketsService.generateTicket(order);
+    const createNewTicket = await ticketService.generateTicket(order);
+    const orderEmail = await messagesService.ticketCreatedEmail(
+      createNewTicket
+    );
+    const orderSMS = await messagesService.ticketCreatedSMS(createNewTicket);
     return createNewTicket;
   }
 }

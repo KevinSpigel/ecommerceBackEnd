@@ -19,8 +19,8 @@ const PORT = env.PORT;
 
 // Listen
 const httpServer = app.listen(PORT, () => {
-  console.log(
-    `[${process.pid}] - The Server is up and running on port ${
+  logger.info(
+    `Process ID [${process.pid}] - The Server is up and running on port ${
       httpServer.address().port
     }`
   );

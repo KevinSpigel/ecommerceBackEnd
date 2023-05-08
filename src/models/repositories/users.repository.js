@@ -71,6 +71,26 @@ class UsersRepository {
     return updatedUser;
   }
 
+  async updateUserRole(uid) {
+    if (!uid) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Must provide a valid ID");
+    }
+    const user = await usersDao.getUserById(uid);
+    if (!user) {
+      throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
+    }
+
+    let newRole;
+    if (user.role === "user") {
+      newRole = "premium";
+    } else if (user.role === "premium") {
+      newRole = "user";
+    }
+
+    const updatedUser = await usersDao.updateUserById(uid, { role: newRole });
+    return updatedUser;
+  }
+
   async deleteUser(uid) {
     if (!uid) {
       throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Must provide an id");

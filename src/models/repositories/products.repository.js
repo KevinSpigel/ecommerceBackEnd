@@ -11,6 +11,7 @@ class ProductsRepository {
   }
   async addProduct(req) {
     const addNewProduct = req.body;
+    const owner = req.user.role === "premium" ? req.user.email : "admin";
     const socket = req.app.get("socket");
     const filename = req.file.filename;
 
@@ -21,7 +22,8 @@ class ProductsRepository {
       +addNewProduct.price,
       (addNewProduct.thumbnail = filename),
       +addNewProduct.stock,
-      addNewProduct.category
+      addNewProduct.category,
+      owner
     );
     socket.emit("newProduct", newProduct);
     return newProduct;
@@ -94,10 +96,23 @@ class ProductsRepository {
     return productUpdated;
   }
 
-  async deleteProductById(pid) {
+  async deleteProductById(pid, user) {
     if (!pid) {
       throw HttpError("Please specify a product ID", HTTP_STATUS.BAD_REQUEST);
     }
+
+    const productById = await productsDao.getProductById(pid);
+    if (!productById) {
+      throw new HttpError("Product not found", HTTP_STATUS.NOT_FOUND);
+    }
+
+    if (user.role === "premium" && user.email !== product.owner) {
+      throw new HttpError(
+        "Only product's owner can delete this resource",
+        HTTP_STATUS.FORBIDDEN
+      );
+    }
+
     const deleteProduct = await productsDao.deleteProduct(pid);
     return deleteProduct;
   }

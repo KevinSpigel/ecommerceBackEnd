@@ -41,9 +41,15 @@ class CartsController {
     const cid = req.user.cart;
     const pid = req.params.pid;
     const quantity = +req.query.quantity;
+    const user = req.user;
 
     try {
-      const result = await cartsRepository.addProductToCart(cid, pid, quantity);
+      const result = await cartsRepository.addProductToCart(
+        cid,
+        pid,
+        quantity,
+        user
+      );
       const response = apiSuccessResponse(result);
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

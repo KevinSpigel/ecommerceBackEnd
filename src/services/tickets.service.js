@@ -9,4 +9,4 @@ class TicketService {
   }
 }
 
-module.exports = new TicketService();
+module.exports = { TicketService };

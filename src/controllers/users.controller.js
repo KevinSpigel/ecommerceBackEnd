@@ -47,9 +47,20 @@ class UsersController {
   }
 
   static async updateUser(req, res, next) {
-    const {payload, email} = req.user;
+    const { payload, email } = req.user;
     try {
       const updatedUser = await usersRepository.updateUser(payload, email);
+      const response = apiSuccessResponse(updatedUser);
+      return res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async changeRole(req, res, next) {
+    const { uid } = req.params;
+    try {
+      const updatedUser = await usersRepository.updateUserRole(uid);
       const response = apiSuccessResponse(updatedUser);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

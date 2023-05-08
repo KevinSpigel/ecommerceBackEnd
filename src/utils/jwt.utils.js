@@ -6,6 +6,11 @@ const generateToken = (user) => {
   return token;
 };
 
+const tokenResetPassword = (user) => {
+  const token = jwt.sign(user, SECRET_KEY, { expiresIn: "1h" });
+  return token;
+};
+
 //custom function to extract the cookie that we want
 const cookieExtractor = (req) => {
   let token = null;
@@ -15,4 +20,4 @@ const cookieExtractor = (req) => {
   return token;
 };
 
-module.exports = { generateToken, cookieExtractor };
+module.exports = { generateToken, tokenResetPassword, cookieExtractor };

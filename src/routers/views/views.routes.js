@@ -1,5 +1,7 @@
 const { Router } = require("express");
-const { passportCustom } = require("../../middlewares/passportCustom.middleware");
+const {
+  passportCustom,
+} = require("../../middlewares/passportCustom.middleware");
 const { authToken } = require("../../middlewares/authToken.middleware");
 
 const router = Router();
@@ -40,18 +42,48 @@ router.get("/register", (req, res, next) => {
   }
 });
 
+//RECOVER
+
+router.get("/recoverPassword", (req, res, next) => {
+  const data = {
+    title: "Password recover",
+    style: "index.css",
+  };
+  try {
+    res.render("recoverPassword", data);
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
+  }
+});
+
+//NEW PASSWORD
+
+router.get("/newPassword", (req, res, next) => {
+  const { token } = req.params;
+  const data = {
+    title: "Create new password",
+    style: "index.css",
+    token,
+  };
+  try {
+    res.render("newPassword", data);
+  } catch (error) {
+    res.redirect("/static/html/failedRequest.html");
+  }
+});
+
 //PRODUCTS
 
 router.get("/products", authMiddlewares, async (req, res, next) => {
   try {
     const product = await productsDao.getProducts(req.query);
     const user = req.user;
-    const isAdmin = req.user.role == "admin";
+    const isAdmin = req.user.role == "admin" || "premium";
 
     if (product.docs) {
       const data = {
         status: true,
-        title: "Real Time Products",
+        title: "Products",
         style: "index.css",
         list: product.docs,
         user,
@@ -91,7 +123,7 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
         title: "Cart",
         style: "index.css",
         list: cartById.products,
-        cid
+        cid,
       };
 
       res.render("cart", data);
@@ -109,14 +141,13 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
 
 // TICKET
 router.get("/ticket", authMiddlewares, async (req, res, next) => {
-  const {tid} = req.params
+  const { tid } = req.params;
   try {
-    const orderPurchased = await ticketsDao.getTicketById(tid)
+    const orderPurchased = await ticketsDao.getTicketById(tid);
     const data = {
-      status: true,
       title: "Your Order",
       style: "index.css",
-      orderPurchased
+      orderPurchased,
     };
 
     res.render("ticket", data);
@@ -129,7 +160,6 @@ router.get("/ticket", authMiddlewares, async (req, res, next) => {
 router.get("/chat", authMiddlewares, (req, res, next) => {
   try {
     const data = {
-      status: true,
       title: "Chat",
       style: "index.css",
     };

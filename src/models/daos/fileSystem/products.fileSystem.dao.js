@@ -48,7 +48,8 @@ class ProductsFileSystemDao {
     price,
     thumbnail,
     stock,
-    category
+    category,
+    owner
   ) {
     const allProducts = await this.getProducts();
     if (
@@ -59,7 +60,8 @@ class ProductsFileSystemDao {
       price &&
       thumbnail &&
       stock &&
-      category
+      category &&
+      owner
     ) {
       const newProduct = new ProductsModel({
         title,
@@ -69,6 +71,7 @@ class ProductsFileSystemDao {
         thumbnail,
         stock,
         category,
+        owner,
       });
 
       allProducts.push(newProduct);

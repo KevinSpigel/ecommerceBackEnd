@@ -4,16 +4,24 @@ const ProductsController = require("../../controllers/products.controller");
 
 class ProductsRoutes extends BaseRouter {
   init() {
-    this.get("/", ["user", "admin"], ProductsController.getProducts);
-    this.get("/:pid", ["user", "admin"], ProductsController.getProductById);
+    this.get("/", ["user", "admin", "premium"], ProductsController.getProducts);
+    this.get(
+      "/:pid",
+      ["user", "admin", "premium"],
+      ProductsController.getProductById
+    );
     this.post(
       "/",
-      ["admin"],
+      ["admin", "premium"],
       uploader.single("thumbnail"),
       ProductsController.addProduct
     );
-    this.put("/:pid", ["admin"], ProductsController.updateProduct);
-    this.delete("/:pid", ["admin"], ProductsController.deleteProduct);
+    this.put("/:pid", ["admin", "premium"], ProductsController.updateProduct);
+    this.delete(
+      "/:pid",
+      ["admin", "premium"],
+      ProductsController.deleteProduct
+    );
   }
 }
 
