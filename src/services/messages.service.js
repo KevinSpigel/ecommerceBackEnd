@@ -7,8 +7,7 @@ const {
 const { tokenResetPassword } = require("../utils/jwt.utils");
 
 class MessagesService {
-  
-   // Send an email to confirm a new ticket order.
+  // Send an email to confirm a new ticket order.
   async ticketCreatedEmail(createNewTicket) {
     const mailParams = {
       from: GMAIL_AUTHOR,
@@ -32,7 +31,7 @@ class MessagesService {
 
   // Send an SMS to confirm a new ticket order.
   async ticketCreatedSMS(createNewTicket) {
-    twilioClient.messages.create({
+    await twilioClient.messages.create({
       from: TWILIO_PHONE_NUMBER,
       to: TWILIO_VERIFIED_CALLER,
       body: `Your order: ${createNewTicket.code} has been confirmed. Delivery will be made within the next 2 weeks.`,
@@ -40,21 +39,18 @@ class MessagesService {
   }
 
   // Send an email with a password reset link.
-  async resetPassword(req) {
+  async resetPasswordEmail(req) {
     const { email } = req.user;
     const token = tokenResetPassword(email);
+    const link = `http://localhost:8080/newPassword?token=${token}`;
     const mailParams = {
       from: GMAIL_AUTHOR,
       to: email,
       subject: "Reset Password",
       html: `
-      <div>
-      <h4>Click the link to restore your password</h4>
-      <a href=${
-        "http://localhost:8080/api/resetPassword?token=" + token
-      }>Reset Password</a>
+      <h3>Click <a href="${link}">here</a> to reset your password. This link will expire in 1 hour.</h3>
       <h5>Ignore this email if you don't want to change your password</h5>
-      </div>`,
+      `,
       attachments: [],
     };
 

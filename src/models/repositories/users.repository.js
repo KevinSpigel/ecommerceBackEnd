@@ -1,8 +1,10 @@
 const { HttpError, HTTP_STATUS } = require("../../utils/api.utils");
 const { hashPassword } = require("../../utils/hash.utils");
 const { getDAOS } = require("../daos/daosFactory");
+const { getServices } = require("../../services/app.service");
 
 const { usersDao, cartsDao } = getDAOS();
+const { messagesService } = getServices();
 
 class UsersRepository {
   async getUsers() {
@@ -68,6 +70,39 @@ class UsersRepository {
     }
 
     const updatedUser = await usersDao.updateUserByEmail(payload, email);
+    return updatedUser;
+  }
+
+  async resetPasswordEmail(req) {
+    const sendResetPasswordEmail = await messagesService.resetPasswordEmail(
+      req
+    );
+    return sendResetPasswordEmail;
+  }
+
+  async setNewPassword(hashPassword, token) {
+    const email = jwt.verify(token, SECRET_KEY);
+
+    if (!email) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Invalid token");
+    }
+
+    const user = await usersDao.getUserByEmail(email);
+
+    if (!user) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "User not found");
+    }
+
+    if (isValidPassword(user, hashPassword)) {
+      throw new HttpError(
+        HTTP_STATUS.BAD_REQUEST,
+        "New password cannot be the same as the old one"
+      );
+    }
+
+    const updatedUser = await usersDao.updateUserByEmail(email, {
+      password: hashPassword,
+    });
     return updatedUser;
   }
 

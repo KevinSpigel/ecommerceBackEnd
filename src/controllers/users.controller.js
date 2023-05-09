@@ -57,6 +57,36 @@ class UsersController {
     }
   }
 
+  static async resetPasswordEmail(req, res, next) {
+    const { email } = req.body;
+    try {
+      const user = await usersRepository.getUserByEmail(email);
+
+      const sendResetEmail = await usersRepository.resetPasswordEmail(req);
+
+      const response = apiSuccessResponse(sendResetEmail);
+      return res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async setNewPassword(req, res, next) {
+    const { password } = req.body;
+    const { token } = req.params;
+    const hashPassword = hashPassword(password);
+    try {
+      const updatedUser = await usersRepository.setNewPassword(
+        hashPassword,
+        token
+      );
+      const response = apiSuccessResponse(updatedUser);
+      return res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async changeRole(req, res, next) {
     const { uid } = req.params;
     try {
