@@ -19,6 +19,9 @@ class CartsRepository {
   }
 
   async getCartById(cid) {
+    if (!cid) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing cart ID");
+    }
     const cartById = await cartsDao.getCartById(cid);
 
     if (!cartById) {
@@ -29,10 +32,10 @@ class CartsRepository {
   }
 
   async updateCart(cid, pid, quantity) {
-    if (!quantity) {
+    if (!quantity || !pid) {
       throw new HttpError(
         HTTP_STATUS.BAD_REQUEST,
-        "an amount of product must be provided"
+        "Missing params. A quantity or product ID of product must be provided"
       );
     }
     const updateProduct = await cartsDao.updateCartProduct(cid, pid, quantity);
@@ -68,6 +71,9 @@ class CartsRepository {
   }
 
   async deleteProductFromCart(cid, pid) {
+    if (!pid) {
+      throw new HttpError("Missing Product ID value", HTTP_STATUS.BAD_REQUEST);
+    }
     const deleteProduct = await cartsDao.deleteProductFromCart(cid, pid);
     return deleteProduct;
   }
@@ -78,9 +84,6 @@ class CartsRepository {
   }
 
   async purchaseCart(req, cid, purchaser, payload) {
-    if (!cid) {
-      throw new HttpError("Missing Cart ID value", HTTP_STATUS.BAD_REQUEST);
-    }
     if (!Array.isArray(payload) || payload.length === 0) {
       throw new HttpError("Missing products", HTTP_STATUS.BAD_REQUEST);
     }

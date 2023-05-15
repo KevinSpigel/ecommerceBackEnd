@@ -36,7 +36,7 @@ class UsersRepository {
 
   async createUser(payload) {
     const { first_name, last_name, age, email, password, cart } = payload;
-    if (!first_name || !last_name || !age || !email || !password || !cart) {
+    if (!first_name || !last_name || !age || !email || !password) {
       throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing fields");
     }
     const user = await usersDao.getUserByEmail(email);
@@ -90,7 +90,7 @@ class UsersRepository {
     const user = await usersDao.getUserByEmail(email);
 
     if (!user) {
-      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "User not found");
+      throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
     if (isValidPassword(user, hashPassword)) {

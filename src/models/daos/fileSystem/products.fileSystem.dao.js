@@ -88,6 +88,12 @@ class ProductsFileSystemDao {
     return productById;
   }
 
+  async getProductByCode(code) {
+    const allProducts = await this.getProducts();
+    const productByCode = allProducts.find((product) => product.code === code);
+    return productByCode;
+  }
+
   async updateProduct(id, newProductProperties) {
     const allProducts = await this.getProducts();
     const productById = await this.getProductById(id);

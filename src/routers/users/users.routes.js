@@ -9,7 +9,7 @@ class UsersRoutes extends BaseRouter {
       ["user", "admin", "premium"],
       UsersController.getUserById
     );
-    this.post("/", ["user", "admin"], UsersController.createUser);
+    this.post("/", ["user", "admin", "premium"], UsersController.createUser);
     this.put("/:uid", ["admin"], UsersController.updateUser);
     this.put("/premium/:uid", ["admin"], UsersController.changeRole);
     this.post(

@@ -10,3 +10,6 @@ error.log
 # kubernetes
 *.yml
 !kubernetes.example.yml
+
+# swagger documentation
+!*.doc.yml

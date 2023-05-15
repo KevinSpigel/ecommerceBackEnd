@@ -49,6 +49,11 @@ class ProductsMongoDao {
     return productById;
   }
 
+  async getProductByCode(code) {
+    const productByCode = await ProductsModel.findOne({ code: code });
+    return productByCode;
+  }
+
   async updateProduct(pid, newProductProperties) {
     const productUpdated = await ProductsModel.findByIdAndUpdate(
       pid,

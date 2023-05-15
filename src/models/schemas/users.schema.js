@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema({
   },
   last_name: {
     type: String,
+    required: true,
   },
   email: {
     type: String,
@@ -17,9 +18,11 @@ const userSchema = new mongoose.Schema({
   },
   age: {
     type: Number,
+    required: true,
   },
   password: {
     type: String,
+    required: true,
   },
   github_username: {
     type: String,

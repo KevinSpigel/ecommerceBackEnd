@@ -8,6 +8,12 @@ const socketServer = require("./socket/socket.controller");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 
+const swaggerJsDoc = require("swagger-jsdoc");
+const {
+  serve: swaggerServe,
+  setup: swaggerSetUp,
+} = require("swagger-ui-express");
+
 const { logger } = require("./logger/logger");
 const addLogger = require("./middlewares/logger.middleware");
 
@@ -35,6 +41,31 @@ httpServer.on("error", (error) => {
   );
 });
 
+// Swagger documentation
+
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.1",
+    info: {
+      title: "ecommerceServer API",
+      description: "ecommerce server API",
+      version: "1.0.0",
+      contact: {
+        email: "kevinspigel@gmail.com",
+      },
+    },
+    servers: [
+      {
+        url: `http://localhost:${PORT}`,
+        description: "Development server",
+      },
+    ],
+  },
+  apis: [`${process.cwd()}/src/docs/**/*yml`],
+};
+
+const specs = swaggerJsDoc(swaggerOptions);
+
 // Socket
 socketServer(app, httpServer);
 
@@ -54,6 +85,7 @@ app.use(addLogger);
 // Routes
 app.use(viewsRoutes);
 app.use("/api", apiRoutes);
+app.use("/api/doc", swaggerServe, swaggerSetUp(specs));
 
 // Add error handling for uncaught exceptions
 process.on("uncaughtException", (error) => {

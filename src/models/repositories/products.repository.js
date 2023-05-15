@@ -15,6 +15,12 @@ class ProductsRepository {
     const socket = req.app.get("socket");
     const filename = req.file.filename;
 
+    const existingProduct = await productsDao.getProductByCode(
+      addNewProduct.code
+    );
+    if (existingProduct) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Product already exist");
+    }
     const newProduct = await productsDao.addProduct(
       addNewProduct.title,
       addNewProduct.description,
