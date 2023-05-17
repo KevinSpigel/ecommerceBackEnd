@@ -1,5 +1,7 @@
 const { HttpError, HTTP_STATUS } = require("../../utils/api.utils");
-const { hashPassword } = require("../../utils/hash.utils");
+const { SECRET_KEY } = require("../../config/env.config");
+const jwt = require("jsonwebtoken");
+const { hashPassword, isValidPassword } = require("../../utils/hash.utils");
 const { getDAOS } = require("../daos/daosFactory");
 const { getServices } = require("../../services/app.service");
 
@@ -80,11 +82,15 @@ class UsersRepository {
     return sendResetPasswordEmail;
   }
 
-  async setNewPassword(hashPassword, token) {
-    const email = jwt.verify(token, SECRET_KEY);
+  async setNewPassword(password, token) {
+    const payloadToken = jwt.verify(token, SECRET_KEY);
+    const email = payloadToken.email;
 
     if (!email) {
-      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Invalid token");
+      throw new HttpError(
+        HTTP_STATUS.BAD_REQUEST,
+        "Invalid token or expired token"
+      );
     }
 
     const user = await usersDao.getUserByEmail(email);
@@ -93,15 +99,17 @@ class UsersRepository {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
-    if (isValidPassword(user, hashPassword)) {
+    if (isValidPassword(user, password)) {
       throw new HttpError(
         HTTP_STATUS.BAD_REQUEST,
         "New password cannot be the same as the old one"
       );
     }
 
+    const hashNewPassword = hashPassword(password);
+
     const updatedUser = await usersDao.updateUserByEmail(email, {
-      password: hashPassword,
+      password: hashNewPassword,
     });
     return updatedUser;
   }

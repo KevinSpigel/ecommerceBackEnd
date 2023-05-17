@@ -23,27 +23,28 @@ function removeFromCart(pid) {
 
 //Sweet alert CheckOut
 
-const checkOut = (cid) =>{
-Swal.fire({
-  title: "CheckOut confirmation",
-  text: "Do you want to finalize the checkout?",
-  icon: "info",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Yes, proceed!",
-}).then((result) => {
-  if (result.isConfirmed) {
-    fetch(`http://localhost:8080/api/carts/${cid}/purchase`, {
-      method: "POST",
-    }).then(() => {
-      Swal.fire(
-        "Confirm!",
-        "Your order has been confirm. Please, check your email",
-        "success"
-      );
-      window.location.href("http://localhost:8080/products");
-    });
-  }
-});
-}
+const checkOut = (cid) => {
+  Swal.fire({
+    title: "CheckOut confirmation",
+    text: "Do you want to finalize the checkout?",
+    icon: "info",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, proceed!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      fetch(`http://localhost:8080/api/carts/${cid}/purchase`, {
+        method: "POST",
+      }).then(() => {
+        Swal.fire(
+          "Confirm!",
+          "Your order has been confirm. Please, check your email",
+          "success"
+        ).then(() => {
+          window.location.href("http://localhost:8080/products");
+        });
+      });
+    }
+  });
+};

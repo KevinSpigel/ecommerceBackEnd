@@ -1,37 +1,46 @@
-//Sweet alert definition
-const Toast = Swal.mixin({
-    toast: true,
-    position: "center",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-  });
+// //Sweet alert definition
+// const Toast = Swal.mixin({
+//   toast: true,
+//   position: "center",
+//   showConfirmButton: false,
+//   timer: 3000,
+//   timerProgressBar: true,
+// });
 
+// const passwordSuccess = Toast.fire({
+//   icon: "success",
+//   title: "Password updated successfully",
+// });
 
-//   Toast.fire({
-//     icon: "success",
-//     title: "Password updated successfully",
-//   })
+// const passwordError = Toast.fire({
+//   icon: "error",
+//   title: "You can't use the same password. Please, choose another one",
+// });
 
+const newPass = document.getElementById("newPass");
 
-//   Toast.fire({
-//     icon: "error",
-//     title: "You can't use the same password. Please, choose another one",
-//   })
+newPass.addEventListener("submit", (event) => {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
 
+  event.preventDefault();
+  const formData = new FormData(newPass);
+  const formPayload = Object.fromEntries(formData);
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(formPayload),
+  };
 
-form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const formData = new FormData(form);
-    const requestOptions = {
-      method: "PUT",
-      body: formData,
-      redirect: "manual",
-    };
-  
-    fetch("http://localhost:8080/api/users/newPassword", requestOptions)
-      .then((res) => console.log(res))
-      .catch((error) => console.log(error)); //Send formData object within the body request, to be received in req.body from newProduct function
-  
-    form.reset();
-  });
+  fetch(
+    `http://localhost:8080/api/users/createNewPassword?token=${token}`,
+    requestOptions
+  )
+    .then((res) => console.log(res))
+    .catch((error) => console.log(error));
+
+  newPass.reset();
+});

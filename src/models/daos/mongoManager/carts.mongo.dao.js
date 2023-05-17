@@ -46,14 +46,14 @@ class CartsMongoDao {
     const cartById = await this.getCartById(cid);
 
     const targetProduct = cartById.products.find(
-      (product) => product.product._id == pid
+      (product) => product.product._id.toString() == pid.toString()
     );
 
     if (!targetProduct) {
       throw new Error("Product not found");
     } else {
       cartById.products = cartById.products.filter(
-        (p) => p.product._id.toString() !== pid
+        (p) => p.product._id.toString() !== pid.toString()
       );
 
       const result = await CartsModel.updateOne({ _id: cid }, cartById);

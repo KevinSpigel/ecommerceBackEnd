@@ -31,7 +31,7 @@ class UsersMongoDao {
 
   async updateUserByEmail(email, payload) {
     const updatedUser = await UsersModel.updateOne(
-      { email: email },
+      { email },
       {
         $set: payload,
       }
@@ -53,7 +53,6 @@ class UsersMongoDao {
     const deletedUser = await UsersModel.deleteOne({ _id: id });
     return deletedUser;
   }
-
 }
 
 module.exports = UsersMongoDao;

@@ -8,19 +8,16 @@ const { PERSISTENCE } = require("../../config/env.config");
 class MongoDbConnection {
   static #instance;
   constructor() {
-    if (PERSISTENCE === "MONGO") {
-      mongoose.set("strictQuery", false);
-
-      mongoose
-        .connect(DB_CONFIG.mongoDb.uri)
-        .then(() => {
-          logger.info("Database connection successful");
-        })
-        .catch((error) => {
-          logger.fatal("Database connection error");
-          throw error;
-        });
-    }
+    mongoose.set("strictQuery", false);
+    mongoose
+      .connect(DB_CONFIG.mongoDb.uri)
+      .then(() => {
+        logger.info("Database connection successful");
+      })
+      .catch((error) => {
+        logger.fatal("Database connection error");
+        throw error;
+      });
   }
   static getInstance() {
     if (!this.#instance) {

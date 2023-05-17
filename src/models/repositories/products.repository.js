@@ -6,9 +6,6 @@ const { getDAOS } = require("../daos/daosFactory");
 const { productsDao } = getDAOS();
 
 class ProductsRepository {
-  constructor() {
-    this.dao = productsDao;
-  }
   async addProduct(req) {
     const addNewProduct = req.body;
     const owner = req.user.role === "premium" ? req.user.email : "admin";

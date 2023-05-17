@@ -1,6 +1,8 @@
 const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
+const { logger } = require("../logger/logger");
 
 const cartsRepository = require("../models/repositories/carts.repository");
+
 class CartsController {
   //CREATE cart
   static async addCart(req, res, next) {
@@ -100,20 +102,21 @@ class CartsController {
   static async purchaseCart(req, res, next) {
     const cid = req.user.cart;
     const purchaser = req.user.email;
+
     try {
       const cartById = await cartsRepository.getCartById(cid);
       const payload = cartById.products;
       const result = await cartsRepository.purchaseCart(
-        req,
+        logger,
         cid,
         purchaser,
         payload
       );
       const response = apiSuccessResponse(result);
-      req.logger.info("CheckOut Successful");
+      logger.info("CheckOut Successful");
       res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
-      req.logger.error("CheckOut Unsuccessful");
+      logger.error("CheckOut Unsuccessful");
       next(error);
     }
   }

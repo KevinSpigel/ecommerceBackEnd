@@ -1,3 +1,4 @@
+const path = require("path");
 const { transporter, twilioClient } = require("../utils/messenger.utils");
 const {
   GMAIL_AUTHOR,
@@ -20,7 +21,7 @@ class MessagesService {
       attachments: [
         {
           filename: "invoicePlaceholder.jpg",
-          path: __dirname + "/public/img",
+          path: path.resolve(__dirname, "../public/img/invoicePlaceholder.jpg"),
           cid: "PurchaseConfirm",
         },
       ],

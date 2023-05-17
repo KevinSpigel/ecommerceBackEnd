@@ -17,7 +17,7 @@ class UsersRoutes extends BaseRouter {
       ["user", "admin", "premium"],
       UsersController.resetPasswordEmail
     );
-    this.put(
+    this.post(
       "/createNewPassword",
       ["user", "admin", "premium"],
       UsersController.setNewPassword

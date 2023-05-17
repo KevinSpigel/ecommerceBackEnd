@@ -7,7 +7,7 @@ const generateToken = (user) => {
 };
 
 const tokenResetPassword = (email) => {
-  const token = jwt.sign(email, SECRET_KEY, { expiresIn: "1h" });
+  const token = jwt.sign({ email }, SECRET_KEY, { expiresIn: "1h" });
   return token;
 };
 

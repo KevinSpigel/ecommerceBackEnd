@@ -1,4 +1,5 @@
 const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
+const { hashPassword } = require("../utils/hash.utils");
 
 const usersRepository = require("../models/repositories/users.repository");
 
@@ -73,13 +74,10 @@ class UsersController {
 
   static async setNewPassword(req, res, next) {
     const { password } = req.body;
-    const { token } = req.params;
-    const hashPassword = hashPassword(password);
+    const { token } = req.query;
+
     try {
-      const updatedUser = await usersRepository.setNewPassword(
-        hashPassword,
-        token
-      );
+      const updatedUser = await usersRepository.setNewPassword(password, token);
       const response = apiSuccessResponse(updatedUser);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

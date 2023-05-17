@@ -73,19 +73,21 @@ class CartsFileSystemDao {
   async deleteProductFromCart(cid, pid) {
     const allCarts = await this.getCarts();
 
-    const cartIndex = allCarts.findIndex((c) => c._id === cid);
+    const cartIndex = allCarts.findIndex(
+      (c) => c._id.toString() === cid.toString()
+    );
 
     const cartById = allCarts[cartIndex];
 
     const targetProduct = await cartById.products.find(
-      (product) => product.product === pid
+      (product) => product.product.toString() === pid.toString()
     );
 
     if (!targetProduct) {
       throw new Error("Product not found");
     } else {
       const filteredCart = await cartById.products.filter(
-        (id) => id.product !== pid
+        (id) => id.product.toString() !== pid.toString()
       );
       const updatedCart = { ...cartById, products: [...filteredCart] };
 

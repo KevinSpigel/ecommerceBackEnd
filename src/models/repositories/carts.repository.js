@@ -83,7 +83,7 @@ class CartsRepository {
     return cartDelete;
   }
 
-  async purchaseCart(req, cid, purchaser, payload) {
+  async purchaseCart(logger, cid, purchaser, payload) {
     if (!Array.isArray(payload) || payload.length === 0) {
       throw new HttpError("Missing products", HTTP_STATUS.BAD_REQUEST);
     }
@@ -92,9 +92,11 @@ class CartsRepository {
 
     const notSoldItems = [];
 
-    await payload.forEach(async (item) => {
+    for (let i = 0; i < payload.length; i++) {
+      let item = payload[i];
+
       if (item.amount > item.product.stock) {
-        req.logger.debug(
+        logger.debug(
           `Not enough stock for this item ${item.product.title} with id: ${item.product._id}`
         );
         notSoldItems.push(item);
@@ -108,11 +110,10 @@ class CartsRepository {
         }
         const productPayloadDTO = new UpdateProductDTO(updateProductPayload);
         await productsDao.updateProduct(item.product._id, productPayloadDTO);
-        req.logger.debug(
-          `Item ${item.product.title} deleted from cart: ${cid}`
-        );
+        logger.debug(`Item ${item.product.title} deleted from cart: ${cid}`);
       }
-    });
+    }
+
     const amount = totalPrice;
     if (!amount) {
       throw new HttpError(
@@ -122,11 +123,16 @@ class CartsRepository {
     }
 
     const order = new TicketDTO(purchaser, amount, payload);
-    const createNewTicket = await ticketService.generateTicket(order);
-    const orderEmail = await messagesService.ticketCreatedEmail(
-      createNewTicket
-    );
-    const orderSMS = await messagesService.ticketCreatedSMS(createNewTicket);
+    const createNewTicket = await ticketService
+      .generateTicket(order)
+      .catch((error) => console.log("generate ticket error", error));
+    await messagesService
+      .ticketCreatedEmail(createNewTicket)
+      .catch((error) => console.log("EMAIL ticket error", error));
+
+    await messagesService
+      .ticketCreatedSMS(createNewTicket)
+      .catch((error) => console.log("SMS ticket error", error));
     return createNewTicket;
   }
 }

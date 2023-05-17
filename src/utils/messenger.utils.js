@@ -16,6 +16,7 @@ const transporter = nodemailer.createTransport({
     user: GMAIL_AUTHOR,
     pass: GMAIL_PWD,
   },
+  tls: { rejectUnauthorized: false },
 });
 
 //SMS

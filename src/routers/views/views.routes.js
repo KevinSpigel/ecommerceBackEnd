@@ -59,11 +59,9 @@ router.get("/recoverPassword", (req, res, next) => {
 //NEW PASSWORD
 
 router.get("/newPassword", (req, res, next) => {
-  const { token } = req.params;
   const data = {
     title: "Create new password",
     style: "index.css",
-    token,
   };
   try {
     res.render("newPassword", data);
