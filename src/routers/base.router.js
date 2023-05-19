@@ -28,7 +28,7 @@ class BaseRouter {
 
   handleAuthRoles(roles) {
     return async (req, res, next) => {
-      if (roles[0] === "PUBLIC") {
+      if (roles.includes("PUBLIC")) {
         return next();
       }
 
@@ -57,9 +57,17 @@ class BaseRouter {
   }
 
   post(path, roles, ...callbacks) {
+    let passportAuth;
+
+    if (roles.includes("PUBLIC")) {
+      passportAuth = (req, res, next) => next();
+    } else {
+      passportAuth = passportCustom("jwt");
+    }
+
     this.router.post(
       path,
-      passportCustom("jwt"),
+      passportAuth,
       this.handleAuthRoles(roles),
       this.applyCallbacks(callbacks)
     );

@@ -1,4 +1,8 @@
-const { apiSuccessResponse, HTTP_STATUS } = require("../utils/api.utils");
+const {
+  apiSuccessResponse,
+  HTTP_STATUS,
+  HttpError,
+} = require("../utils/api.utils");
 const { hashPassword } = require("../utils/hash.utils");
 
 const usersRepository = require("../models/repositories/users.repository");
@@ -77,6 +81,12 @@ class UsersController {
     const { token } = req.query;
 
     try {
+      const isTokenExpired = await usersRepository.isResetPasswordTokenExpired(
+        token
+      );
+      if (isTokenExpired) {
+        throw new HttpError(HTTP_STATUS.UNAUTHORIZED, "Token expired");
+      }
       const updatedUser = await usersRepository.setNewPassword(password, token);
       const response = apiSuccessResponse(updatedUser);
       return res.status(HTTP_STATUS.OK).json(response);

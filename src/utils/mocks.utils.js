@@ -1,4 +1,5 @@
 const { faker } = require("@faker-js/faker");
+const { hashPassword } = require("./hash.utils");
 
 faker.locale = "en";
 
@@ -21,6 +22,8 @@ for (let i = 0; i <= 60; i++) {
   ages.push(i + 14);
 }
 
+const hashMockPassword = hashPassword("1234");
+
 const generateUser = () => {
   return {
     _id: faker.database.mongodbObjectId(),
@@ -28,8 +31,8 @@ const generateUser = () => {
     last_name: faker.name.lastName(),
     email: faker.internet.email(),
     age: faker.helpers.arrayElement(ages),
-    password: "1234",
-    role: faker.helpers.arrayElements(["user", "admin", "premium"]),
+    password: hashMockPassword,
+    role: faker.helpers.arrayElement(["user", "admin", "premium"]),
     cart: faker.database.mongodbObjectId(),
   };
 };

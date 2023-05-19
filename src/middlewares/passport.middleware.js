@@ -28,21 +28,24 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       try {
         const userData = profile._json;
-        const user = await UsersModel.findOne({ emai: userData.email });
+
+        console.log({userData})
+
+        const user = await UsersModel.findOne({ email: userData.email });
         if (!user) {
           const cartForNewUser = await cartsDao.addCart();
 
           const newUser = {
             first_name: userData.name.split(" ")[0],
             last_name: userData.name.split(" ")[1],
-            age: userData.age || null,
-            email: userData.email || null,
-            password: null,
+            age: userData.age,
+            email: userData.email,
             github_username: userData.login,
             cart: cartForNewUser._id,
           };
 
           const response = await UsersModel.create(newUser);
+
           done(null, response._doc);
         } else {
           done(null, user);

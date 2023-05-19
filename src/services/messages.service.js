@@ -41,7 +41,7 @@ class MessagesService {
 
   // Send an email with a password reset link.
   async resetPasswordEmail(req) {
-    const { email } = req.user;
+    const { email } = req.body;
     const token = tokenResetPassword(email);
     const link = `http://localhost:8080/newPassword?token=${token}`;
     const mailParams = {

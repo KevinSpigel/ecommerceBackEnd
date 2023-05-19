@@ -161,13 +161,13 @@ paths:
       summary: Request link to create new password
       responses:
         "200":
-          description: Email with restore paswword email sent successfully
+          description: Email with restore password email sent successfully
           content:
             application/json:
               schema:
                 $ref: "#components/schemas/UserEmailResponse"
-        "401":
-          description: Unauthorized. Token expired
+        "404":
+          description: Not found. User with the given email not found
         "500":
           description: Internal Server Error
 
@@ -188,7 +188,9 @@ paths:
         "401":
           description: Unauthorized. Token expired
         "404":
-          description: Not found. User with the given userId not found
+          description: Not found. User with the given email not found
+        "498":
+          description: Invalid Token
         "500":
           description: Internal Server Error
 components:

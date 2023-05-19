@@ -7,6 +7,9 @@ const { authToken } = require("../../middlewares/authToken.middleware");
 const router = Router();
 
 const authMiddlewares = [passportCustom("jwt"), authToken];
+const {
+  viewsErrorMiddleware,
+} = require("../../middlewares/viewsError.middleware");
 
 const { getDAOS } = require("../../models/daos/daosFactory");
 
@@ -23,7 +26,7 @@ router.get("/", (req, res, next) => {
   try {
     res.render("login", data);
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -38,7 +41,7 @@ router.get("/register", (req, res, next) => {
   try {
     res.render("register", data);
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -52,7 +55,7 @@ router.get("/recoverPassword", (req, res, next) => {
   try {
     res.render("recoverPassword", data);
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -66,7 +69,7 @@ router.get("/newPassword", (req, res, next) => {
   try {
     res.render("newPassword", data);
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -97,7 +100,7 @@ router.get("/products", authMiddlewares, async (req, res, next) => {
       });
     }
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -108,14 +111,13 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
     const cid = req.user.cart;
     const cartById = await cartsDao.getCartById(cid);
 
-    if (cartById) {
-      if (!cartById.products.length) {
-        res.status(404).render("cart", {
-          status: false,
-          style: "index.css",
-          data: "The cart is empty",
-        });
-      }
+    if (!cartById || !cartById.products.length) {
+      res.status(404).render("cart", {
+        status: false,
+        style: "index.css",
+        data: "The cart is empty",
+      });
+    } else {
       const data = {
         status: true,
         title: "Cart",
@@ -125,15 +127,9 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
       };
 
       res.render("cart", data);
-    } else {
-      res.status(404).render("cart", {
-        status: false,
-        style: "index.css",
-        data: "Cart not found, please try again later",
-      });
     }
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -150,7 +146,7 @@ router.get("/ticket", authMiddlewares, async (req, res, next) => {
 
     res.render("ticket", data);
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
 
@@ -164,8 +160,10 @@ router.get("/chat", authMiddlewares, (req, res, next) => {
 
     res.render("chat", data);
   } catch (error) {
-    res.redirect("/static/html/failedRequest.html");
+    next();
   }
 });
+
+router.use(viewsErrorMiddleware);
 
 module.exports = router;

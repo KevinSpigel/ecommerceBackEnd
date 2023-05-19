@@ -75,6 +75,16 @@ class UsersRepository {
     return updatedUser;
   }
 
+  async isResetPasswordTokenExpired(token) {
+    const payloadToken = jwt.verify(token, SECRET_KEY);
+    const tokenExpiration = payloadToken.exp;
+    const now = Math.floor(Date.now() / 1000);
+
+    const isTokenExpired = now > tokenExpiration ? true : false;
+
+    return isTokenExpired;
+  }
+
   async resetPasswordEmail(req) {
     const sendResetPasswordEmail = await messagesService.resetPasswordEmail(
       req
@@ -86,11 +96,8 @@ class UsersRepository {
     const payloadToken = jwt.verify(token, SECRET_KEY);
     const email = payloadToken.email;
 
-    if (!email) {
-      throw new HttpError(
-        HTTP_STATUS.BAD_REQUEST,
-        "Invalid token or expired token"
-      );
+    if (!email || !payloadToken) {
+      throw new HttpError(HTTP_STATUS.INVALID_TOKEN, "Invalid token");
     }
 
     const user = await usersDao.getUserByEmail(email);
