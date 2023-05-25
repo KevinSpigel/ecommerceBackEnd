@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const { DB_CONFIG } = require("../../config/db.config");
 const { logger } = require("../../logger/logger");
-const { PERSISTENCE } = require("../../config/env.config");
 
 //connect with the database with SINGLETON METHOD
 
