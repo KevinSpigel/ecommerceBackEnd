@@ -10,8 +10,8 @@ class TicketsMongoDao {
     return tickets;
   }
 
-  async getTicketById(id) {
-    const ticket = await TicketsModel.findOne({ _id: id }).lean();
+  async getTicketById(tid) {
+    const ticket = await TicketsModel.findById(tid).lean();
     return ticket;
   }
 

@@ -134,10 +134,11 @@ router.get("/cart", authMiddlewares, async (req, res, next) => {
 });
 
 // TICKET
-router.get("/ticket", authMiddlewares, async (req, res, next) => {
+router.get("/ticket/:tid", authMiddlewares, async (req, res, next) => {
   const { tid } = req.params;
   try {
     const orderPurchased = await ticketsDao.getTicketById(tid);
+
     const data = {
       title: "Your Order",
       style: "index.css",

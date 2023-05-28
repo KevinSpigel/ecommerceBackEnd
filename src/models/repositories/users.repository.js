@@ -37,7 +37,7 @@ class UsersRepository {
   }
 
   async createUser(payload) {
-    const { first_name, last_name, age, email, password, cart } = payload;
+    const { first_name, last_name, age, email, password } = payload;
     if (!first_name || !last_name || !age || !email || !password) {
       throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing fields");
     }
@@ -54,7 +54,7 @@ class UsersRepository {
       age,
       email,
       password: hashPassword(password),
-      cart: cartForNewUser,
+      cart: cartForNewUser._id,
       role: "user",
     };
 

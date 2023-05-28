@@ -3,7 +3,6 @@ const {
   HTTP_STATUS,
   HttpError,
 } = require("../utils/api.utils");
-const { hashPassword } = require("../utils/hash.utils");
 
 const usersRepository = require("../models/repositories/users.repository");
 

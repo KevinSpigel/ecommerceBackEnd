@@ -16,6 +16,11 @@ describe("[Users DAO Unit Test cases]", function () {
     await UsersModel.deleteMany();
   });
 
+  after(async function () {
+    await UsersModel.deleteMany();
+  });
+  
+
   it("should return an array of users when using the 'getUsers' method", async function () {
     const result = await this.usersDao.getUsers();
     expect(result).to.be.an("array");
@@ -33,7 +38,7 @@ describe("[Users DAO Unit Test cases]", function () {
     expect(result.first_name).to.be.equal(testUser.first_name);
   });
 
-  it("should add a user to the database correctly and assign a cart reference when using the 'createUser' method", async function () {
+  it("should add a user to the database correctly and assign a cart reference and a role when using the 'createUser' method", async function () {
     const testUser = {
       first_name: "Jhon",
       last_name: "Doe",
@@ -43,6 +48,9 @@ describe("[Users DAO Unit Test cases]", function () {
     };
     const result = await this.usersDao.createUser(testUser);
     expect(result.cart).to.have.property("_id");
+
+    //Check if the role parameter was added by default. users schema.
+    expect(result.role).to.have.property("role");
   });
 
   it("should retrieve a user by their email when using the 'getUserByEmail' method", async function () {
@@ -98,7 +106,5 @@ describe("[Users DAO Unit Test cases]", function () {
     expect(user).to.be.equal(null);
   });
 
-  after(async function () {
-    await UsersModel.deleteMany();
-  });
+ 
 });
