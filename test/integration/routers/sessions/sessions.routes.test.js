@@ -4,6 +4,7 @@ const { SESSION_KEY } = require("../../../../src/config/env.config");
 const { dropUsers, dropSessions } = require("../../../setup.test");
 
 const mongoose = require("mongoose");
+const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 
 const expect = chai.expect;
 
@@ -31,15 +32,16 @@ describe("Integration tests for [Sessions routes]", () => {
         email: "test@gmail.com",
         password: "password",
         cart: mongoose.Types.ObjectId(),
-        role: "admin",
+        role: "user",
       };
 
       const response = await requester
         .post("/api/sessions/register")
         .send(mockUser);
 
-      expect(response.statusCode).to.be.equal(200);
+      expect(response.statusCode).to.be.equal(201);
       expect(response.body.payload).to.be.ok;
+      expect(response.body.payload.role).to.be.equal(mockUser.role);
 
       // check if cookie was set successfully
 
@@ -60,6 +62,19 @@ describe("Integration tests for [Sessions routes]", () => {
 
       expect(response.statusCode).to.be.equal(200);
       expect(response.body.payload.email).to.be.equal("test@gmail.com");
+    });
+
+    it("[PUT] - [api/users/premium/:uid] - should update 'user' role to 'premium' the current session", async () => {
+      const user= await UsersModel.findOne({email:"test@gmail.com"}).lean()
+      const uid= user._id.toString()
+      
+      const response = await requester.put(`/api/users/premium/${uid}`);
+
+      expect(response.statusCode).to.be.equal(200);
+      expect(response.body.payload.email).to.be.equal("test@gmail.com");
+      expect(response.body.payload.role).to.be.equal("premium");
+
+
     });
 
     it("[POST] - [api/sessions/login] - should log in the user successfully", async () => {

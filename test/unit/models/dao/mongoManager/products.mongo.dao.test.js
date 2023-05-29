@@ -77,7 +77,7 @@ describe("[Products DAO Unit Test cases]", function () {
     expect(product.title).to.be.equal(result.title);
   });
 
-  it("should update a user successfully when using the 'updateUserById' method", async function () {
+  it("should update a product successfully when using the 'updateProduct' method", async function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
@@ -101,7 +101,7 @@ describe("[Products DAO Unit Test cases]", function () {
     expect(result).to.have.property("_id");
     expect(result.title).to.be.equal("Test Product");
 
-    await this.productsDao.updateUserById(result._id, {
+    await this.productsDao.updateProduct(result._id, {
       title: "Updated Product",
       description: "Updated description",
     });

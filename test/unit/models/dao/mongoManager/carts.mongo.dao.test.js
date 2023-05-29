@@ -77,13 +77,14 @@ describe("[Carts DAO Unit Test cases]", function () {
     expect(updatedCart.products[0].amount).to.be.equal(quantity); // Expect the quantity to be correct
   });
 
-  it("should delete a cart successfully when using the 'deleteCart' method", async function () {
+  it("should clean a cart successfully when using the 'deleteCart' method", async function () {
     const testCart = await this.cartsDao.addCart();
 
     await this.cartsDao.deleteCart(testCart._id);
 
-    const deletedProduct = await this.cartsDao.getProductById(testCart._id);
+    const deletedCart = await this.cartsDao.getCartById(testCart._id);
 
-    expect(deletedProduct).to.be.equal(null);
+    expect(deletedCart.products).to.be.an("array");
+    expect(deletedCart.products).to.have.lengthOf(0);
   });
 });
