@@ -35,6 +35,8 @@ describe("[Tickets DAO Unit Test cases]", function () {
           amount: 2,
         },
       ],
+      purchase_datetime: new Date().toLocaleDateString(),
+      code: "123abcd456def"
     };
     const result = await this.ticketsDao.createTicket(testOrder);
     expect(result).to.have.property("_id");
@@ -50,6 +52,8 @@ describe("[Tickets DAO Unit Test cases]", function () {
           amount: 2,
         },
       ],
+      purchase_datetime: new Date().toLocaleDateString(),
+      code: "123abcd456def"
     };
     const result = await this.ticketsDao.createTicket(testOrder);
     const ticket = await this.ticketsDao.getTicketById(result._id);
@@ -67,6 +71,8 @@ describe("[Tickets DAO Unit Test cases]", function () {
           amount: 2,
         },
       ],
+      purchase_datetime: new Date().toLocaleDateString(),
+      code: "123abcd456def"
     };
     const result = await this.ticketsDao.createTicket(testOrder);
 

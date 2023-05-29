@@ -53,7 +53,7 @@ describe("[Carts DAO Unit Test cases]", function () {
       category: "test-category",
       owner: "admin",
     };
-    const product = await this.cartsDao.addProduct(
+    const product = await this.productsDao.addProduct(
       testProduct.title,
       testProduct.description,
       testProduct.code,
