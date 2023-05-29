@@ -196,7 +196,7 @@ describe("Integration tests for [Products routes]", () => {
         .field("stock", mockProduct.stock)
         .field("category", mockProduct.category)
         .field("status", mockProduct.status)
-        .field("role", mockProduct.role);
+        .field("owner", mockProduct.owner);
 
       expect(response.statusCode).to.be.equal(201);
       expect(response.body.payload).to.be.ok;

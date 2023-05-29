@@ -87,4 +87,38 @@ describe("[Carts DAO Unit Test cases]", function () {
     expect(deletedCart.products).to.be.an("array");
     expect(deletedCart.products).to.have.lengthOf(0);
   });
+
+  it("should delete a product from a cart successfully when using the 'deleteProductFromCart' method", async function () {
+    const testCart = await this.cartsDao.addCart();
+    const testProduct = {
+      title: "Test Product",
+      description: "Test description",
+      code: "test-code",
+      price: 10,
+      thumbnail: "test-thumbnail",
+      stock: 5,
+      category: "test-category",
+      owner: "admin",
+    };
+
+    const product = await this.productsDao.addProduct(
+      testProduct.title,
+      testProduct.description,
+      testProduct.code,
+      testProduct.price,
+      testProduct.thumbnail,
+      testProduct.stock,
+      testProduct.category,
+      testProduct.owner
+    );
+
+    const quantity = 2;
+
+    await this.cartsDao.updateCartProduct(testCart._id, product._id, quantity);
+    await this.cartsDao.deleteProductFromCart(testCart._id, product._id);
+
+    const updatedCart = await this.cartsDao.getCartById(testCart._id);
+
+    expect(updatedCart.products).to.have.lengthOf(0);
+  });
 });
