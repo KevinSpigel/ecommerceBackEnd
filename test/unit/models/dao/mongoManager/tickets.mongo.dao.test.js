@@ -78,7 +78,7 @@ describe("[Tickets DAO Unit Test cases]", function () {
 
     expect(result).to.have.property("_id");
 
-    await this.ticketsDao.updateTicketById(result._id, {
+    await this.ticketsDao.updateTicket(result._id, {
       amount: 10,
     });
 
