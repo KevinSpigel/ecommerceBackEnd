@@ -117,7 +117,8 @@ class ProductsFileSystemDao {
     const allProducts = await this.getProducts();
     const filteredById = allProducts.filter((product) => product._id !== pid);
     await this.saveProducts(filteredById);
-    return filteredById;
+    const deletedProduct = allProducts.find((product) => product._id === pid);
+    return deletedProduct;
   }
 }
 

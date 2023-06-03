@@ -99,10 +99,11 @@ class CartsFileSystemDao {
   }
 
   async deleteCart(cid) {
-    const AllCarts = await this.getCarts();
-    const filteredById = AllCarts.filter((cart) => cart._id !== cid);
-    await this.saveCarts(filteredById);
-    return filteredById;
+    const allCarts = await this.getCarts();
+    const filteredCarts = allCarts.filter((cart) => cart._id !== cid);
+    await this.saveCarts(filteredCarts);
+    const deletedCart = allCarts.find((cart) => cart._id === cid);
+    return deletedCart;
   }
 }
 
