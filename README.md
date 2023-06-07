@@ -1,0 +1,114 @@
+# ecommerceServer (ecommerce server)
+
+This project was developed as part of the Coder House Backend training.
+
+Project status: it meets the logical requirements for course evaluation.
+The use of Node.JS and Express.JS logic was prioritized over web design.
+
+## Description
+
+This project is a feature-rich ecommerce server that allows users to engage in various activities related to an online store. It provides functionalities such as user authentication, product browsing and filtering, shopping cart management, role-based access control, real-time chat, and more. The server is built using Node.js and Express.js, leveraging other technologies and libraries to enhance its capabilities.
+
+## Features
+
+- Web App.
+- ecommerce Server.
+- Websocket.
+- Cookies.
+- Third party Authentication method.
+- JWT.
+- Protect routes.
+- Middlewares.
+- Error handling.
+
+- User Authentication: Users can register an account using a form or through third-party authentication methods. They can also log in with their credentials and restore their password via email if needed.
+- Real-time Product Updates: Users can view products in real-time and apply various filters to find the desired items.
+- Product Management: Depending on their credentials, users can upload new products to the store, enabling the expansion of the product catalog.
+- Secure Sessions: The server utilizes cookies and sessions to maintain user sessions and ensure secure communication.
+- Role-based Access Control: All routes are protected, and user permissions are based on their assigned roles. Different roles enable users to perform specific HTTP requests and access different views.
+- Real-time Chat: The server features a real-time chat system, allowing users to communicate with each other or with customer support.
+- Shopping Cart Functionality: Users can add products to their shopping cart, manage the cart contents, and proceed to checkout when ready.
+- User Role Management: Administrators or authorized users can change the roles of other users, granting or revoking certain privileges.
+
+## Prerequisites
+
+To Start this project properly you must have installed Node js on your device with a version not older than 12.X.
+
+If you want to run this project on `development` mode you must have installed the tool `nodemon`on your device.
+
+### Environment Variables
+
+The project uses environment variables to store sensitive information and configuration settings. To configure the project, create a .env file in the root directory of the project and populate it with the variables that you can find in the .env.example file.
+
+## Starting project
+
+run `npm start` on a terminal located in project's root directory to start the project.
+
+run `npm run start:dev` on a terminal located in project's root directory to start project on `development` mode.
+
+## Download & Install
+
+### `git clone`
+
+To create a copy of this repository in your local, use the `git clone` command with the repository's URL link.
+
+### `npm install`
+
+Before running the project you may have to install the dependencies used in the project.
+Run `npm install` in the terminal of the project to do so.
+
+### `npm start`
+
+Run the app in the development mode.\
+Open [http://localhost:8080](http://localhost:8080) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+## Testing
+
+Testing is an important part of ensuring the reliability and quality of this project. The following frameworks and libraries are used for testing:
+
+- [Mocha](https://mochajs.org/): A feature-rich JavaScript test framework.
+- [Chai](https://chaijs.com/): An assertion library for Node.js and the browser.
+- [SuperTest](https://github.com/visionmedia/supertest): A library for HTTP assertions and integration testing.
+
+### Running Tests
+
+To run the test suite for this project, follow these steps:
+
+1. Make sure you have installed all the project dependencies by running the following command:
+
+`npm install`
+
+2. Execute the following command in the terminal to run the tests:
+
+`npm test`
+
+This command will run the tests using Mocha, Chai, and SuperTest and display the test results in the console.
+
+## Tech Stack
+
+**Client:** Javascript, Handlebars, HTML5, CSS3, Bootstrap, SweetAlert.
+
+**Server:** Node.JS, Express.JS, MongoDB, Mongoose, JWT.
+
+**Testing:** Mocha, Chai, SuperTest.
+
+**Version controller:** GIT, GitHub.
+
+**Pattern Design:** MVC.
+
+**Others:** Winston, Swagger, Faker.
+
+## Contributing
+
+Contributions to the project are welcome. Feel free to use the project code and contribute improvements or new features.
+
+## Licence
+
+This project is licensed under the MIT License.
+
+## Authors
+
+- [@KevinSpigel](https://github.com/KevinSpigel)
