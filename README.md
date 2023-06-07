@@ -40,12 +40,6 @@ If you want to run this project on `development` mode you must have installed th
 
 The project uses environment variables to store sensitive information and configuration settings. To configure the project, create a .env file in the root directory of the project and populate it with the variables that you can find in the .env.example file.
 
-## Starting project
-
-run `npm start` on a terminal located in project's root directory to start the project.
-
-run `npm run start:dev` on a terminal located in project's root directory to start project on `development` mode.
-
 ## Download & Install
 
 ### `git clone`
@@ -64,6 +58,13 @@ Open [http://localhost:8080](http://localhost:8080) to view it in your browser.
 
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
+
+## Starting project
+
+run `npm start` on a terminal located in project's root directory to start the project.
+
+run `npm run start:dev` on a terminal located in project's root directory to start project on `development` mode.
+
 
 ## Testing
 
