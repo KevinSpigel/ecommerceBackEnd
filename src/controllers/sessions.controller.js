@@ -5,14 +5,16 @@ const sessionsRepository = require("../models/repositories/sessions.repository")
 class SessionsController {
   static async register(req, res, next) {
     const { first_name, last_name, age, email, password } = req.body;
+    const profile_image = req.file.filename;
     try {
-      const registerUser = await sessionsRepository.register(
+      await sessionsRepository.register(
         res,
         first_name,
         last_name,
         age,
         email,
-        password
+        password,
+        (profile_image = profile_image)
       );
       const response = apiSuccessResponse("User registered successfully!");
       return res.status(HTTP_STATUS.CREATED).json(response);
@@ -24,7 +26,7 @@ class SessionsController {
   static async login(req, res, next) {
     const { email, password } = req.body;
     try {
-      const loginUser = await sessionsRepository.login(res, email, password);
+      await sessionsRepository.login(res, email, password);
       const response = apiSuccessResponse("User logued in successfully!");
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
@@ -35,7 +37,7 @@ class SessionsController {
   static async loginGithub(req, res, next) {
     const user = req.user;
     try {
-      const gitHubUser = await sessionsRepository.loginGithub(res, user);
+      await sessionsRepository.loginGithub(res, user);
       const response = apiSuccessResponse(
         "User logued in successfully with github!"
       );
@@ -47,7 +49,7 @@ class SessionsController {
 
   static async logOut(req, res, next) {
     try {
-      const clearCookie = await sessionsRepository.logOutSession(res);
+      await sessionsRepository.logOutSession(res, req);
       const response = apiSuccessResponse("Session close");
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

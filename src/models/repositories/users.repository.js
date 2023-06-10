@@ -36,7 +36,7 @@ class UsersRepository {
     return user;
   }
 
-  async createUser(payload) {
+  async createUser(payload, profile_image) {
     const { first_name, last_name, age, email, password } = payload;
     if (!first_name || !last_name || !age || !email || !password) {
       throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing fields");
@@ -54,6 +54,7 @@ class UsersRepository {
       age,
       email,
       password: hashPassword(password),
+      profile_image,
       cart: cartForNewUser._id,
       role: "user",
     };
@@ -130,6 +131,13 @@ class UsersRepository {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
+    if (user.role === "user" && !user.update_status) {
+      throw new HttpError(
+        HTTP_STATUS.BAD_REQUEST,
+        "The User has not finished processing their documentation"
+      );
+    }
+
     let newRole;
     if (user.role === "user") {
       newRole = "premium";
@@ -151,6 +159,41 @@ class UsersRepository {
     }
     const deletedUser = await usersDao.deleteUser(uid);
     return deletedUser;
+  }
+
+  async deleteAllInactiveUsers() {
+    const currentDate = new Date();
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(currentDate.getDate() - 2);
+
+    const deleteFilter = {
+      last_connection: { $lt: twoDaysAgo },
+      role: { $ne: "admin" }, // Exclude users with role "admin"
+    };
+
+    // Get all users
+    const allUsers = await usersDao.getUsers();
+
+    // Filter inactive users
+    const inactiveUsers = allUsers.filter(
+      (user) => user.last_connection < twoDaysAgo && user.role !== "admin"
+    );
+
+    // Send notification email to inactive users
+
+    await Promise.all(
+      inactiveUsers.map(async (user) => {
+        await messagesService.deletionNotificationEmail(user);
+      })
+    );
+
+    // Wait for 1 hour before deleting users
+    await new Promise((resolve) => setTimeout(resolve, 3600000));
+
+    // Delete inactive users
+    const deletedUsers = await usersDao.deleteUsers(deleteFilter);
+
+    return deletedUsers;
   }
 }
 

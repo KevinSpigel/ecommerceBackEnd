@@ -21,7 +21,10 @@ class MessagesService {
       attachments: [
         {
           filename: "invoicePlaceholder.jpg",
-          path: path.resolve(__dirname, "../public/img/invoicePlaceholder.jpg"),
+          path: path.resolve(
+            __dirname,
+            "../public/assets/invoices/invoicePlaceholder.jpg"
+          ),
           cid: "PurchaseConfirm",
         },
       ],
@@ -52,6 +55,41 @@ class MessagesService {
       <h3>Click <a href="${link}">here</a> to reset your password. This link will expire in 1 hour.</h3>
       <h5>Ignore this email if you don't want to change your password</h5>
       `,
+      attachments: [],
+    };
+
+    await transporter.sendMail(mailParams);
+  }
+
+  // Send an email with the notification for User deletion.
+
+  async deletionNotificationEmail(user) {
+    const mailParams = {
+      from: GMAIL_AUTHOR,
+      to: user.email,
+      subject: "Notification for User deletion",
+      html: `
+      This is a notification that your user account is scheduled for deletion. This is due to your inactivity for more than 2 days. If you want to prevent this, you have 1 hour to log in.
+        `,
+      attachments: [],
+    };
+
+    await transporter.sendMail(mailParams);
+  }
+
+  // Send an email notification to a user with the 'Premium' role about the deletion of a product.
+
+  async deletePremiumProduct(user, productById) {
+    const mailParams = {
+      from: GMAIL_AUTHOR,
+      to: user.email,
+      subject: "Notification: Product deleted",
+      html: `
+      <p>Dear ${user.first_name},</p>
+      <p>This is to notify you that your product with ID ${productById._id} has been deleted.</p>
+      <p>If you have any questions or concerns, please feel free to contact us.</p>
+      <p>Thank you for your understanding.</p>
+        `,
       attachments: [],
     };
 

@@ -132,7 +132,7 @@ paths:
     delete:
       tags:
         - Products
-      summary: Delete single product by ID
+      summary: Delete single product by ID. In case the product belongs to a 'Premium' User a email with a notification would be send.
       parameters:
         - name: productId
           in: path

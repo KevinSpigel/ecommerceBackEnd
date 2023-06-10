@@ -41,8 +41,12 @@ class UsersController {
 
   static async createUser(req, res, next) {
     const userPayload = req.body;
+    const profile_image = req.file.filename;
     try {
-      const newUser = await usersRepository.createUser(userPayload);
+      const newUser = await usersRepository.createUser(
+        userPayload,
+        profile_image
+      );
       const response = apiSuccessResponse(newUser);
       res.status(HTTP_STATUS.CREATED).json(response);
     } catch (error) {
@@ -94,6 +98,16 @@ class UsersController {
     }
   }
 
+  static async addDocumentation(req, res, next) {
+    try {
+      const isUploaded = await usersRepository.addDocuments();
+      const response = apiSuccessResponse(isUploaded);
+      return res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async changeRole(req, res, next) {
     const { uid } = req.params;
     try {
@@ -110,6 +124,16 @@ class UsersController {
     try {
       const deletedUser = await usersRepository.deleteUser(uid);
       const response = apiSuccessResponse(deletedUser);
+      return res.status(HTTP_STATUS.OK).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteAllInactiveUsers(req, res, next) {
+    try {
+      const deletedAllUsers = await usersRepository.deleteAllInactiveUsers();
+      const response = apiSuccessResponse(deletedAllUsers);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
       next(error);

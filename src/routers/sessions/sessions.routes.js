@@ -3,10 +3,15 @@ const SessionsController = require("../../controllers/sessions.controller");
 const {
   passportCustom,
 } = require("../../middlewares/passportCustom.middleware");
+const uploader = require("../../utils/multer.utils");
 
 const router = Router();
 
-router.post("/register", SessionsController.register);
+router.post(
+  "/register",
+  uploader.single("profile_image"),
+  SessionsController.register
+);
 
 router.post("/login", SessionsController.login);
 

@@ -29,8 +29,6 @@ passport.use(
       try {
         const userData = profile._json;
 
-        console.log({userData})
-
         const user = await UsersModel.findOne({ email: userData.email });
         if (!user) {
           const cartForNewUser = await cartsDao.addCart();
@@ -39,6 +37,7 @@ passport.use(
             first_name: userData.name.split(" ")[0],
             last_name: userData.name.split(" ")[1],
             age: userData.age,
+            profile_image: userData.avatar_url,
             email: userData.email,
             github_username: userData.login,
             cart: cartForNewUser._id,

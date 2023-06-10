@@ -193,7 +193,7 @@ paths:
           description: Cart ID to fetch
       responses:
         "200":
-          description: Purchase has been created successfully
+          description: Purchase has been created successfully and an email and SMS with order confirmation have been sent
           content:
             application/json:
               schema:

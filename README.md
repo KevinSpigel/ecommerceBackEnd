@@ -29,6 +29,8 @@ This project is a feature-rich ecommerce server that allows users to engage in v
 - Real-time Chat: The server features a real-time chat system, allowing users to communicate with each other or with customer support.
 - Shopping Cart Functionality: Users can add products to their shopping cart, manage the cart contents, and proceed to checkout when ready.
 - User Role Management: Administrators or authorized users can change the roles of other users, granting or revoking certain privileges.
+- Integration with Mailing Service: The project integrates a mailing service to handle password restoration and send notifications for successful purchases. Users can restore their password via email and receive email notifications when a purchase is completed.
+- Integration with SMS Service: In addition to email notifications, the project also integrates an SMS service to provide notifications for successful purchases. Users will receive an SMS message to their registered phone number when a purchase is completed.
 
 ## Prerequisites
 
@@ -65,7 +67,6 @@ run `npm start` on a terminal located in project's root directory to start the p
 
 run `npm run start:dev` on a terminal located in project's root directory to start project on `development` mode.
 
-
 ## Testing
 
 Testing is an important part of ensuring the reliability and quality of this project. The following frameworks and libraries are used for testing:
@@ -101,6 +102,14 @@ This command will run the tests using Mocha, Chai, and SuperTest and display the
 **Pattern Design:** MVC.
 
 **Others:** Winston, Swagger, Faker.
+
+## Note on Frontend Functionalities
+
+Please note that while this project includes a rich set of backend functionalities, some of these features may not be implemented in the frontend or Handlebars templates. The focus of this project was primarily on showcasing the backend logic using Node.js and Express.js.
+
+If you intend to extend the frontend or implement additional features, you may need to make corresponding HTTP requests to the backend API endpoints that handle these functionalities. You can refer to the API documentation or examine the backend code to understand the available endpoints and their respective functionality.
+
+Feel free to contribute to the project by implementing the necessary frontend components or extending the existing functionality to create a more complete user experience.
 
 ## Contributing
 

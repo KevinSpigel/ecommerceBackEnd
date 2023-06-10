@@ -22,6 +22,9 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
   },
+  profile_image: {
+    type: String,
+  },
   github_username: {
     type: String,
   },
@@ -33,6 +36,26 @@ const userSchema = new mongoose.Schema({
   cart: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "carts",
+  },
+  documents: {
+    type: [
+      {
+        name: String,
+        reference: String,
+        doctype: {
+          type: String,
+          enum: ["id_document", "proof_of_address", "account_status"],
+        },
+      },
+    ],
+  },
+  last_connection: {
+    type: String,
+    default: Date.now().toLocaleString(),
+  },
+  update_status: {
+    type: Boolean,
+    default: false,
   },
 });
 

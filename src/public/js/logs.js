@@ -30,15 +30,13 @@ registerForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const registerFormData = new FormData(registerForm);
-  const registerPayload = Object.fromEntries(registerFormData);
+  // const registerPayload = Object.fromEntries(registerFormData);
 
   try {
     await fetch("http://localhost:8080/api/sessions/register", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(registerPayload),
+      body: registerFormData,
+      redirect: "manual",
     });
     window.location.href = "http://localhost:8080/products";
     registerForm.reset();

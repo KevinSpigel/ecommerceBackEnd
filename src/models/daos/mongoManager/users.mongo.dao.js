@@ -53,6 +53,11 @@ class UsersMongoDao {
     const deletedUser = await UsersModel.deleteOne({ _id: id });
     return deletedUser;
   }
+
+  async deleteUsers(filter) {
+    const deletedUsers = await UsersModel.deleteMany(filter);
+    return deletedUsers;
+  }
 }
 
 module.exports = UsersMongoDao;

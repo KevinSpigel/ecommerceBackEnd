@@ -32,8 +32,18 @@ const generateUser = () => {
     email: faker.internet.email(),
     age: faker.helpers.arrayElement(ages),
     password: hashMockPassword,
+    profile_image: faker.image.image(),
     role: faker.helpers.arrayElement(["user", "admin", "premium"]),
     cart: faker.database.mongodbObjectId(),
+    documents: [
+      {
+        name: faker.helpers.randomize(["id_document", "Proof of Address Document", "Account Status Document"]), //check this!!!!!!!!!!!!!!!!!!!
+        reference: faker.image.image(), // check this!!!!!!!!!!!!!!!!!!!!!
+        doctype: faker.helpers.randomize(["id_document", "proof_of_address", "account_status"]),
+      },
+    ],
+    last_connection: Date.now().toLocaleString(),
+    update_status: faker.datatype.boolean(),
   };
 };
 

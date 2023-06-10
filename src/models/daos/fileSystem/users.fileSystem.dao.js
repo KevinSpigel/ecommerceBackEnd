@@ -66,6 +66,13 @@ class UsersFileSystemDao {
     await this.saveUsers(filteredById);
     return filteredById;
   }
+
+  async deleteUsers(filter) {
+    const allUsers = await this.getUsers();
+    const filteredUsers = allUsers.filter(filter);
+    await this.saveUsers(filteredUsers);
+    return filteredUsers;
+  }
 }
 
 module.exports = UsersFileSystemDao;

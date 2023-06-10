@@ -1,9 +1,12 @@
 const { PORT } = require("../../config/env.config");
+
 const { HTTP_STATUS, HttpError } = require("../../utils/api.utils");
 
 const { getDAOS } = require("../daos/daosFactory");
+const { getServices } = require("../../services/app.service");
 
 const { productsDao } = getDAOS();
+const { messagesService } = getServices();
 
 class ProductsRepository {
   async addProduct(req) {
@@ -109,7 +112,7 @@ class ProductsRepository {
       throw new HttpError("Product not found", HTTP_STATUS.NOT_FOUND);
     }
 
-    if (user.role === "premium" && user.email !== product.owner) {
+    if (user.role === "premium" && user.email !== productById.owner) {
       throw new HttpError(
         "Only product's owner can delete this resource",
         HTTP_STATUS.FORBIDDEN
@@ -117,6 +120,11 @@ class ProductsRepository {
     }
 
     const deleteProduct = await productsDao.deleteProduct(pid);
+
+    if (user.role === "premium" && user.email === productById.owner) {
+      await messagesService.deletePremiumProduct(user, productById);
+    }
+
     return deleteProduct;
   }
 }

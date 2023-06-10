@@ -6,7 +6,7 @@ paths:
       summary: Get all users
       responses:
         "200":
-          description: Users fetched successfully from the DB
+          description: Successfully fetched all users from the database
           content:
             application/json:
               schema:
@@ -21,7 +21,7 @@ paths:
     post:
       tags:
         - Users
-      summary: Create new user and set a cookie session
+      summary: Create new user and generate a session cookie
       responses:
         "201":
           description: User created successfully
@@ -33,6 +33,24 @@ paths:
           description: Bad request. Missing required params to create a new user or User already exists in the DB
         "401":
           description: Unauthorized. Token expired
+        "500":
+          description: Internal Server Error
+
+    delete:
+      tags:
+        - Users
+      summary: Delete all the users that were inactive in the last 2 days. Users with 'Admin' role are exclude 
+      responses:
+        "200":
+          description: Users deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/UsersResponse"
+        "401":
+          description: Unauthorized. Token expired
+        "403":
+          description: Forbidden. Invalid credentials
         "500":
           description: Internal Server Error
 
@@ -50,7 +68,7 @@ paths:
             $type: string
       responses:
         "200":
-          description: User with the given userId
+          description: Successfully retrieved user with the specified userId
           content:
             application/json:
               schema:
@@ -67,7 +85,7 @@ paths:
     put:
       tags:
         - Users
-      summary: Update single user properties by given ID
+      summary: Update user properties by ID
       parameters:
         - name: userId
           in: path
@@ -83,7 +101,7 @@ paths:
               $ref: "#components/requestBodies/UpdateUserPayload"
       responses:
         "200":
-          description: Updated user with the given userId
+          description: User with the provided user ID has been successfully updated
           content:
             application/json:
               schema:
@@ -112,7 +130,7 @@ paths:
             $type: string
       responses:
         "200":
-          description: User with the user id given successfully deleted
+          description: User with the provided user ID has been successfully deleted
           content:
             application/json:
               schema:
@@ -124,11 +142,11 @@ paths:
         "500":
           description: Internal Server Error
 
-  /api/users/premium/{userId}:
-    put:
+  /api/users/{userId}/documents:
+    post:
       tags:
         - Users
-      summary: Update single user role from 'user' to 'premium' and viceversa
+      summary: Upload documents for a user by ID and change update_status atributte
       parameters:
         - name: userId
           in: path
@@ -136,9 +154,15 @@ paths:
           description: User ID to fetch
           schema:
             $type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#components/requestBodies/UploadDocumentsPayload"       
       responses:
         "200":
-          description: Role of the user with the user id given successfully updated
+          description: Uploaded documents and updated the status for the user with the specified userId
           content:
             application/json:
               schema:
@@ -154,14 +178,47 @@ paths:
         "500":
           description: Internal Server Error
 
+
+  /api/users/premium/{userId}:
+    put:
+      tags:
+        - Users
+      summary: Update user role from 'user' to 'premium' and vice versa
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: User ID to fetch
+          schema:
+            $type: string
+      responses:
+        "200":
+          description: Successfully updated the role of the user with the specified userId
+          content:
+            application/json:
+              schema:
+                $ref: "#components/schemas/UsersResponse"
+        "400":
+          description: |
+            - Bad request. Invalid or missing user id 
+            - Bad request. User has not finished processing their documentation
+        "401":
+          description: Unauthorized. Token expired
+        "403":
+          description: Forbidden. Invalid credentials
+        "404":
+          description: Not found User with the given userId not found
+        "500":
+          description: Internal Server Error
+
   /api/users/resetPassword:
     post:
       tags:
         - Users
-      summary: Request link to create new password
+      summary: Request a password reset link via email
       responses:
         "200":
-          description: Email with restore password email sent successfully
+          description: Successfully sent an email with a password reset link
           content:
             application/json:
               schema:
@@ -175,7 +232,7 @@ paths:
     put:
       tags:
         - Users
-      summary: Create new password from existing user
+      summary: Create a new password for an existing user
       responses:
         "200":
           description: New password created
@@ -216,15 +273,40 @@ components:
         password:
           type: string
           description: User hashed password. Required
+        profile_image:
+          type: string
+          description: User profile image
         github_username:
           type: string
-          description: User GitHub username (unique field). Not mandatory
+          description: User GitHub username (unique field)
         role:
           type: string
           description: User role [user-admin-premium]
         cart:
           type: ObjectId
           description: Cart autogenerated MongoDB Id reference
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Document name
+              reference:
+                type: string
+                description: Document reference
+              doctype:
+                type: string
+                enum: [id_document, proof_of_address, account_status]
+                description: Document type [id_document, proof_of_address, account_status]
+        last_connection:
+          type: string
+          format: date-time
+          description: User last connection. Default value is now
+        update_status:
+          type: boolean
+          description: User status for having updated documents. Default value is 'false'
       example:
         _id: ObjectId(123abc456efg)
         first_name: John
@@ -235,6 +317,18 @@ components:
         github_username: JohnDou
         role: user
         cart: ObjectId(789hij101112klm)
+        documents:
+          - name: "ID Document"
+            reference: "ABC123"
+            doctype: "id_document"
+          - name: "Proof of Address Document"
+            reference: "123 Main St"
+            doctype: "proof_of_address"
+          - name: "Account Status Document"
+            reference: "Active"
+            doctype: "account_status"
+        last_connection: "2023-06-05T12:00:00Z"
+        update_status: false
 
     UsersResponse:
       type: object
@@ -271,6 +365,9 @@ components:
     UpdateUserPayload:
       type: object
       properties:
+        _id:
+          type: ObjectId
+          description: Autogenerated MongoDB Id
         first_name:
           type: string
           description: User first name. Required
@@ -285,22 +382,94 @@ components:
           description: User age. Required
         password:
           type: string
-          description: User password. Required
+          description: User hashed password. Required
+        profile_image:
+          type: string
+          description: User profile image
         github_username:
           type: string
-          description: User GitHub username (unique field). Not mandatory
+          description: User GitHub username (unique field)
         role:
           type: string
           description: User role [user-admin-premium]
         cart:
           type: ObjectId
           description: Cart autogenerated MongoDB Id reference
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Document name
+              reference:
+                type: string
+                description: Document reference
+              doctype:
+                type: string
+                enum: [id_document, proof_of_address, account_status]
+                description: Document type [id_document, proof_of_address, account_status]
+        last_connection:
+          type: string
+          format: date-time
+          description: User last connection. Default value is now
+        update_status:
+          type: boolean
+          description: User status for having updated documents. Default value is 'false'
       example:
+        _id: ObjectId(123abc456efg)
         first_name: John
         last_name: Dou
         email: johnDou@gmail.com
         age: 29
-        password: 123abc456
+        password: skldnvlkn$#bdf$%1245@^7*432
         github_username: JohnDou
         role: user
         cart: ObjectId(789hij101112klm)
+        documents:
+          - name: "ID Document"
+            reference: "ABC123"
+            doctype: "id"
+          - name: "Proof of Address Document"
+            reference: "123 Main St"
+            doctype: "proof_of_address"
+          - name: "Account Status Document"
+            reference: "Active"
+            doctype: "account_status"
+        last_connection: "2023-06-05T12:00:00Z"
+        update_status: true
+
+    UploadDocumentsPayload:
+      type: object
+      properties:
+        documents:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Document name
+              reference:
+                type: string
+                description: Document reference
+              doctype:
+                type: string
+                enum: [id_document, proof_of_address, account_status]
+                description: Document type [id_document, proof_of_address, account_status]
+        update_status:
+          type: boolean
+          description: User status for having updated documents. Default value is 'false'
+      example:
+        documents:
+          - name: "ID Document"
+            reference: "ABC123"
+            doctype: "id_document"
+          - name: "Proof of Address Document"
+            reference: "123 Main St"
+            doctype: "proof_of_address"
+          - name: "Account Status Document"
+            reference: "Active"
+            doctype: "account_status"
+        update_status: true
