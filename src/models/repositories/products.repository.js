@@ -26,7 +26,7 @@ class ProductsRepository {
       addNewProduct.description,
       addNewProduct.code,
       +addNewProduct.price,
-      (addNewProduct.thumbnail = filename),
+      (addNewProduct.product_image = filename),
       +addNewProduct.stock,
       addNewProduct.category,
       owner
@@ -84,13 +84,13 @@ class ProductsRepository {
     }
     const price = product.price ? Number(product.price) : productById.price;
     const stock = product.stock ? Number(product.stock) : productById.stock;
-    const thumbnail = product.thumbnail
-      ? +product.thumbnail
-      : productById.thumbnail;
+    const product_image = product.product_image
+      ? +product.product_image
+      : productById.product_image;
     const status = product.status ? +product.status : productById.status;
     const newProductProperties = {
       ...product,
-      thumbnail,
+      product_image,
       price,
       stock,
       status,

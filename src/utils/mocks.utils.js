@@ -10,7 +10,7 @@ const generateProduct = () => {
     description: faker.commerce.productName(),
     code: faker.random.alphaNumeric(8),
     price: faker.commerce.price(),
-    thumbnails: faker.image.image(),
+    product_image: faker.image.image(),
     stock: faker.datatype.number({ min: 0, max: 100 }),
     category: faker.commerce.department(),
     status: faker.datatype.boolean(),

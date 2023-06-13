@@ -21,6 +21,9 @@ userDocumentForm?.addEventListener("submit", async (event) => {
         method: "POST",
         body: documentsFormData,
         redirect: "manual",
+        headers: {
+          type: "documents",
+        },
       }
     );
 
@@ -34,8 +37,9 @@ userDocumentForm?.addEventListener("submit", async (event) => {
     } else {
       Toast.fire({
         icon: "error",
-        title: "Ups, something happend. Please try again. If the error persist, please contact with the Administrator"
-      })
+        title:
+          "Ups, something happend. Please try again. If the error persist, please contact with the Administrator",
+      });
     }
   } catch (error) {
     console.log(error);

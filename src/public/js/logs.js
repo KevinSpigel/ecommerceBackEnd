@@ -30,15 +30,17 @@ registerForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const registerFormData = new FormData(registerForm);
-  // const registerPayload = Object.fromEntries(registerFormData);
 
   try {
     await fetch("http://localhost:8080/api/sessions/register", {
       method: "POST",
       body: registerFormData,
       redirect: "manual",
+      headers: {
+        type: "profile_image",
+      },
     });
-    window.location.href = "http://localhost:8080/products";
+    window.location.href = "http://localhost:8080/";
     registerForm.reset();
   } catch (error) {
     console.log(error);

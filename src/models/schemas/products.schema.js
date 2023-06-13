@@ -21,7 +21,7 @@ const productsSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  thumbnail: {
+  product_image: {
     type: String,
     //in case the multer function change to many files the type should be type: [String]
     required: true,

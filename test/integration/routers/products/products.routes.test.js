@@ -70,7 +70,7 @@ describe("Integration tests for [Products routes]", () => {
         .field("description", mockProduct.description)
         .field("code", mockProduct.code)
         .field("price", mockProduct.price)
-        .attach("thumbnail", ".test/integration/products/images/example.jpg")
+        .attach("product_image", ".test/integration/products/images/example.jpg")
         .field("stock", mockProduct.stock)
         .field("category", mockProduct.category)
         .field("status", mockProduct.status)
@@ -192,7 +192,7 @@ describe("Integration tests for [Products routes]", () => {
         .field("description", mockProduct.description)
         .field("code", mockProduct.code)
         .field("price", mockProduct.price)
-        .attach("thumbnail", ".test/integration/products/images/example.jpg")
+        .attach("product_image", ".test/integration/products/images/example.jpg")
         .field("stock", mockProduct.stock)
         .field("category", mockProduct.category)
         .field("status", mockProduct.status)
@@ -201,7 +201,7 @@ describe("Integration tests for [Products routes]", () => {
       expect(response.statusCode).to.be.equal(201);
       expect(response.body.payload).to.be.ok;
       expect(response.body.payload).to.have.property("_id");
-      expect(response.body.payload.thumbnail).to.be.ok;
+      expect(response.body.payload.product_image).to.be.ok;
       expect(response.body.payload.role).to.be.equal(mockProduct.role);
     });
 

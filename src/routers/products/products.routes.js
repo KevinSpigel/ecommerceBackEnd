@@ -13,7 +13,7 @@ class ProductsRoutes extends BaseRouter {
     this.post(
       "/",
       ["admin", "premium"],
-      uploader.single("thumbnail"),
+      uploader.single("product_image"),
       ProductsController.addProduct
     );
     this.put("/:pid", ["admin", "premium"], ProductsController.updateProduct);

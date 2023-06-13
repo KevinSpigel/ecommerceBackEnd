@@ -95,7 +95,7 @@ describe("Integration tests for [Carts routes]", () => {
         title: "Test Product",
         description: "Test description",
         price: 10,
-        thumbnail: "test-thumbnail",
+        product_image: "test-thumbnail",
         stock: 5,
         category: "test-category",
         owner: "testUser@gmail.com",
@@ -106,7 +106,7 @@ describe("Integration tests for [Carts routes]", () => {
         .field("description", mockProduct.description)
         .field("code", mockProduct.code)
         .field("price", mockProduct.price)
-        .attach("thumbnail", ".test/integration/products/images/example.jpg")
+        .attach("product_image", ".test/integration/products/images/example.jpg")
         .field("stock", mockProduct.stock)
         .field("category", mockProduct.category)
         .field("status", mockProduct.status)

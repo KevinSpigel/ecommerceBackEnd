@@ -1,7 +1,7 @@
 const multer = require("multer");
 
 const destinationFolders = {
-  thumbnail: "products",
+  product_image: "products",
   documents: "documents",
   profile_image: "profiles",
 };
@@ -20,15 +20,3 @@ const storage = multer.diskStorage({
 });
 
 module.exports = multer({ storage });
-
-// // Multer
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, process.cwd() + "/src/public/img");
-//   },
-//   filename: (req, file, cb) => {
-//     cb(null, `${Date.now()}-${file.originalname}`);
-//   },
-// });
-
-// module.exports = multer({ storage });

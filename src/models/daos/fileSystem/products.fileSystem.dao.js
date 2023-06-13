@@ -46,7 +46,7 @@ class ProductsFileSystemDao {
     description,
     code,
     price,
-    thumbnail,
+    product_image,
     stock,
     category,
     owner
@@ -58,7 +58,7 @@ class ProductsFileSystemDao {
       description &&
       code &&
       price &&
-      thumbnail &&
+      product_image &&
       stock &&
       category &&
       owner
@@ -68,7 +68,7 @@ class ProductsFileSystemDao {
         description,
         code,
         price,
-        thumbnail,
+        product_image,
         stock,
         category,
         owner,

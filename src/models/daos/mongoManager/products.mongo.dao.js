@@ -25,7 +25,7 @@ class ProductsMongoDao {
     description,
     code,
     price,
-    thumbnail,
+    product_image,
     stock,
     category,
     owner
@@ -35,7 +35,7 @@ class ProductsMongoDao {
       description,
       code,
       price,
-      thumbnail,
+      product_image,
       stock,
       category,
       owner,

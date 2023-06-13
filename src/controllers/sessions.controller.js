@@ -6,6 +6,7 @@ class SessionsController {
   static async register(req, res, next) {
     const { first_name, last_name, age, email, password } = req.body;
     const profile_image = req.file.filename;
+
     try {
       await sessionsRepository.register(
         res,
@@ -14,7 +15,7 @@ class SessionsController {
         age,
         email,
         password,
-        (profile_image = profile_image)
+        profile_image
       );
       const response = apiSuccessResponse("User registered successfully!");
       return res.status(HTTP_STATUS.CREATED).json(response);
