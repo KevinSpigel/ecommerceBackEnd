@@ -85,7 +85,7 @@ class SessionsRepository {
       last_connection: new Date().toLocaleString(),
     });
 
-    const userForCookie = {
+    const userGitHubForCookie = {
       first_name: user.first_name,
       last_name: user.last_name,
       age: user.age,
@@ -93,9 +93,10 @@ class SessionsRepository {
       cart: user.cart,
       role: user.role,
       profile_image: user.profile_image,
+      github_user: true,
     };
 
-    const access_token = generateToken(userForCookie);
+    const access_token = generateToken(userGitHubForCookie);
     return res.cookie(SESSION_KEY, access_token, {
       maxAge: 60 * 60 * 60 * 24 * 1000,
       httpOnly: true,

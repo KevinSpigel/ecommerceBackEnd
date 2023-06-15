@@ -16,7 +16,7 @@ userDocumentForm?.addEventListener("submit", async (event) => {
 
   try {
     const response = await fetch(
-      "http://localhost:8080/api/user/:uid/documents",
+      `http://localhost:8080/api/user/${uid}/documents`,
       {
         method: "POST",
         body: documentsFormData,

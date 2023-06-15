@@ -5,7 +5,7 @@ const sessionsRepository = require("../models/repositories/sessions.repository")
 class SessionsController {
   static async register(req, res, next) {
     const { first_name, last_name, age, email, password } = req.body;
-    const profile_image = req.file.filename;
+    const profile_image = req.file && req.file.filename ? req.file.filename : undefined;
 
     try {
       await sessionsRepository.register(

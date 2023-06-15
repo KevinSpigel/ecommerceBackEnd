@@ -18,7 +18,7 @@ class UsersController {
   }
 
   static async getUserById(req, res, next) {
-    const { uid } = req.user;
+    const { uid } = req.params;
     try {
       const user = await usersRepository.getUserById(uid);
       const response = apiSuccessResponse(user);
@@ -41,7 +41,8 @@ class UsersController {
 
   static async createUser(req, res, next) {
     const userPayload = req.body;
-    const profile_image = req.file.filename;
+    const profile_image =
+      req.file && req.file.filename ? req.file.filename : undefined;
     try {
       const newUser = await usersRepository.createUser(
         userPayload,
@@ -55,9 +56,10 @@ class UsersController {
   }
 
   static async updateUser(req, res, next) {
-    const { payload, email } = req.user;
+    const { uid } = req.params;
+    const { payload } = req.body;
     try {
-      const updatedUser = await usersRepository.updateUser(payload, email);
+      const updatedUser = await usersRepository.updateUser(payload, uid);
       const response = apiSuccessResponse(updatedUser);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
@@ -99,8 +101,10 @@ class UsersController {
   }
 
   static async addDocumentation(req, res, next) {
+    const { uid } = req.params;
+    const files = req.files;
     try {
-      const isUploaded = await usersRepository.addDocuments();
+      const isUploaded = await usersRepository.addDocuments(uid, files);
       const response = apiSuccessResponse(isUploaded);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {
@@ -120,7 +124,7 @@ class UsersController {
   }
 
   static async deleteUser(req, res, next) {
-    const { uid } = req.user;
+    const { uid } = req.params;
     try {
       const deletedUser = await usersRepository.deleteUser(uid);
       const response = apiSuccessResponse(deletedUser);

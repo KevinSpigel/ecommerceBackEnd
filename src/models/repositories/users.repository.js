@@ -63,16 +63,49 @@ class UsersRepository {
     return newUser;
   }
 
-  async updateUser(payload, email) {
-    if (!email) {
-      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing data from user");
-    }
-    const user = await usersDao.getUserByEmail(email);
+  async addDocuments(uid, files) {
+    const user = await usersDao.getUserById(uid);
     if (!user) {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
-    const updatedUser = await usersDao.updateUserByEmail(payload, email);
+    if (!files) {
+      throw new HttpError("Missing document", HTTP_STATUS.BAD_REQUEST);
+    }
+
+    const uploadedDocuments = files.map((file) => ({
+      name: file.originalname,
+      reference: file.path,
+    }));
+
+    const userPayload = {
+      documents: [...user.documents, ...uploadedDocuments],
+    };
+    const requiredDocuments = [
+      "id_document",
+      "proof_of_address",
+      "account_status",
+    ];
+    const hasRequiredDocuments = requiredDocuments.every((document) => {
+      return user.documents.some((d) => d.name === document);
+    });
+    if (hasRequiredDocuments) {
+      userPayload.update_status = true;
+    }
+    const updatedUser = await usersDao.updateUser(uid, userPayload);
+    return updatedUser;
+  }
+
+  async updateUser(payload, uid) {
+    if (!uid || !Object.keys(payload).length) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing data from user");
+    }
+    const user = await usersDao.getUserById(uid);
+    if (!user) {
+      throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
+    }
+
+    const updatedUser = await usersDao.updateUserById(payload, uid);
     return updatedUser;
   }
 
@@ -131,7 +164,16 @@ class UsersRepository {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
-    if (user.role === "user" && !user.update_status) {
+    const requiredDocuments = [
+      "id_document",
+      "proof_of_address",
+      "account_status",
+    ];
+    const hasRequiredDocuments = requiredDocuments.every((document) => {
+      return user.documents.some((d) => d.name === document);
+    });
+
+    if (user.role === "user" && !hasRequiredDocuments && !user.update_status) {
       throw new HttpError(
         HTTP_STATUS.BAD_REQUEST,
         "The User has not finished processing their documentation"

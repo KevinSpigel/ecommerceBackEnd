@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
   },
   profile_image: {
     type: String,
+    default: "default.jpg",
   },
   github_username: {
     type: String,

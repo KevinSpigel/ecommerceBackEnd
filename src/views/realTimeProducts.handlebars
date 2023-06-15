@@ -6,13 +6,21 @@
     Profile
   </button>
   <div class="dropdown-menu">
-    {{#if user.profile_image}}
+    {{#if user.github_user}}
         <div class="dropdown-item">
-          <div>
-              <img src="../../static/profiles/{{this.profile_image}}" alt="profile image">
+          <div class="d-flex justify-content-center">
+              <img class="imgLogo" src="{{user.profile_image}}" alt="profile image">
+          </div>
+        </div>
+      {{else}}
+        <div class="dropdown-item">
+          <div class="d-flex justify-content-center">
+              <img class="imgLogo" src="../../static/assets/profiles/{{user.profile_image}}" alt="profile image">
           </div>
         </div>
     {{/if}}
+
+    
 
     <div class="dropdown-item">Name: {{user.first_name}} {{user.last_name}} </div>
     <div class="dropdown-item">Age: {{user.age}}</div>
@@ -35,7 +43,7 @@
           <div id="pid" value="{{this._id}}" class="d-flex card card-product mt-4" style="width: 18rem;">
             <img
               class="card-img-top"
-              src="/static/img/{{this.product_image}}"
+              src="/static/assets/products/{{this.product_image}}"
               alt="{{this.title}}"
             />
             <div class="card-body">
@@ -74,6 +82,13 @@
         <h2>{{data}}</h2>
       {{/if}}
     </div>
+
+    {{#if list.hasPrevPage}}
+        <a href={{list.prevLink}}>Previous</a>
+    {{/if}}
+    {{#if list.hasNextPage}}
+        <a href={{list.nextLink}}>Next</a>
+    {{/if}}
 
   </div>
 

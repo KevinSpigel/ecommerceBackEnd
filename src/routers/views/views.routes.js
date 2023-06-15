@@ -7,14 +7,15 @@ const { authToken } = require("../../middlewares/authToken.middleware");
 const router = Router();
 
 const authMiddlewares = [passportCustom("jwt"), authToken];
-const { adminRoleCheck } = require("../../middlewares/adminRoleCheck.middleware");
+const {
+  adminRoleCheck,
+} = require("../../middlewares/adminRoleCheck.middleware");
 
 const {
   viewsErrorMiddleware,
 } = require("../../middlewares/viewsError.middleware");
 
 const { getDAOS } = require("../../models/daos/daosFactory");
-
 
 const { cartsDao, productsDao, ticketsDao } = getDAOS();
 
@@ -170,10 +171,12 @@ router.get("/chat", authMiddlewares, (req, res, next) => {
 
 // BECOME PREMIUM
 router.get("/becomePremium", authMiddlewares, (req, res, next) => {
+  const { uid } = req.user;
   try {
     const data = {
       title: "Become Premium",
       style: "index.css",
+      uid
     };
 
     res.render("becomePremium", data);
@@ -183,18 +186,23 @@ router.get("/becomePremium", authMiddlewares, (req, res, next) => {
 });
 
 // ADMINISTRATOR
-router.get("/administrator", authMiddlewares, adminRoleCheck, (req, res, next) => {
-  try {
-    const data = {
-      title: "Administrator View",
-      style: "index.css",
-    };
+router.get(
+  "/administrator",
+  authMiddlewares,
+  adminRoleCheck,
+  (req, res, next) => {
+    try {
+      const data = {
+        title: "Administrator View",
+        style: "index.css",
+      };
 
-    res.render("administrator", data);
-  } catch (error) {
-    next();
+      res.render("administrator", data);
+    } catch (error) {
+      next();
+    }
   }
-});
+);
 
 router.use(viewsErrorMiddleware);
 

@@ -43,7 +43,7 @@ socket.on("newProduct", (data) => {
   newProductDiv.innerHTML = `<div id="pid" value="${data._id}" class="card card-product" style="width: 18rem;">
             <img
               class="card-img-top"
-              src="/static/img/${data.product_image}"
+              src="/static/assets/products/${data.product_image}"
               alt="${data.title}"
             />
             <div class="card-body">
