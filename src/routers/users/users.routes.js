@@ -5,18 +5,20 @@ const UsersController = require("../../controllers/users.controller");
 class UsersRoutes extends BaseRouter {
   init() {
     this.get("/", ["admin"], UsersController.getUsers);
-    this.get(
-      "/:uid",
-      ["user", "admin", "premium"],
-      UsersController.getUserById
-    );
     this.post(
       "/",
       ["user", "admin", "premium"],
       uploader.single("profile_image"),
       UsersController.createUser
     );
+    this.delete("/", ["admin"], UsersController.deleteAllInactiveUsers);
+    this.get(
+      "/:uid",
+      ["user", "admin", "premium"],
+      UsersController.getUserById
+    );
     this.put("/:uid", ["admin"], UsersController.updateUser);
+    this.delete("/:uid", ["admin"], UsersController.deleteUser);
     this.post(
       "/:uid/documents",
       ["user", "admin"],
@@ -26,8 +28,6 @@ class UsersRoutes extends BaseRouter {
     this.put("/premium/:uid", ["admin"], UsersController.changeRole);
     this.post("/resetPassword", ["PUBLIC"], UsersController.resetPasswordEmail);
     this.post("/createNewPassword", ["PUBLIC"], UsersController.setNewPassword);
-    this.delete("/:uid", ["admin"], UsersController.deleteUser);
-    this.delete("/", ["admin"], UsersController.deleteAllInactiveUsers);
   }
 }
 

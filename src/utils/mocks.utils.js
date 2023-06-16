@@ -39,7 +39,6 @@ const generateUser = () => {
       {
         name: faker.helpers.randomize(["id_document", "Proof of Address Document", "Account Status Document"]), //check this!!!!!!!!!!!!!!!!!!!
         reference: faker.image.image(), // check this!!!!!!!!!!!!!!!!!!!!!
-        doctype: faker.helpers.randomize(["id_document", "proof_of_address", "account_status"]),
       },
     ],
     last_connection: Date.now().toLocaleString(),

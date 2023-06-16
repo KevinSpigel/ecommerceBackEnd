@@ -43,12 +43,9 @@ const userSchema = new mongoose.Schema({
       {
         name: String,
         reference: String,
-        doctype: {
-          type: String,
-          enum: ["id_document", "proof_of_address", "account_status"],
-        },
       },
     ],
+    default: [],
   },
   last_connection: {
     type: String,

@@ -16,7 +16,7 @@ class UsersRepository {
 
   async getUserById(uid) {
     if (!uid) {
-      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing param");
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Must provide a valid ID");
     }
     const user = await usersDao.getUserById(uid);
     if (!user) {
@@ -64,13 +64,17 @@ class UsersRepository {
   }
 
   async addDocuments(uid, files) {
+    if (!uid) {
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Must provide a valid ID");
+    }
+
     const user = await usersDao.getUserById(uid);
     if (!user) {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
     if (!files) {
-      throw new HttpError("Missing document", HTTP_STATUS.BAD_REQUEST);
+      throw new HttpError("Missing documents", HTTP_STATUS.BAD_REQUEST);
     }
 
     const uploadedDocuments = files.map((file) => ({
@@ -193,7 +197,7 @@ class UsersRepository {
 
   async deleteUser(uid) {
     if (!uid) {
-      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Must provide an id");
+      throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Must provide a valid ID");
     }
     const user = await usersDao.getUserById(uid);
     if (!user) {
