@@ -18,8 +18,10 @@ This project is a feature-rich ecommerce server that allows users to engage in v
 - Third party Authentication method.
 - JWT.
 - Protect routes.
+- Messages Service: Email ad SMS.
 - Middlewares.
 - Error handling.
+- Data persistence: NoSQL (MongoDB) and FileSystem.
 
 - User Authentication: Users can register an account using a form or through third-party authentication methods. They can also log in with their credentials and restore their password via email if needed.
 - Real-time Product Updates: Users can view products in real-time and apply various filters to find the desired items.
@@ -31,6 +33,7 @@ This project is a feature-rich ecommerce server that allows users to engage in v
 - User Role Management: Administrators or authorized users can change the roles of other users, granting or revoking certain privileges.
 - Integration with Mailing Service: The project integrates a mailing service to handle password restoration and send notifications for successful purchases. Users can restore their password via email and receive email notifications when a purchase is completed.
 - Integration with SMS Service: In addition to email notifications, the project also integrates an SMS service to provide notifications for successful purchases. Users will receive an SMS message to their registered phone number when a purchase is completed.
+- Data persistence: The project supports two types of data persistence depending on the value set in the environment variables file. It can utilize MongoDB, a NoSQL database, or the FileSystem for storing data.
 
 ## Prerequisites
 
@@ -93,7 +96,9 @@ This command will run the tests using Mocha, Chai, and SuperTest and display the
 
 **Client:** Javascript, Handlebars, HTML5, CSS3, Bootstrap, SweetAlert.
 
-**Server:** Node.JS, Express.JS, MongoDB, Mongoose, JWT.
+**Server:** Node.JS, Express.JS, JWT.
+
+**Database:** MongoDB, Mongoose, FileSystem.
 
 **Testing:** Mocha, Chai, SuperTest.
 
