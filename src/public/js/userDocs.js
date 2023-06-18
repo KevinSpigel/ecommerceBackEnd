@@ -8,6 +8,9 @@ const Toast = Swal.mixin({
 });
 
 const userDocumentForm = document.getElementById("userDocument-form");
+const uidInput = userDocumentForm.querySelector('input[name="uid"]');
+
+const uid = uidInput.value;
 
 userDocumentForm?.addEventListener("submit", async (event) => {
   event.preventDefault();

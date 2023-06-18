@@ -30,7 +30,9 @@ paths:
               schema:
                 $ref: "#components/schemas/UsersResponse"
         "400":
-          description: Bad request. Missing required params to create a new user or User already exists in the DB
+          description: |
+            - Bad request. Missing required parameters to create a new user
+            - Bad request. User already exists in the DB
         "401":
           description: Unauthorized. Token expired
         "500":
@@ -107,7 +109,9 @@ paths:
               schema:
                 $ref: "#components/schemas/UserResponse"
         "400":
-          description: Bad request. Invalid body format or missing data from user
+          description: |
+            - Bad request. Invalid body format or missing data from user
+            - Bad request. Must provide a valid ID
         "401":
           description: Unauthorized. Token expired
         "403":
@@ -150,7 +154,7 @@ paths:
     post:
       tags:
         - Users
-      summary: Upload documents for a user by ID and change update_status atributte
+      summary: Upload documents for a user by ID and change update_status attributte
       parameters:
         - name: userId
           in: path
@@ -172,7 +176,9 @@ paths:
               schema:
                 $ref: "#components/schemas/UsersResponse"
         "400":
-          description: Bad request. Must provide a valid ID or Missing documents
+          description: |
+            - Bad request. Missing documents
+            - Bad request. Must provide a valid ID
         "401":
           description: Unauthorized. Token expired
         "403":
@@ -245,7 +251,9 @@ paths:
               schema:
                 $ref: "#components/schemas/UsersResponse"
         "400":
-          description: Bad request. Invalid token or password
+          description: |
+            - Bad request. Invalid token
+            - Bad request. Invalid password
         "401":
           description: Unauthorized. Token expired
         "404":
@@ -279,7 +287,8 @@ components:
           description: User hashed password. Required
         profile_image:
           type: string
-          description: User profile image. Default value is 'default.jpg'
+          description: User profile image.
+          default: default.jpg
         github_username:
           type: string
           description: User GitHub username (unique field)
@@ -318,8 +327,12 @@ components:
         role: user
         cart: ObjectId(789hij101112klm)
         documents:
-          - name: "ID Document"
+          - name: "id_document"
             reference: "ABC123"
+          - name: "proof_of_address"
+            reference: "DEF456"
+          - name: "account_status"
+            reference: "GHI789"
         last_connection: "2023-06-05T12:00:00Z"
         update_status: false
 
@@ -343,7 +356,7 @@ components:
           type: string
           enum: [success, error]
           description: User response status
-        payload:
+        user:
           $ref: "#components/schemas/User"
 
     UserEmailResponse:
@@ -417,8 +430,12 @@ components:
         role: user
         cart: ObjectId(789hij101112klm)
         documents:
-          - name: "ID Document"
+          - name: "id_document"
             reference: "ABC123"
+          - name: "proof_of_address"
+            reference: "DEF456"
+          - name: "account_status"
+            reference: "GHI789"
         last_connection: "2023-06-05T12:00:00Z"
         update_status: true
 
@@ -441,6 +458,10 @@ components:
           description: User status for having updated documents. Default value is 'false'
       example:
         documents:
-          - name: "ID Document"
+          - name: "id_document"
             reference: "ABC123"
+          - name: "proof_of_address"
+            reference: "DEF456"
+          - name: "account_status"
+            reference: "GHI789"
         update_status: true

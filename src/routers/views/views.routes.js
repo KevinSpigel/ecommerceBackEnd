@@ -17,7 +17,7 @@ const {
 
 const { getDAOS } = require("../../models/daos/daosFactory");
 
-const { cartsDao, productsDao, ticketsDao } = getDAOS();
+const { cartsDao, productsDao, ticketsDao, usersDao } = getDAOS();
 
 //LOGIN
 
@@ -170,13 +170,17 @@ router.get("/chat", authMiddlewares, (req, res, next) => {
 });
 
 // BECOME PREMIUM
-router.get("/becomePremium", authMiddlewares, (req, res, next) => {
-  const { uid } = req.user;
+router.get("/becomePremium", authMiddlewares, async (req, res, next) => {
+  const { email } = req.user;
+
   try {
+    const user = await usersDao.getUserByEmail(email);
+    const uid = user._id;
+
     const data = {
       title: "Become Premium",
       style: "index.css",
-      uid
+      uid,
     };
 
     res.render("becomePremium", data);
