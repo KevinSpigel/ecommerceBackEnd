@@ -60,7 +60,7 @@ class SessionsRepository {
     }
 
     await usersDao.updateUserById(user._id, {
-      last_connection: new Date().toLocaleString(),
+      last_connection: new Date(),
     });
 
     const userForCookie = {
@@ -82,7 +82,7 @@ class SessionsRepository {
 
   async loginGithub(res, user) {
     await usersDao.updateUserById(user._id, {
-      last_connection: new Date().toLocaleString(),
+      last_connection: new Date(),
     });
 
     const userGitHubForCookie = {
@@ -108,7 +108,7 @@ class SessionsRepository {
     const decodedToken = jwt.verify(sessionToken, SECRET_KEY);
 
     await usersDao.updateUserByEmail(decodedToken.email, {
-      last_connection: new Date().toLocaleString(),
+      last_connection: new Date(),
     });
     return res.clearCookie(SESSION_KEY);
   }

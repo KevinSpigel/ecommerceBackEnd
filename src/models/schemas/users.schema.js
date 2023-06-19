@@ -48,8 +48,8 @@ const userSchema = new mongoose.Schema({
     default: [],
   },
   last_connection: {
-    type: String,
-    default: Date.now().toLocaleString(),
+    type: Date,
+    default: Date.now(),
   },
   update_status: {
     type: Boolean,

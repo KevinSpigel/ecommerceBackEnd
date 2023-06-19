@@ -211,6 +211,7 @@ class UsersRepository {
     const currentDate = new Date();
     const twoDaysAgo = new Date();
     twoDaysAgo.setDate(currentDate.getDate() - 2);
+    
 
     const deleteFilter = {
       last_connection: { $lt: twoDaysAgo },

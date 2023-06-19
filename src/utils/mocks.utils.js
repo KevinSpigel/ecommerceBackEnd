@@ -41,7 +41,7 @@ const generateUser = () => {
         reference: faker.image.image(), // check this!!!!!!!!!!!!!!!!!!!!!
       },
     ],
-    last_connection: Date.now().toLocaleString(),
+    last_connection: Date.now(),
     update_status: faker.datatype.boolean(),
   };
 };
