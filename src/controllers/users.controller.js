@@ -59,7 +59,7 @@ class UsersController {
     const { uid } = req.params;
     const { payload } = req.body;
     try {
-      const updatedUser = await usersRepository.updateUser(payload, uid);
+      const updatedUser = await usersRepository.updateUser(uid, payload);
       const response = apiSuccessResponse(updatedUser);
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

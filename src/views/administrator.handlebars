@@ -9,7 +9,8 @@
     <form id="userById-form" enctype="multipart/form-data">
       <div class="form-floating mb-2">
         <input
-          name="userId"
+          name="userIdInput"
+          id="userIdInput"
           type="text"
           class="form-control"
           placeholder="User ID"
@@ -23,16 +24,23 @@
         type="submit"
       >Submit</button>
 
+      <button
+        class="w-50 mt-3 btn btn-sm btn-secondary"
+        type="button"
+        onclick="clearForm('userById-form')"
+      >Clear</button>
+
     </form>
   </div>
 
   <div class="form-signin w-100 m-auto card card-box mb-5">
     <h6 class="mt-1 mb-4">Modify the role of a User by ID</h6>
 
-    <form id="changeRole-form" enctype="multipart/form-data">
+    <form id="changeRole-form">
       <div class="form-floating mb-2">
         <input
-          name="userId"
+          name="userIdRole"
+          id="userIdRole"
           type="text"
           class="form-control"
           placeholder="User ID"
@@ -57,6 +65,12 @@
         type="submit"
       >Submit</button>
 
+      <button
+        class="w-50 mt-3 btn btn-sm btn-secondary"
+        type="button"
+        onclick="clearForm('changeRole-form')"
+      >Clear</button>
+
     </form>
   </div>
 
@@ -66,7 +80,8 @@
     <form id="deleteUser-form" enctype="multipart/form-data">
       <div class="form-floating mb-2">
         <input
-          name="userId"
+          name="userIdDeleteInput"
+          id="userIdDeleteInput"
           type="text"
           class="form-control"
           placeholder="User ID"
@@ -78,7 +93,13 @@
       <button
         class="w-50 mt-3 btn btn-sm btn-danger"
         type="submit"
+        onclick="deleteUser(event)"
       >Delete</button>
+
+      <button
+        class="w-50 mt-3 btn btn-sm btn-secondary"
+        type="button"
+      >Clear</button>
 
     </form>
   </div>

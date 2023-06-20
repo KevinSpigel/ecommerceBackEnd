@@ -100,7 +100,7 @@ class UsersRepository {
     return updatedUser;
   }
 
-  async updateUser(payload, uid) {
+  async updateUser(uid, payload) {
     if (!uid || !Object.keys(payload).length) {
       throw new HttpError(HTTP_STATUS.BAD_REQUEST, "Missing data from user");
     }
@@ -109,7 +109,7 @@ class UsersRepository {
       throw new HttpError(HTTP_STATUS.NOT_FOUND, "User not found");
     }
 
-    const updatedUser = await usersDao.updateUserById(payload, uid);
+    const updatedUser = await usersDao.updateUserById(uid, payload);
     return updatedUser;
   }
 
@@ -211,7 +211,6 @@ class UsersRepository {
     const currentDate = new Date();
     const twoDaysAgo = new Date();
     twoDaysAgo.setDate(currentDate.getDate() - 2);
-    
 
     const deleteFilter = {
       last_connection: { $lt: twoDaysAgo },
