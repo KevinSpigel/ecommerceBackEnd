@@ -8,7 +8,8 @@ class MocksController {
   static async generateMockProducts(req, res, next) {
     const total = +req.query.total || 20;
     try {
-      let result = Array.from({ length: total }, () => generateProduct());
+      const users = await UsersModel.find({ role: "premium" });
+      let result = Array.from({ length: total }, () => generateProduct(users));
       const productToDB = await ProductsModel.insertMany(result);
       const response = apiSuccessResponse(productToDB);
       res.status(HTTP_STATUS.CREATED).json(response);

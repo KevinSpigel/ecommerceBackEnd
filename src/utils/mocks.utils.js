@@ -3,7 +3,10 @@ const { hashPassword } = require("./hash.utils");
 
 faker.locale = "en";
 
-const generateProduct = () => {
+const generateProduct = (users) => {
+  const premiumUsers = users.filter((user) => user.role === "premium");
+  const premiumUserEmails = premiumUsers.map((user) => user.email);
+
   return {
     _id: faker.database.mongodbObjectId(),
     title: faker.commerce.product(),
@@ -14,6 +17,7 @@ const generateProduct = () => {
     stock: faker.datatype.number({ min: 0, max: 100 }),
     category: faker.commerce.department(),
     status: faker.datatype.boolean(),
+    owner: faker.helpers.arrayElement(["admin", ...premiumUserEmails]),
   };
 };
 
@@ -25,6 +29,29 @@ for (let i = 0; i <= 60; i++) {
 const hashMockPassword = hashPassword("1234");
 
 const generateUser = () => {
+  const documentNames = ["id_document", "proof_of_address", "account_status"];
+
+  const userDocuments = [
+    {
+      name: documentNames[0],
+      reference: faker.image.imageUrl(400, 400, "documents", true),
+    },
+    {
+      name: documentNames[1],
+      reference: faker.image.imageUrl(400, 400, "documents", true),
+    },
+    {
+      name: documentNames[2],
+      reference: faker.image.imageUrl(400, 400, "documents", true),
+    },
+  ];
+
+  const hasAllDocuments = faker.datatype.boolean();
+
+  const role = hasAllDocuments ? "premium" : "user";
+
+  const updateStatus = role === "premium";
+
   return {
     _id: faker.database.mongodbObjectId(),
     first_name: faker.name.firstName(),
@@ -33,16 +60,11 @@ const generateUser = () => {
     age: faker.helpers.arrayElement(ages),
     password: hashMockPassword,
     profile_image: faker.image.image(),
-    role: faker.helpers.arrayElement(["user", "admin", "premium"]),
+    role: role,
     cart: faker.database.mongodbObjectId(),
-    documents: [
-      {
-        name: faker.helpers.randomize(["id_document", "Proof of Address Document", "Account Status Document"]), //check this!!!!!!!!!!!!!!!!!!!
-        reference: faker.image.image(), // check this!!!!!!!!!!!!!!!!!!!!!
-      },
-    ],
+    documents: hasAllDocuments ? userDocuments : [],
     last_connection: Date.now(),
-    update_status: faker.datatype.boolean(),
+    update_status: updateStatus,
   };
 };
 
