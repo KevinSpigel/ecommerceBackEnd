@@ -44,6 +44,7 @@ class SessionsRepository {
       cart: createdUser.cart,
       role: createdUser.role,
       profile_image: createdUser.profile_image,
+      update_status: createdUser.update_status,
     };
 
     const access_token = generateToken(userForCookie);
@@ -71,6 +72,7 @@ class SessionsRepository {
       cart: user.cart,
       role: user.role,
       profile_image: user.profile_image,
+      update_status: user.update_status,
     };
     const access_token = generateToken(userForCookie);
 

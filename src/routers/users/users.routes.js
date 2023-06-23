@@ -22,10 +22,14 @@ class UsersRoutes extends BaseRouter {
     this.post(
       "/:uid/documents",
       ["user", "admin"],
-      uploader.array("documents"),
+      uploader.fields([
+        { name: "id_document", maxCount: 1 },
+        { name: "proof_of_address", maxCount: 1 },
+        { name: "account_status", maxCount: 1 },
+      ]),
       UsersController.addDocumentation
     );
-    this.put("/premium/:uid", ["admin"], UsersController.changeRole);
+    this.put("/premium/:uid", ["user", "admin"], UsersController.changeRole);
     this.post("/resetPassword", ["PUBLIC"], UsersController.resetPasswordEmail);
     this.post("/createNewPassword", ["PUBLIC"], UsersController.setNewPassword);
   }

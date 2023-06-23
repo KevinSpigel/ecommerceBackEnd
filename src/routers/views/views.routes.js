@@ -19,6 +19,8 @@ const { getDAOS } = require("../../models/daos/daosFactory");
 
 const { cartsDao, productsDao, ticketsDao, usersDao } = getDAOS();
 
+const productsRepository = require("../../models/repositories/products.repository");
+
 //LOGIN
 
 router.get("/", (req, res, next) => {
@@ -81,16 +83,17 @@ router.get("/newPassword", (req, res, next) => {
 
 router.get("/products", authMiddlewares, async (req, res, next) => {
   try {
-    const product = await productsDao.getProducts(req.query);
+    const allProducts = await productsRepository.getAllProduct(req);
     const user = req.user;
     const isAdmin = req.user.role === "admin" || req.user.role === "premium";
 
-    if (product.docs) {
+    if (allProducts.payload.length > 0) {
       const data = {
         status: true,
         title: "Products",
         style: "index.css",
-        list: product.docs,
+        list: allProducts.payload,
+        list_links: allProducts,
         user,
         isAdmin,
       };
@@ -99,8 +102,11 @@ router.get("/products", authMiddlewares, async (req, res, next) => {
     } else {
       return res.status(404).render("realTimeProducts", {
         status: false,
+        title: "Products",
         style: "index.css",
         data: "Empty list",
+        user,
+        isAdmin,
       });
     }
   } catch (error) {
@@ -176,11 +182,13 @@ router.get("/becomePremium", authMiddlewares, async (req, res, next) => {
   try {
     const user = await usersDao.getUserByEmail(email);
     const uid = user._id;
+    const isUpdated = user.update_status;
 
     const data = {
       title: "Become Premium",
       style: "index.css",
       uid,
+      isUpdated,
     };
 
     res.render("becomePremium", data);

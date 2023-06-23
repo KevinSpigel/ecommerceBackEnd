@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
       {
         name: String,
         reference: String,
+        docType: {
+          type: String,
+          enum: ["id_document", "proof_of_address", "account_status"],
+        },
       },
     ],
     default: [],

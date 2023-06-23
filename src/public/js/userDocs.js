@@ -3,7 +3,7 @@ const Toast = Swal.mixin({
   toast: true,
   position: "top-end",
   showConfirmButton: false,
-  timer: 3000,
+  timer: 4000,
   timerProgressBar: true,
 });
 
@@ -19,11 +19,10 @@ userDocumentForm?.addEventListener("submit", async (event) => {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/api/user/${uid}/documents`,
+      `http://localhost:8080/api/users/${uid}/documents`,
       {
         method: "POST",
         body: documentsFormData,
-        redirect: "manual",
         headers: {
           type: "documents",
         },
@@ -33,10 +32,10 @@ userDocumentForm?.addEventListener("submit", async (event) => {
     if (response.ok) {
       Toast.fire({
         icon: "success",
-        title: "Now, you are a Premium User!",
+        title: "All documents have been successfully uploaded",
+      }).then(() => {
+        location.reload();
       });
-      window.location.href = "http://localhost:8080/products";
-      userDocumentForm.reset();
     } else {
       Toast.fire({
         icon: "error",
@@ -49,3 +48,44 @@ userDocumentForm?.addEventListener("submit", async (event) => {
     window.location.href = "http://localhost:8080/becomePremium";
   }
 });
+
+const becomePremiumButton = document.getElementById("becomePremiumButton");
+becomePremiumButton.addEventListener("click", becomePremium);
+
+async function becomePremium() {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/users/premium/${uid}`,
+      {
+        method: "PUT",
+      }
+    );
+
+    if (response.ok) {
+      Toast.fire({
+        icon: "success",
+        title: "Congratulations! You are now a Premium User!",
+        text: "Please log in again to access your premium features.",
+        timer: 6000,
+      }).then(() => {
+        fetch("http://localhost:8080/api/sessions/logout")
+          .then(() => {
+            window.location.href = "http://localhost:8080/";
+          })
+          .catch((error) => {
+            console.log(error);
+            window.location.href = "http://localhost:8080/becomePremium";
+          });
+      });
+    } else {
+      Toast.fire({
+        icon: "error",
+        title:
+          "Ups, something happened. Please try again. If the error persists, please contact the Administrator",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    window.location.href = "http://localhost:8080/becomePremium";
+  }
+}

@@ -44,7 +44,7 @@
   <div class="mt-3">
     <h1>Products List</h1>
     <div
-      class="d-flex flex-wrap justify-content-around mt-4" id="product-list-container">
+      class="d-flex flex-wrap justify-content-around mt-4 mb-4" id="product-list-container">
       {{#if status}}
         {{#each list}}
           <div id="pid" value="{{this._id}}" class="d-flex card card-product mt-4" style="width: 18rem;">
@@ -90,11 +90,11 @@
       {{/if}}
     </div>
 
-    {{#if list.hasPrevPage}}
-        <a href={{list.prevLink}}>Previous</a>
+    {{#if list_links.prevLink}}
+        <a href={{list_links.prevLink}}>Previous</a>
     {{/if}}
-    {{#if list.hasNextPage}}
-        <a href={{list.nextLink}}>Next</a>
+    {{#if list_links.nextLink}}
+        <a href={{list_links.nextLink}}>Next</a>
     {{/if}}
 
   </div>

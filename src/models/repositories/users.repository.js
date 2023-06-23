@@ -77,26 +77,31 @@ class UsersRepository {
       throw new HttpError("Missing documents", HTTP_STATUS.BAD_REQUEST);
     }
 
-    const uploadedDocuments = files.map((file) => ({
-      name: file.originalname,
-      reference: file.path,
+    const uploadedDocuments = Object.values(files).map((file) => ({
+      name: file[0].originalname,
+      reference: file[0].path,
+      docType: file[0].fieldname,
     }));
 
     const userPayload = {
-      documents: [...user.documents, ...uploadedDocuments],
+      documents: uploadedDocuments,
     };
+
     const requiredDocuments = [
       "id_document",
       "proof_of_address",
       "account_status",
     ];
+
     const hasRequiredDocuments = requiredDocuments.every((document) => {
-      return user.documents.some((d) => d.name === document);
+      return user.documents.some((d) => d.docType === document);
     });
+
     if (hasRequiredDocuments) {
       userPayload.update_status = true;
     }
-    const updatedUser = await usersDao.updateUser(uid, userPayload);
+
+    const updatedUser = await usersDao.updateUserById(uid, userPayload);
     return updatedUser;
   }
 
@@ -174,7 +179,7 @@ class UsersRepository {
       "account_status",
     ];
     const hasRequiredDocuments = requiredDocuments.every((document) => {
-      return user.documents.some((d) => d.name === document);
+      return user.documents.some((d) => d.docType === document);
     });
 
     if (user.role === "user" && !hasRequiredDocuments && !user.update_status) {
@@ -185,10 +190,8 @@ class UsersRepository {
     }
 
     let newRole;
-    if (user.role === "user") {
+    if (user.role === "user" && hasRequiredDocuments && user.update_status) {
       newRole = "premium";
-    } else if (user.role === "premium") {
-      newRole = "user";
     }
 
     const updatedUser = await usersDao.updateUserById(uid, { role: newRole });

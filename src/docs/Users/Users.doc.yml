@@ -193,7 +193,7 @@ paths:
     put:
       tags:
         - Users
-      summary: Update user role from 'user' to 'premium' and vice versa
+      summary: Update user role to 'premium' if all required documentation is uploaded
       parameters:
         - name: userId
           in: path
@@ -309,6 +309,9 @@ components:
               reference:
                 type: string
                 description: Document reference
+              docType:
+                type: string
+                enum: ["id_document", "proof_of_address", "account_status"]
         last_connection:
           type: string
           format: date-time
@@ -327,12 +330,15 @@ components:
         role: user
         cart: ObjectId(789hij101112klm)
         documents:
-          - name: "id_document"
+          - name: ""
             reference: "ABC123"
-          - name: "proof_of_address"
+            docType: "id_document"
+          - name: ""
             reference: "DEF456"
-          - name: "account_status"
+            docType: "proof_of_address"
+          - name: ""
             reference: "GHI789"
+            docType: "account_status"
         last_connection: "2023-06-05T12:00:00Z"
         update_status: false
 
@@ -412,6 +418,9 @@ components:
               reference:
                 type: string
                 description: Document reference
+              docType: 
+                type: string
+                enum: ["id_document", "proof_of_address", "account_status"]
         last_connection:
           type: string
           format: date-time
@@ -430,12 +439,15 @@ components:
         role: user
         cart: ObjectId(789hij101112klm)
         documents:
-          - name: "id_document"
+          - name: "Id Document"
             reference: "ABC123"
-          - name: "proof_of_address"
+            docType: "id_document"
+          - name: "Proof of Address"
             reference: "DEF456"
-          - name: "account_status"
+            docType: "proof_of_address"
+          - name: "Account Status"
             reference: "GHI789"
+            docType: "account_status"
         last_connection: "2023-06-05T12:00:00Z"
         update_status: true
 
@@ -453,15 +465,21 @@ components:
               reference:
                 type: string
                 description: Document reference
+              docType:
+                type: string
+                enum: ["id_document", "proof_of_address", "account_status"]
         update_status:
           type: boolean
           description: User status for having updated documents. Default value is 'false'
       example:
         documents:
-          - name: "id_document"
+          - name: "Id Document"
             reference: "ABC123"
-          - name: "proof_of_address"
+            docType: "id_document"
+          - name: "Proof of Address"
             reference: "DEF456"
-          - name: "account_status"
+            docType: "proof_of_address"
+          - name: "Account Status"
             reference: "GHI789"
+            docType: "account_status"
         update_status: true

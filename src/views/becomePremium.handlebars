@@ -1,14 +1,14 @@
-<div class="login-body">
+<div class="login-body d-flex row gap-5">
   <div class="form-signin w-100 m-auto card card-box">
 
     <h1 class="h3 mb-3 fw-normal">Become Premium</h1>
     <h6 class="mt-1 mb-4">Please, upload the required documents</h6>
 
     <form id="userDocument-form" enctype="multipart/form-data">
-    <input type="hidden" name="uid" value="{{uid}}">
+      <input type="hidden" name="uid" value="{{uid}}" />
 
       <div class="mb-3">
-        <label for="id_document">Id document</label>
+        <label for="id_document">ID document</label>
         <input
           name="id_document"
           id="id_document"
@@ -30,7 +30,7 @@
         />
       </div>
       <div class="mb-3">
-        <label for="account_status">Account</label>
+        <label for="account_status">Account Status</label>
         <input
           name="account_status"
           id="account_status"
@@ -49,6 +49,17 @@
     </form>
 
   </div>
+
+  {{#if isUpdated}}
+    <div class="form-signin w-100 m-auto card card-box">
+      <h1 class="mb-3 fw-normal">I'm ready!</h1>
+      <div>
+        <button id="becomePremiumButton" class="btn btn-outline-success btn-lg">Become Premium</button>
+      </div>
+
+    </div>
+
+  {{/if}}
 
 </div>
 

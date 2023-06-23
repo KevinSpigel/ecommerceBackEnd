@@ -1,5 +1,3 @@
-const { PORT } = require("../../config/env.config");
-
 const { HTTP_STATUS, HttpError } = require("../../utils/api.utils");
 
 const { getDAOS } = require("../daos/daosFactory");
@@ -7,6 +5,8 @@ const { getServices } = require("../../services/app.service");
 
 const { productsDao } = getDAOS();
 const { messagesService } = getServices();
+
+const { URLSearchParams } = require("url");
 
 class ProductsRepository {
   async addProduct(req) {
@@ -38,6 +38,8 @@ class ProductsRepository {
   async getAllProduct(req) {
     const limit = req.query.limit || 10;
     const products = await productsDao.getProducts(req.query);
+    const host = req.headers.host;
+
     const data = {
       status: "success",
       payload: products.docs,
@@ -48,10 +50,17 @@ class ProductsRepository {
       hasPrevPage: products.hasPrevPage,
       hasNextPage: products.hasNextPage,
       nextLink: products.hasNextPage
-        ? `http://localhost:${PORT}${req.baseUrl}/?limit=${limit}&page=${products.nextPage}`
+        ? `http://${host}${req.path}?${new URLSearchParams({
+            ...req.query,
+            page: products.nextPage,
+            limit,
+          })}`
         : null,
       prevLink: products.hasPrevPage
-        ? `http://localhost:${PORT}${req.baseUrl}/?page=/${products.prevPage}`
+        ? `http://${host}${req.path}?${new URLSearchParams({
+            ...req.query,
+            page: products.prevPage,
+          })}`
         : null,
     };
     return data;

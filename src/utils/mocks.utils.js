@@ -33,16 +33,19 @@ const generateUser = () => {
 
   const userDocuments = [
     {
-      name: documentNames[0],
+      name: faker.hacker.noun(),
       reference: faker.image.imageUrl(400, 400, "documents", true),
+      docType: documentNames[0],
     },
     {
-      name: documentNames[1],
+      name: faker.hacker.noun(),
       reference: faker.image.imageUrl(400, 400, "documents", true),
+      docType: documentNames[1],
     },
     {
-      name: documentNames[2],
+      name: faker.hacker.noun(),
       reference: faker.image.imageUrl(400, 400, "documents", true),
+      docType: documentNames[2],
     },
   ];
 
@@ -59,7 +62,7 @@ const generateUser = () => {
     email: faker.internet.email(),
     age: faker.helpers.arrayElement(ages),
     password: hashMockPassword,
-    profile_image: faker.image.image(),
+    profile_image: "default.jpg",
     role: role,
     cart: faker.database.mongodbObjectId(),
     documents: hasAllDocuments ? userDocuments : [],
