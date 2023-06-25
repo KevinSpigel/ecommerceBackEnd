@@ -68,7 +68,7 @@ You may also see any lint errors in the console.
 
 run `npm start` on a terminal located in project's root directory to start the project.
 
-run `npm run start:dev` on a terminal located in project's root directory to start project on `development` mode.
+run `npm run dev` on a terminal located in project's root directory to start project on `development` mode.
 
 ## Testing
 
@@ -86,11 +86,25 @@ To run the test suite for this project, follow these steps:
 
 `npm install`
 
-2. Execute the following command in the terminal to run the tests:
+2. 1. Execute the following command in the terminal to run the unit tests:
 
-`npm test`
+`npm run test:unit`
 
-This command will run the tests using Mocha, Chai, and SuperTest and display the test results in the console.
+This command will run the unit tests using Mocha and Chai, and display the test results in the console.
+
+
+2. 2. Execute the following command in the terminal to run the integration tests:
+
+`npm run test:integration`
+
+This command will run the integration tests using Mocha, Chai, and SuperTest, and display the test results in the console.
+
+By running the unit tests and integration tests, you can ensure the proper functioning of the individual components and the integration between different parts of the project.
+
+Make sure to replace `"test:unit"` and `"test:integration"` with the actual script names defined in the `package.json` file.
+
+Feel free to adjust the instructions or provide additional information as needed for running the tests in your project.
+
 
 ## Tech Stack
 
