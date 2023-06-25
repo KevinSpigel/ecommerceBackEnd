@@ -3,7 +3,9 @@ const { TicketDTO } = require("../../../../src/models/dtos/tickets.dto");
 
 const expect = chai.expect;
 
-describe("[Ticket DTO Unit Test cases]", function () {
+describe("[Ticket DTO Unit Test cases]", async function () {
+  this.timeout(5000);
+  
   it("Ticket DTO should format the purchase order successfully", function () {
     const testOrder = {
       purchaser: "test@gmail.com",

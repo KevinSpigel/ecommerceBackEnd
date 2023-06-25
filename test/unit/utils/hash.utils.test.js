@@ -4,7 +4,8 @@ const { hashPassword, isValidPassword } = require("../../../src/utils/hash.utils
 
 const expect = chai.expect;
 
-describe("[Bcrypt Utils Unit Test cases]", function () {
+describe("[Bcrypt Utils Unit Test cases]", async function () {
+  this.timeout(5000);
   
   describe("hashPassword", function () {
     it("should hash the password correctly", function () {

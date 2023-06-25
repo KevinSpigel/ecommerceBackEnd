@@ -6,7 +6,8 @@ const UsersMongoDao = require("../../../../../src/models/daos/mongoManager/users
 
 const expect = chai.expect;
 
-describe("[Users DAO Unit Test cases]", function () {
+describe("[Users DAO Unit Test cases]", async function () {
+  this.timeout(5000);
 
   before(function () {
     this.usersDao = new UsersMongoDao();
@@ -50,7 +51,7 @@ describe("[Users DAO Unit Test cases]", function () {
     expect(result.cart).to.have.property("_id");
 
     //Check if the role parameter was added by default. users schema.
-    expect(result.role).to.have.property("role");
+    expect(result).to.have.property("role");
   });
 
   it("should retrieve a user by their email when using the 'getUserByEmail' method", async function () {

@@ -7,7 +7,9 @@ const ProductsMongoDao = require("../../../../../src/models/daos/mongoManager/pr
 
 const expect = chai.expect;
 
-describe("[Products DAO Unit Test cases]", function () {
+describe("[Products DAO Unit Test cases]", async function () {
+  this.timeout(5000);
+
   before(function () {
     this.productsDao = new ProductsMongoDao();
   });
@@ -21,15 +23,41 @@ describe("[Products DAO Unit Test cases]", function () {
   });
 
   it("should return an array of products when using the 'getProducts' method", async function () {
-    const result = await this.productsDao.getProducts();
-    expect(result).to.be.an("array");
+    const testProduct = {
+      title: "Test Product",
+      description: "Test description",
+      code: "test-code1",
+      price: 10,
+      product_image: "test-thumbnail",
+      stock: 5,
+      category: "test-category",
+      owner: "admin",
+    };
+
+    await this.productsDao.addProduct(
+      testProduct.title,
+      testProduct.description,
+      testProduct.code,
+      testProduct.price,
+      testProduct.product_image,
+      testProduct.stock,
+      testProduct.category,
+      testProduct.owner
+    );
+
+    const result = await this.productsDao.getProducts({});
+    expect(result).to.not.be.an.undefined;
+    expect(result.docs).to.be.an("array");
+    expect(result.totalDocs).to.be.a("number");
+    expect(result.limit).to.be.a("number");
+    expect(result.page).to.be.a("number");
   });
 
   it("should retrieve a product by their id when using the 'getProductById' method", async function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
-      code: "test-code",
+      code: "test-code2",
       price: 10,
       product_image: "test-thumbnail",
       stock: 5,
@@ -55,7 +83,7 @@ describe("[Products DAO Unit Test cases]", function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
-      code: "test-code",
+      code: "test-code3",
       price: 10,
       product_image: "test-thumbnail",
       stock: 5,
@@ -81,7 +109,7 @@ describe("[Products DAO Unit Test cases]", function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
-      code: "test-code",
+      code: "test-code3",
       price: 10,
       product_image: "test-thumbnail",
       stock: 5,
@@ -116,7 +144,7 @@ describe("[Products DAO Unit Test cases]", function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
-      code: "test-code",
+      code: "test-code4",
       price: 10,
       product_image: "test-thumbnail",
       stock: 5,

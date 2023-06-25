@@ -1,12 +1,11 @@
-const { DB_CONFIG } = require("../src/config/db.config");
-const { SESSION_KEY } = require("../src/config/env.config");
+const { DB_CONFIG } = require("../../src/config/db.config");
+const { SESSION_KEY } = require("../../src/config/env.config");
 const mongoose = require("mongoose");
-const { CartsModel } = require("../src/models/schemas/carts.schema");
-const { ProductsModel } = require("../src/models/schemas/products.schema");
-const { UsersModel } = require("../src/models/schemas/users.schema");
+const { CartsModel } = require("../../src/models/schemas/carts.schema");
+const { ProductsModel } = require("../../src/models/schemas/products.schema");
+const { UsersModel } = require("../../src/models/schemas/users.schema");
 
-
-before(async () => {
+before(async function () {
   mongoose.set("strictQuery", true);
   mongoose.connect(DB_CONFIG.mongoDb.uri);
 });

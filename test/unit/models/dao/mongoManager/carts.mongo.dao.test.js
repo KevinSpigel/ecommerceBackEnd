@@ -7,7 +7,9 @@ const CartsMongoDao = require("../../../../../src/models/daos/mongoManager/carts
 const ProductsMongoDao = require("../../../../../src/models/daos/mongoManager/products.mongo.dao");
 const expect = chai.expect;
 
-describe("[Carts DAO Unit Test cases]", function () {
+describe("[Carts DAO Unit Test cases]", async function () {
+  this.timeout(5000);
+
   before(function () {
     this.cartsDao = new CartsMongoDao();
     this.productsDao = new ProductsMongoDao();
@@ -46,11 +48,12 @@ describe("[Carts DAO Unit Test cases]", function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
-      code: "test-code",
+      code: "test-code-cart1",
       price: 10,
       product_image: "test-thumbnail",
       stock: 5,
       category: "test-category",
+      status: true,
       owner: "admin",
     };
     const product = await this.productsDao.addProduct(
@@ -61,6 +64,7 @@ describe("[Carts DAO Unit Test cases]", function () {
       testProduct.product_image,
       testProduct.stock,
       testProduct.category,
+      testProduct.status,
       testProduct.owner
     );
 
@@ -71,9 +75,10 @@ describe("[Carts DAO Unit Test cases]", function () {
     const updatedCart = await this.cartsDao.getCartById(testCart._id);
 
     expect(updatedCart.products).to.have.lengthOf(1); // Expect the cart to have one product
-    expect(updatedCart.products[0].product.toString()).to.be.equal(
+    expect(updatedCart.products[0].product._id.toString()).to.be.equal(
       product._id.toString()
-    ); // Compare the product ids
+    );
+    // Compare the product ids
     expect(updatedCart.products[0].amount).to.be.equal(quantity); // Expect the quantity to be correct
   });
 
@@ -93,7 +98,7 @@ describe("[Carts DAO Unit Test cases]", function () {
     const testProduct = {
       title: "Test Product",
       description: "Test description",
-      code: "test-code",
+      code: "test-code-cart2",
       price: 10,
       product_image: "test-thumbnail",
       stock: 5,

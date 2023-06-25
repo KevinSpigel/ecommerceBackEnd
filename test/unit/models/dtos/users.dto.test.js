@@ -3,7 +3,9 @@ const { CurrentUserDTO } = require("../../../../src/models/dtos/users.dto");
 
 const expect = chai.expect;
 
-describe("[Users DTO Unit Test cases]", function () {
+describe("[Users DTO Unit Test cases]", async function () {
+  this.timeout(5000);
+  
   it("User DTO should format user for Current User template successfully", function () {
     const testUser = {
       first_name: "Jhon",

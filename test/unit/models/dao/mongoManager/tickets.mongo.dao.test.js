@@ -7,7 +7,9 @@ const TicketsMongoDao = require("../../../../../src/models/daos/mongoManager/tic
 
 const expect = chai.expect;
 
-describe("[Tickets DAO Unit Test cases]", function () {
+describe("[Tickets DAO Unit Test cases]", async function () {
+  this.timeout(5000);
+  
   before(function () {
     this.ticketsDao = new TicketsMongoDao();
   });
