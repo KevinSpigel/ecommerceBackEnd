@@ -40,7 +40,7 @@ class SessionsController {
     try {
       await sessionsRepository.loginGithub(res, user);
       const response = apiSuccessResponse(
-        "User logued in successfully with github!"
+        "User logued in successfully with Github!"
       );
       return res.status(HTTP_STATUS.OK).json(response);
     } catch (error) {

@@ -5,3 +5,5 @@ tags:
     description: Carts REST API Routes
   - name: Products
     description: Products REST API Routes
+  - name: Sessions
+    description: Sessions REST API Routes
