@@ -1,6 +1,9 @@
 const { faker } = require("@faker-js/faker");
 const { hashPassword } = require("./hash.utils");
 
+const { getDAOS } = require("../models/daos/daosFactory");
+const { cartsDao } = getDAOS();
+
 faker.locale = "en";
 
 const generateProduct = (users) => {
@@ -28,7 +31,7 @@ for (let i = 0; i <= 60; i++) {
 
 const hashMockPassword = hashPassword("1234");
 
-const generateUser = () => {
+const generateUser = async () => {
   const documentNames = ["id_document", "proof_of_address", "account_status"];
 
   const userDocuments = [
@@ -55,6 +58,8 @@ const generateUser = () => {
 
   const updateStatus = role === "premium";
 
+  const newCart = await cartsDao.addCart();
+
   return {
     _id: faker.database.mongodbObjectId(),
     first_name: faker.name.firstName(),
@@ -64,7 +69,7 @@ const generateUser = () => {
     password: hashMockPassword,
     profile_image: "default.jpg",
     role: role,
-    cart: faker.database.mongodbObjectId(),
+    cart: newCart._id,
     documents: hasAllDocuments ? userDocuments : [],
     last_connection: Date.now(),
     update_status: updateStatus,

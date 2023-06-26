@@ -21,7 +21,9 @@ class MocksController {
   static async generateMockUsers(req, res, next) {
     const total = +req.query.total || 10;
     try {
-      let result = Array.from({ length: total }, () => generateUser());
+      let result = await Promise.all(
+        Array.from({ length: total }, async () => await generateUser())
+      );
       const userToDB = await UsersModel.insertMany(result);
       const response = apiSuccessResponse(userToDB);
       res.status(HTTP_STATUS.CREATED).json(response);
