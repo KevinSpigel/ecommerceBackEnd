@@ -16,7 +16,6 @@ module.exports = {
   MONGO_URI: process.env.MONGO_URI,
   CLIENT_ID: process.env.CLIENT_ID,
   CLIENT_SECRET: process.env.CLIENT_SECRET,
-  CALLBACK_URL: process.env.CALLBACK_URL,
   PERSISTENCE: process.env.PERSISTENCE || "MONGO",
   GMAIL_AUTHOR: process.env.GMAIL_AUTHOR,
   GMAIL_PWD: process.env.GMAIL_PWD,
