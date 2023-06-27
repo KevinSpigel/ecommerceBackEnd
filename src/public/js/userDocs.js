@@ -19,7 +19,7 @@ userDocumentForm?.addEventListener("submit", async (event) => {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/api/users/${uid}/documents`,
+      `/api/users/${uid}/documents`,
       {
         method: "POST",
         body: documentsFormData,
@@ -45,7 +45,7 @@ userDocumentForm?.addEventListener("submit", async (event) => {
     }
   } catch (error) {
     console.log(error);
-    window.location.href = "http://localhost:8080/becomePremium";
+    window.location.href = "/becomePremium";
   }
 });
 
@@ -55,7 +55,7 @@ becomePremiumButton.addEventListener("click", becomePremium);
 async function becomePremium() {
   try {
     const response = await fetch(
-      `http://localhost:8080/api/users/premium/${uid}`,
+      `/api/users/premium/${uid}`,
       {
         method: "PUT",
       }
@@ -68,13 +68,13 @@ async function becomePremium() {
         text: "Please log in again to access your premium features.",
         timer: 6000,
       }).then(() => {
-        fetch("http://localhost:8080/api/sessions/logout")
+        fetch("/api/sessions/logout")
           .then(() => {
-            window.location.href = "http://localhost:8080/";
+            window.location.href = "/";
           })
           .catch((error) => {
             console.log(error);
-            window.location.href = "http://localhost:8080/becomePremium";
+            window.location.href = "/becomePremium";
           });
       });
     } else {
@@ -86,6 +86,6 @@ async function becomePremium() {
     }
   } catch (error) {
     console.log(error);
-    window.location.href = "http://localhost:8080/becomePremium";
+    window.location.href = "/becomePremium";
   }
 }

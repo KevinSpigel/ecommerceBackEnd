@@ -29,7 +29,7 @@ form.addEventListener("submit", (event) => {
     },
   };
 
-  fetch("http://localhost:8080/api/products", requestOptions)
+  fetch("/api/products", requestOptions)
     .then((res) => console.log(res))
     .catch((error) => console.log(error)); //Send formData object within the body request, to be received in req.body from newProduct function
 
@@ -67,7 +67,7 @@ function addToCart(pid) {
     selectedQuantity.options[selectedQuantity.selectedIndex].value;
 
   fetch(
-    `http://localhost:8080/api/carts/products/${pid}?quantity=${quantity}`,
+    `/api/carts/products/${pid}?quantity=${quantity}`,
     {
       method: "POST",
     }

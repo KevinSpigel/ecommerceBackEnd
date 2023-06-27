@@ -3,7 +3,7 @@ const { transporter, twilioClient } = require("../utils/messenger.utils");
 const {
   GMAIL_AUTHOR,
   TWILIO_PHONE_NUMBER,
-  TWILIO_VERIFIED_CALLER,
+  TWILIO_VERIFIED_CALLER, API_URL
 } = require("../config/env.config");
 const { tokenResetPassword } = require("../utils/jwt.utils");
 
@@ -46,7 +46,7 @@ class MessagesService {
   async resetPasswordEmail(req) {
     const { email } = req.body;
     const token = tokenResetPassword(email);
-    const link = `http://localhost:8080/newPassword?token=${token}`;
+    const link = `http://${API_URL}/newPassword?token=${token}`;
     const mailParams = {
       from: GMAIL_AUTHOR,
       to: email,

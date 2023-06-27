@@ -26,7 +26,7 @@ newPass.addEventListener("submit", (event) => {
   };
 
   fetch(
-    `http://localhost:8080/api/users/createNewPassword?token=${token}`,
+    `/api/users/createNewPassword?token=${token}`,
     requestOptions
   )
     .then((res) => {
@@ -36,7 +36,7 @@ newPass.addEventListener("submit", (event) => {
             icon: "success",
             title: "Password updated successfully",
           }).then(() => {
-            window.location.href = "http://localhost:8080/";
+            window.location.href = "/";
           });
           break;
         case 400:
@@ -53,7 +53,7 @@ newPass.addEventListener("submit", (event) => {
               "Token has expired. You will be redirected to reset your password.",
           }).then(() => {
             window.location.href =
-              "http://localhost:8080/api/users/resetPassword";
+              "/api/users/resetPassword";
           });
 
           break;
@@ -64,7 +64,7 @@ newPass.addEventListener("submit", (event) => {
               "Invalid token. You will be redirected to reset your password.",
           });
           window.location.href =
-            "http://localhost:8080/api/users/resetPassword";
+            "/api/users/resetPassword";
           break;
         default:
           Toast.fire({

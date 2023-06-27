@@ -24,4 +24,5 @@ module.exports = {
   TWILIO_AUTH_TOKEN: process.env.TWILIO_TOKEN,
   TWILIO_PHONE_NUMBER: process.env.TWILIO_PHONE_NUMBER,
   TWILIO_VERIFIED_CALLER: process.env.TWILIO_VERIFIED_CALLER,
+  API_URL: process.env.API_URL,
 };

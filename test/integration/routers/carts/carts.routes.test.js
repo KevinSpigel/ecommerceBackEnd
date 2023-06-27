@@ -1,14 +1,13 @@
 const chai = require("chai");
 const supertest = require("supertest");
 
+const { DB_CONFIG } = require("../../../../src/config/db.config");
+const { SESSION_KEY, API_URL } = require("../../../../src/config/env.config");
 const mongoose = require("mongoose");
 
 const expect = chai.expect;
 
-const requester = supertest("http://localhost:8080");
-
-const { DB_CONFIG } = require("../../../../src/config/db.config");
-const { SESSION_KEY } = require("../../../../src/config/env.config");
+const requester = supertest(`http://${API_URL}`);
 
 
 const { CartsModel } = require("../../../../src/models/schemas/carts.schema");
