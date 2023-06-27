@@ -9,7 +9,7 @@ function getUserById(event) {
   const userIdInput = document.getElementById("userIdInput");
   const uid = userIdInput.value.trim();
 
-  fetch(`http://localhost:8080/api/users/${uid}`, {
+  fetch(`/api/users/${uid}`, {
     method: "GET",
   })
     .then((response) => {
@@ -87,7 +87,7 @@ function changeUserRole(event) {
     if (result.isConfirmed) {
       const payload = { payload: { role } };
 
-      fetch(`http://localhost:8080/api/users/${uid}`, {
+      fetch(`/api/users/${uid}`, {
         method: "PUT",
         body: JSON.stringify(payload),
         headers: {
@@ -151,7 +151,7 @@ function deleteUser(event) {
     confirmButtonText: "Yes, proceed!",
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch(`http://localhost:8080/api/users/${uid}`, {
+      fetch(`/api/users/${uid}`, {
         method: "DELETE",
       })
         .then((response) => {

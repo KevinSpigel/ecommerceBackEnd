@@ -22,6 +22,7 @@ const apiRoutes = require("./routers/app.routers");
 
 const app = express();
 const PORT = env.PORT;
+const API_URL = env.API_URL;
 
 // Listen
 const httpServer = app.listen(PORT, () => {
@@ -56,7 +57,7 @@ const swaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${PORT}`,
+        url: `http://${API_URL}:${PORT}`,
         description: "Development server",
       },
     ],

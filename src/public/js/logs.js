@@ -9,7 +9,7 @@ loginForm?.addEventListener("submit", async (event) => {
   const loginPayload = Object.fromEntries(loginFormData);
 
   try {
-    await fetch("http://localhost:8080/api/sessions/login", {
+    await fetch("/api/sessions/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,12 +17,12 @@ loginForm?.addEventListener("submit", async (event) => {
       },
       body: JSON.stringify(loginPayload),
     });
-    window.location.href = "http://localhost:8080/products";
+    window.location.href = "/products";
 
     loginForm.reset();
   } catch (error) {
     console.log(error);
-    window.location.href = "http://localhost:8080/";
+    window.location.href = "/";
   }
 });
 
@@ -32,7 +32,7 @@ registerForm?.addEventListener("submit", async (event) => {
   const registerFormData = new FormData(registerForm);
 
   try {
-    await fetch("http://localhost:8080/api/sessions/register", {
+    await fetch("/api/sessions/register", {
       method: "POST",
       body: registerFormData,
       redirect: "manual",
@@ -40,15 +40,15 @@ registerForm?.addEventListener("submit", async (event) => {
         type: "profile_image",
       },
     });
-    window.location.href = "http://localhost:8080/";
+    window.location.href = "/";
     registerForm.reset();
   } catch (error) {
     console.log(error);
-    window.location.href = "http://localhost:8080/register";
+    window.location.href = "/register";
   }
 });
 
 const logout = () => {
-  fetch("http://localhost:8080/api/sessions/logout");
-  window.location.href = "http://localhost:8080/";
+  fetch("/api/sessions/logout");
+  window.location.href = "/";
 };

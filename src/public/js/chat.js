@@ -51,7 +51,7 @@ const Toast = Swal.mixin({
 });
 
 //Authentification
-fetch("http://localhost:8080/api/sessions/current")
+fetch("/api/sessions/current")
   .then((response) => response.json())
   .then((result) => {
     const { firstName, lastName } = result.payload;

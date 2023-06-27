@@ -10,7 +10,7 @@ const Toast = Swal.mixin({
 // delete product from cart button
 
 function removeFromCart(pid) {
-  fetch(`http://localhost:8080/api/carts/products/${pid}`, {
+  fetch(`/api/carts/products/${pid}`, {
     method: "DELETE",
   }).then(() => {
     Toast.fire({
@@ -34,7 +34,7 @@ const checkOut = (cid) => {
     confirmButtonText: "Yes, proceed!",
   }).then((result) => {
     if (result.isConfirmed) {
-      fetch(`http://localhost:8080/api/carts/${cid}/purchase`, {
+      fetch(`/api/carts/${cid}/purchase`, {
         method: "POST",
       }).then(() => {
         Swal.fire(
@@ -42,7 +42,7 @@ const checkOut = (cid) => {
           "Your order has been confirm. Please, check your email",
           "success"
         ).then(() => {
-          window.location.href("http://localhost:8080/products");
+          window.location.href("/products");
         });
       });
     }

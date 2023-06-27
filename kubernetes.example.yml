@@ -30,6 +30,8 @@ spec:
           ports:
             - containerPort: XXX
           env:
+            - name: API_URL
+              value: "XXX"
             - name: PORT
               value: "XXX"
             - name: SECRET_KEY
@@ -43,8 +45,6 @@ spec:
             - name: CLIENT_ID
               value: "XXX"
             - name: CLIENT_SECRET
-              value: "XXX"
-            - name: CALLBACK_URL
               value: "XXX"
             - name: GMAIL_AUTHOR
               value: "XXX"

@@ -1,6 +1,6 @@
 const chai = require("chai");
 const supertest = require("supertest");
-const { SESSION_KEY } = require("../../../../src/config/env.config");
+const { SESSION_KEY, API_URL } = require("../../../../src/config/env.config");
 const { DB_CONFIG } = require("../../../../src/config/db.config");
 
 const mongoose = require("mongoose");
@@ -8,7 +8,8 @@ const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 
 const expect = chai.expect;
 
-const requester = supertest("http://localhost:8080");
+const requester = supertest(`http://${API_URL}`);
+
 
 before(function () {
   this.timeout(10000);

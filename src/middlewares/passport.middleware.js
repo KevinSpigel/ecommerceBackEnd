@@ -7,7 +7,8 @@ const {
   SECRET_KEY,
   CLIENT_ID,
   CLIENT_SECRET,
-  CALLBACK_URL,
+  API_URL,
+  PORT,
 } = require("../config/env.config");
 const { cookieExtractor } = require("../utils/jwt.utils");
 
@@ -23,7 +24,7 @@ passport.use(
     {
       clientID: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
-      callbackURL: CALLBACK_URL,
+      callbackURL: `http://${API_URL}${PORT}/api/sessions/github/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
