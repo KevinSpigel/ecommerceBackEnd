@@ -1,11 +1,3 @@
-require("../../setup.test");
-// const {
-//   dropCarts,
-//   dropUsers,
-//   dropSessions,
-//   dropProducts,
-// } = require("../../../setup.test");
-
 const chai = require("chai");
 const supertest = require("supertest");
 
@@ -15,21 +7,60 @@ const expect = chai.expect;
 
 const requester = supertest("http://localhost:8080");
 
+const { DB_CONFIG } = require("../../../../src/config/db.config");
+const { SESSION_KEY } = require("../../../../src/config/env.config");
+
+
+const { CartsModel } = require("../../../../src/models/schemas/carts.schema");
+const { ProductsModel } = require("../../../../src/models/schemas/products.schema");
+const { UsersModel } = require("../../../../src/models/schemas/users.schema");
+
+before(function () {
+  this.timeout(10000);
+  mongoose.set("strictQuery", true);
+  mongoose.connect(DB_CONFIG.mongoDb.uri);
+});
+
+after(() => {
+  mongoose.connection.close();
+});
+
+const dropCarts = async () => {
+  await CartsModel.collection.drop();
+};
+
+const dropProducts = async () => {
+  await ProductsModel.collection.drop();
+};
+
+const dropUsers = async () => {
+  await UsersModel.collection.drop();
+};
+
+const dropSessions = async (res) => {
+  await res.clearCookie(SESSION_KEY);
+};
+
+
+
+
+
+
 describe("Integration tests for [Carts routes]", () => {
 
-  // before(async () => {
-  //   await dropCarts();
-  //   await dropProducts();
-  //   await dropUsers();
-  //   await dropSessions();
-  // });
+  before(async () => {
+    await dropCarts();
+    await dropProducts();
+    await dropUsers();
+    await dropSessions();
+  });
 
-  // after(async () => {
-  //   await dropCarts();
-  //   await dropProducts();
-  //   await dropUsers();
-  //   await dropSessions();
-  // });
+  after(async () => {
+    await dropCarts();
+    await dropProducts();
+    await dropUsers();
+    await dropSessions();
+  });
 
 
   it("[POST] - [api/sessions/register] - should create a user 'admin' and a session successfully", async () => {
@@ -43,7 +74,7 @@ describe("Integration tests for [Carts routes]", () => {
     };
 
     const response = await requester
-      .post("/api/sessions/regster")
+      .post("/api/sessions/register")
       .send(mockUser);
 
     expect(response.statusCode).to.be.equal(201);

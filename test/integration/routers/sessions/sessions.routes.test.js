@@ -1,10 +1,7 @@
-require("../../setup.test");
-
-// const { dropUsers, dropSessions } = require("../../../setup.test");
-
 const chai = require("chai");
 const supertest = require("supertest");
 const { SESSION_KEY } = require("../../../../src/config/env.config");
+const { DB_CONFIG } = require("../../../../src/config/db.config");
 
 const mongoose = require("mongoose");
 const { UsersModel } = require("../../../../src/models/schemas/users.schema");
@@ -13,17 +10,34 @@ const expect = chai.expect;
 
 const requester = supertest("http://localhost:8080");
 
+before(function () {
+  this.timeout(10000);
+  mongoose.set("strictQuery", true);
+  mongoose.connect(DB_CONFIG.mongoDb.uri);
+});
+
+after(() => {
+  mongoose.connection.close();
+});
+
+const dropUsers = async () => {
+  await UsersModel.collection.drop();
+};
+
+const dropSessions = async (res) => {
+  await res.clearCookie(SESSION_KEY);
+};
+
 describe("Integration tests for [Sessions routes]", () => {
+  before(async () => {
+    await dropUsers();
+    await dropSessions();
+  });
 
-  // before(async () => {
-  //   await dropUsers();
-  //   await dropSessions();
-  // });
-
-  // after(async () => {
-  //   await dropUsers();
-  //   await dropSessions();
-  // });
+  after(async () => {
+    await dropUsers();
+    await dropSessions();
+  });
 
   let cookie;
 
@@ -79,8 +93,7 @@ describe("Integration tests for [Sessions routes]", () => {
   });
 
   it("[POST] - [api/sessions/login] - should log in the user successfully", async () => {
-
-    // await dropSessions();
+    await dropSessions();
 
     const mockLoginCredentials = {
       email: "test@gmail.com",

@@ -1,37 +1,54 @@
-require("../../setup.test");
-// const {
-//   dropProducts,
-//   dropSessions,
-//   dropUsers,
-// } = require("../../../setup.test");
-
 const chai = require("chai");
 const supertest = require("supertest");
 
 const mongoose = require("mongoose");
+
 const { SESSION_KEY } = require("../../../../src/config/env.config");
+
+const { DB_CONFIG } = require("../../../../src/config/db.config");
 const {
   ProductsModel,
 } = require("../../../../src/models/schemas/products.schema");
+const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 
 const expect = chai.expect;
 
 const requester = supertest("http://localhost:8080");
 
+before(function () {
+  this.timeout(10000);
+  mongoose.set("strictQuery", true);
+  mongoose.connect(DB_CONFIG.mongoDb.uri);
+});
+
+after(() => {
+  mongoose.connection.close();
+});
+
+const dropProducts = async () => {
+  await ProductsModel.collection.drop();
+};
+
+const dropUsers = async () => {
+  await UsersModel.collection.drop();
+};
+
+const dropSessions = async (res) => {
+  await res.clearCookie(SESSION_KEY);
+};
+
 describe("Integration Test Products routes [Unanthenticated and Unauthorized users]", () => {
+  before(async () => {
+    await dropProducts();
+    await dropSessions();
+    await dropUsers();
+  });
 
-
-  // before(async () => {
-  //   await dropProducts();
-  //   await dropSessions();
-  //   await dropUsers();
-  // });
-
-  // after(async () => {
-  //   await dropProducts();
-  //   await dropSessions();
-  //   await dropUsers();
-  // });
+  after(async () => {
+    await dropProducts();
+    await dropSessions();
+    await dropUsers();
+  });
 
   it("[GET] - [api/products] - should return a code 401 for Unauthenticated users", async () => {
     const response = await requester.get("/api/products");
@@ -84,7 +101,6 @@ describe("Integration Test Products routes [Unanthenticated and Unauthorized use
 });
 
 describe("Integration Test Products routes [ROLE => 'user']", () => {
-
   let cookie;
 
   it("[POST] - [api/sessions/register] - should create a user and a session successfully", async () => {
@@ -130,8 +146,8 @@ describe("Integration Test Products routes [ROLE => 'user']", () => {
   it("[GET] - [api/products] - should get all products by using filters sucessfully", async () => {
     const limit = 10;
     const page = 1;
-    // const query = "category";
-    // const sort = "asc";
+    const query = "category";
+    const sort = "asc";
 
     const response = await requester
       .get("/api/products")
