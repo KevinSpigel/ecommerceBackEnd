@@ -10,6 +10,7 @@ const {
 } = require("../../../../src/config/env.config");
 
 const { UsersModel } = require("../../../../src/models/schemas/users.schema");
+const { CartsModel } = require("../../../../src/models/schemas/carts.schema");
 
 const expect = chai.expect;
 const requester = supertest(`http://${API_URL}${PORT}`);
@@ -28,11 +29,16 @@ const dropUsers = async () => {
   await UsersModel.collection.drop();
 };
 
-describe("Integration tests for [Sessions routes]", () => {
+const dropCarts = async () => {
+  await CartsModel.collection.drop();
+};
+
+describe.only("Integration tests for [Sessions routes]", () => {
   let cookie;
 
   it("[POST] - [api/sessions/register] - should create a user and a session successfully", async () => {
     await dropUsers();
+    await dropCarts();
 
     const mockUser = {
       first_name: "John",
@@ -125,5 +131,9 @@ describe("Integration tests for [Sessions routes]", () => {
 
     expect(response.statusCode).to.be.equal(200);
     expect(response.body.payload).not.to.have.property("Session close");
+
+    await dropUsers();
+    await dropCarts();
+    
   });
 });
