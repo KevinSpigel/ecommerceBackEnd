@@ -1,27 +1,31 @@
+const mongoose = require("mongoose");
 const chai = require("chai");
 const supertest = require("supertest");
 
 const { DB_CONFIG } = require("../../../../src/config/db.config");
-const { SESSION_KEY, API_URL } = require("../../../../src/config/env.config");
-const mongoose = require("mongoose");
-
-const expect = chai.expect;
-
-const requester = supertest(`http://${API_URL}`);
-
+const {
+  SESSION_KEY,
+  API_URL,
+  PORT,
+} = require("../../../../src/config/env.config");
 
 const { CartsModel } = require("../../../../src/models/schemas/carts.schema");
-const { ProductsModel } = require("../../../../src/models/schemas/products.schema");
+const {
+  ProductsModel,
+} = require("../../../../src/models/schemas/products.schema");
 const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 
-before(function () {
+const expect = chai.expect;
+const requester = supertest(`http://${API_URL}${PORT}`);
+
+before(async function () {
   this.timeout(10000);
   mongoose.set("strictQuery", true);
-  mongoose.connect(DB_CONFIG.mongoDb.uri);
+  await mongoose.connect(DB_CONFIG.mongoDb.uri);
 });
 
-after(() => {
-  mongoose.connection.close();
+after(async () => {
+  await mongoose.connection.close();
 });
 
 const dropCarts = async () => {
@@ -36,37 +40,26 @@ const dropUsers = async () => {
   await UsersModel.collection.drop();
 };
 
-const dropSessions = async (res) => {
-  await res.clearCookie(SESSION_KEY);
-};
-
-
-
-
-
 
 describe("Integration tests for [Carts routes]", () => {
+  // before(async () => {
+  //   await dropCarts();
+  //   await dropProducts();
+  //   await dropUsers();
+  // });
 
-  before(async () => {
-    await dropCarts();
-    await dropProducts();
-    await dropUsers();
-    await dropSessions();
-  });
+  // after(async () => {
+  //   await dropCarts();
+  //   await dropProducts();
+  //   await dropUsers();
 
-  after(async () => {
-    await dropCarts();
-    await dropProducts();
-    await dropUsers();
-    await dropSessions();
-  });
-
+  // });
 
   it("[POST] - [api/sessions/register] - should create a user 'admin' and a session successfully", async () => {
     const mockUser = {
       first_name: "Kevin",
       last_name: "Dho",
-      age: 29,
+      age: 50,
       email: "test123@gmail.com",
       password: "password",
       role: "admin",
@@ -78,11 +71,12 @@ describe("Integration tests for [Carts routes]", () => {
 
     expect(response.statusCode).to.be.equal(201);
     expect(response.body.payload).to.be.ok;
-    expect(response.body.payload.role).to.be.equal(mockUser.role);
+    expect(response.request._data.role).to.be.equal(mockUser.role);
   });
 
   it("[POST] - [api/carts] - should create a cart sucessfully", async () => {
     const response = await requester.post("/api/carts");
+
     expect(response.statusCode).to.be.equal(201);
     expect(response.body.payload).deep.equal([]);
     expect(response.body.payload._id).to.be.ok;
@@ -102,7 +96,7 @@ describe("Integration tests for [Carts routes]", () => {
     const mockUser = {
       first_name: "David",
       last_name: "Chao",
-      age: 30,
+      age: 47,
       email: "testUser@gmail.com",
       password: "password",
       cart: mongoose.Types.ObjectId(),

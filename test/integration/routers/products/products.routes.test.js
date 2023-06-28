@@ -1,19 +1,21 @@
+const mongoose = require("mongoose");
 const chai = require("chai");
 const supertest = require("supertest");
 
-const mongoose = require("mongoose");
-
-const { SESSION_KEY, API_URL } = require("../../../../src/config/env.config");
-
 const { DB_CONFIG } = require("../../../../src/config/db.config");
+const {
+  SESSION_KEY,
+  API_URL,
+  PORT,
+} = require("../../../../src/config/env.config");
+
 const {
   ProductsModel,
 } = require("../../../../src/models/schemas/products.schema");
 const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 
 const expect = chai.expect;
-
-const requester = supertest(`http://${API_URL}`);
+const requester = supertest(`http://${API_URL}${PORT}`);
 
 before(function () {
   this.timeout(10000);
@@ -33,22 +35,17 @@ const dropUsers = async () => {
   await UsersModel.collection.drop();
 };
 
-const dropSessions = async (res) => {
-  await res.clearCookie(SESSION_KEY);
-};
 
 describe("Integration Test Products routes [Unanthenticated and Unauthorized users]", () => {
-  before(async () => {
-    await dropProducts();
-    await dropSessions();
-    await dropUsers();
-  });
+  // before(async () => {
+  //   await dropProducts();
+  //   await dropUsers();
+  // });
 
-  after(async () => {
-    await dropProducts();
-    await dropSessions();
-    await dropUsers();
-  });
+  // after(async () => {
+  //   await dropProducts();
+  //   await dropUsers();
+  // });
 
   it("[GET] - [api/products] - should return a code 401 for Unauthenticated users", async () => {
     const response = await requester.get("/api/products");
@@ -59,7 +56,7 @@ describe("Integration Test Products routes [Unanthenticated and Unauthorized use
     const mockUser = {
       first_name: "John",
       last_name: "Dho",
-      age: 29,
+      age: 27,
       email: "test@gmail.com",
       password: "password",
       cart: mongoose.Types.ObjectId(),
@@ -107,7 +104,7 @@ describe("Integration Test Products routes [ROLE => 'user']", () => {
     const mockUser = {
       first_name: "John",
       last_name: "Dho",
-      age: 29,
+      age: 20,
       email: "test@gmail.com",
       password: "password",
       cart: mongoose.Types.ObjectId(),
@@ -146,8 +143,8 @@ describe("Integration Test Products routes [ROLE => 'user']", () => {
   it("[GET] - [api/products] - should get all products by using filters sucessfully", async () => {
     const limit = 10;
     const page = 1;
-    const query = "category";
-    const sort = "asc";
+    const query = {};
+    const sort = {};
 
     const response = await requester
       .get("/api/products")
@@ -165,7 +162,7 @@ describe("Test Products routes [ROLE => 'admin' or 'premium']", () => {
     const mockUser = {
       first_name: "John",
       last_name: "Dho",
-      age: 29,
+      age: 32,
       email: "test@gmail.com",
       password: "password",
       cart: mongoose.Types.ObjectId(),

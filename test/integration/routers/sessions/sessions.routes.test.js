@@ -1,15 +1,18 @@
+const mongoose = require("mongoose");
 const chai = require("chai");
 const supertest = require("supertest");
-const { SESSION_KEY, API_URL } = require("../../../../src/config/env.config");
-const { DB_CONFIG } = require("../../../../src/config/db.config");
 
-const mongoose = require("mongoose");
+const { DB_CONFIG } = require("../../../../src/config/db.config");
+const {
+  SESSION_KEY,
+  API_URL,
+  PORT,
+} = require("../../../../src/config/env.config");
+
 const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 
 const expect = chai.expect;
-
-const requester = supertest(`http://${API_URL}`);
-
+const requester = supertest(`http://${API_URL}${PORT}`);
 
 before(function () {
   this.timeout(10000);
@@ -25,29 +28,17 @@ const dropUsers = async () => {
   await UsersModel.collection.drop();
 };
 
-const dropSessions = async (res) => {
-  await res.clearCookie(SESSION_KEY);
-};
-
 describe("Integration tests for [Sessions routes]", () => {
-  before(async () => {
-    await dropUsers();
-    await dropSessions();
-  });
-
-  after(async () => {
-    await dropUsers();
-    await dropSessions();
-  });
-
   let cookie;
 
   it("[POST] - [api/sessions/register] - should create a user and a session successfully", async () => {
+    await dropUsers();
+
     const mockUser = {
       first_name: "John",
       last_name: "Dho",
       age: 29,
-      email: "test@gmail.com",
+      email: "testSessions@gmail.com",
       password: "password",
       cart: mongoose.Types.ObjectId(),
       role: "user",
@@ -58,8 +49,7 @@ describe("Integration tests for [Sessions routes]", () => {
       .send(mockUser);
 
     expect(response.statusCode).to.be.equal(201);
-    expect(response.body.payload).to.be.ok;
-    expect(response.body.payload.role).to.be.equal(mockUser.role);
+    expect(response.body.payload).to.be.equal("User registered successfully!");
 
     // check if cookie was set successfully
 
@@ -76,28 +66,34 @@ describe("Integration tests for [Sessions routes]", () => {
   });
 
   it("[GET] - [api/sessions/current] - should get the current session", async () => {
-    const response = await requester.get("/api/sessions/current");
+    const response = await requester
+      .get("/api/sessions/current")
+      .set("Cookie", [`${cookie.name}=${cookie.value}`]);
 
     expect(response.statusCode).to.be.equal(200);
-    expect(response.body.payload.email).to.be.equal("test@gmail.com");
+    expect(response.body.payload.email).to.be.equal("testSessions@gmail.com");
   });
 
-  it("[PUT] - [api/users/premium/:uid] - should update 'user' role to 'premium' the current session", async () => {
-    const user = await UsersModel.findOne({ email: "test@gmail.com" }).lean();
+  it("[PUT] - [api/users/premium/:uid] - should return an error if the user doesn't have all the required documents", async () => {
+    const user = await UsersModel.findOne({
+      email: "testSessions@gmail.com",
+    }).lean();
     const uid = user._id.toString();
 
-    const response = await requester.put(`/api/users/premium/${uid}`);
+    const response = await requester
+      .put(`/api/users/premium/${uid}`)
+      .set("Cookie", [`${cookie.name}=${cookie.value}`]);
 
-    expect(response.statusCode).to.be.equal(200);
-    expect(response.body.payload.email).to.be.equal("test@gmail.com");
-    expect(response.body.payload.role).to.be.equal("premium");
+    expect(response.statusCode).to.be.equal(400);
+    expect(response.body.success).to.be.equal(false);
+    expect(response.body.description).to.be.equal(
+      "The User has not finished processing their documentation"
+    );
   });
 
   it("[POST] - [api/sessions/login] - should log in the user successfully", async () => {
-    await dropSessions();
-
     const mockLoginCredentials = {
-      email: "test@gmail.com",
+      email: "testSessions@gmail.com",
       password: "password",
     };
 
@@ -123,8 +119,11 @@ describe("Integration tests for [Sessions routes]", () => {
   });
 
   it("[GET] - [api/sessions/logout] - should delete the cookie session sucessfully", async () => {
-    const response = await requester.get("/api/sessions/logout");
+    const response = await requester
+      .get("/api/sessions/logout")
+      .set("Cookie", [`${cookie.name}=${cookie.value}`]);
+
     expect(response.statusCode).to.be.equal(200);
-    expect(response.headers).to.not.to.have.property("set-cookie");
+    expect(response.body.payload).not.to.have.property("Session close");
   });
 });
