@@ -33,7 +33,7 @@ const dropCarts = async () => {
   await CartsModel.collection.drop();
 };
 
-describe.only("Integration tests for [Sessions routes]", () => {
+describe("Integration tests for [Sessions routes]", () => {
   let cookie;
 
   it("[POST] - [api/sessions/register] - should create a user and a session successfully", async () => {
@@ -134,6 +134,6 @@ describe.only("Integration tests for [Sessions routes]", () => {
 
     await dropUsers();
     await dropCarts();
-    
+
   });
 });

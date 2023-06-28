@@ -18,14 +18,14 @@ const { UsersModel } = require("../../../../src/models/schemas/users.schema");
 const expect = chai.expect;
 const requester = supertest(`http://${API_URL}${PORT}`);
 
-before(async function () {
+before(function () {
   this.timeout(10000);
   mongoose.set("strictQuery", true);
-  await mongoose.connect(DB_CONFIG.mongoDb.uri);
+  mongoose.connect(DB_CONFIG.mongoDb.uri);
 });
 
-after(async () => {
-  await mongoose.connection.close();
+after(() => {
+  mongoose.connection.close();
 });
 
 const dropCarts = async () => {
@@ -40,20 +40,7 @@ const dropUsers = async () => {
   await UsersModel.collection.drop();
 };
 
-
 describe("Integration tests for [Carts routes]", () => {
-  // before(async () => {
-  //   await dropCarts();
-  //   await dropProducts();
-  //   await dropUsers();
-  // });
-
-  // after(async () => {
-  //   await dropCarts();
-  //   await dropProducts();
-  //   await dropUsers();
-
-  // });
 
   it("[POST] - [api/sessions/register] - should create a user 'admin' and a session successfully", async () => {
     const mockUser = {
