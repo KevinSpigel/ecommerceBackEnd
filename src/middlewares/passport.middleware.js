@@ -24,7 +24,7 @@ passport.use(
     {
       clientID: CLIENT_ID,
       clientSecret: CLIENT_SECRET,
-      callbackURL: `http://${API_URL}${PORT}/api/sessions/github/callback`,
+      callbackURL: `https://${API_URL}/api/sessions/github/callback`,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
