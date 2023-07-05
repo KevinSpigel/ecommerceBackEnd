@@ -8,7 +8,6 @@ const {
   CLIENT_ID,
   CLIENT_SECRET,
   API_URL,
-  PORT,
 } = require("../config/env.config");
 const { cookieExtractor } = require("../utils/jwt.utils");
 
